@@ -18,13 +18,16 @@ Setup / Planning
 - Removed unused ServiceInterfaces ProjectReference to DataAccessLayerInterfaces.
 - ServiceInterfaces builds successfully.
 - Completed SDK-style-on-net48 conversion pattern across DataTransferObjects, DataAccessLayerInterfaces, and ServiceInterfaces.
-- Converted ApiClientLayer to SDK-style targeting net48, if build completed successfully.
+- Converted ApiClientLayer to SDK-style targeting net48.
+- Removed ApiClientLayer packages.config and app.config.
+- Reduced ApiClientLayer dependencies to Newtonsoft.Json and Microsoft.AspNet.WebApi.Client only.
 - Preserved ApiClientLayer public contract including ApiClientRequest.
-- Validated dependent build chain from ApiClientLayer through DataTransferObjects, DataAccessLayerInterfaces, and ServiceInterfaces, if completed.
+- Built the full solution successfully after ApiClientLayer conversion.
 
 ## What’s Next
-- Assess whether ApiClientLayer can later multi-target net48 and net10.0.
-- Identify any remaining System.Web, RestSharp, Newtonsoft.Json, System.Text.Json, or Web API client compatibility blockers.
+- Inspect ApiClientBase usage of System.Net.Http.Formatting, MediaTypeFormatter, and ReadAsAsync.
+- Assess whether ApiClientLayer can multi-target net48 and net10.0.
+- Identify the minimal-change replacement or conditional-targeting approach if Microsoft.AspNet.WebApi.Client blocks net10.0.
 - Continue SDK-style-on-net48 conversion pattern for the next low-risk dependency.
 
 ## Active Decisions
@@ -35,6 +38,8 @@ Setup / Planning
 - DataTransferObjects will not target net10.0 until ApiClientLayer dependency is resolved or migrated
 - Unused project references may be removed when source search and successful build confirm they are not required.
 - Continue SDK-style conversion on net48 before attempting net10.0 targeting.
+- ApiClientLayer SDK-style conversion remains net48-only for now.
+- Unused ApiClientLayer dependencies such as RestSharp, System.Text.Json, System.Web, and transitive package references are not carried forward unless build evidence requires them.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -49,9 +54,8 @@ Setup / Planning
 - Changing JobsRequestBase inheritance would be a behavioural/design change and is not part of the minimal-change migration
 - Full solution build is still required after ServiceInterfaces conversion if not already completed.
 - DataTransferObjects remains blocked from net10.0 targeting by its dependency on net48-only ApiClientLayer.
-- ApiClientLayer references HTTP/client libraries including RestSharp and Microsoft.AspNet.WebApi.Client, so runtime behaviour must be smoke-tested after project conversion.
-- ApiClientLayer currently includes a System.Web reference; source usage must be confirmed before any net10.0 targeting attempt.
-- ApiClientLayer uses package dependencies with binding redirects, so full solution build and runtime validation are required.
+- ApiClientLayer still depends on Microsoft.AspNet.WebApi.Client APIs, including ReadAsAsync and MediaTypeFormatter, which may block net10.0 targeting.
+- Runtime smoke testing is still required for API client serialization, response handling, retry/logging handlers, and RiskModeler/Hydra request flows.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -64,6 +68,6 @@ Setup / Planning
 - DataAccessLayerInterfaces should keep only its DataTransferObjects ProjectReference
 - ServiceInterfaces no longer references DataAccessLayerInterfaces after validation showed it was unused.
 - The first repeatable migration pattern is SDK-style conversion on net48 with behaviour-preserving dependency cleanup.
-- ApiClientLayer has no project references, making it suitable for SDK-style conversion on net48.
+- ApiClientLayer has no project references and now builds successfully as an SDK-style net48 library.
 - ApiClientLayer should not be upgraded to net10.0 until dependency and System.Web usage are assessed.
-- RestSharp and JSON package versions should be preserved during initial SDK-style conversion.
+- ApiClientRequest still uses Newtonsoft.Json.JsonIgnore and this serialization behaviour should be preserved.
