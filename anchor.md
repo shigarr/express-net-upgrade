@@ -7,9 +7,12 @@ Setup / Planning
 - High-level migration plan defined
 - Governance model defined
 - Executive summary created
+- Solution structure snapshot completed
 
 ## What’s Next
-- Define solution structure
+- Identify first low-risk core library migration slice
+- Inspect dependencies for DataTransferObjects, ServiceInterfaces, DataAccessLayerInterfaces, Amlin.Logging, and Factories
+- Define repeatable SDK-style / multi-targeting migration pattern
 - Identify first migration slice
 - Start first technical migration pattern
 
@@ -22,6 +25,9 @@ Setup / Planning
 - System.Web dependencies (unknown extent)
 - Auth model compatibility
 - Hidden coupling across services
+- First slice dependencies not yet validated
+- EF version and migration strategy not yet confirmed
+- Windows Service hosting pattern not yet assessed
 
 ## Notes
 - Code sharing limited → snippet-driven approach
