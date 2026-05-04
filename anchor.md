@@ -11,14 +11,13 @@ Setup / Planning
 - Confirmed DataTransferObjects has a narrow but real ApiClientLayer dependency through JobsRequestBase inheriting from ApiClientRequest
 - Confirmed ApiClientLayer currently targets net48 only
 - Decided DataTransferObjects should first be converted to SDK-style while remaining on net48
+- Confirmed DataAccessLayerInterfaces does not use EPPlus, ExcelLibrary, or Newtonsoft.Json
+- Converted DataAccessLayerInterfaces to SDK-style targeting net48 only, if build completed successfully
 
 ## What’s Next
-- Convert DataTransferObjects.csproj to SDK-style targeting net48 only
-- Preserve AssemblyInfo.cs using GenerateAssemblyInfo=false
-- Keep Newtonsoft.Json 9.0.1 as PackageReference
-- Keep ApiClientLayer ProjectReference
-- Remove unused EPPlus and ExcelLibrary references from DataTransferObjects
-- Build DataTransferObjects and then direct dependents DataAccessLayerInterfaces and ServiceInterfaces
+- Validate ServiceInterfaces package usage
+- Convert ServiceInterfaces to SDK-style targeting net48 only if package usage permits
+- Continue applying the SDK-style-on-net48 pattern upward through low-risk interface projects
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -46,3 +45,5 @@ Setup / Planning
 - Migration assessment will follow a manual evidence-driven / snippet-driven approach
 - JobsRequestBase in DataTransferObjects.HydraJob.RiskModeler inherits from ApiClientLayer.Types.ApiClientRequest
 - Recommended first SDK-style DataTransferObjects project targets net48 only with GenerateAssemblyInfo=false
+- DataAccessLayerInterfaces should preserve AssemblyInfo.cs using GenerateAssemblyInfo=false
+- DataAccessLayerInterfaces should keep only its DataTransferObjects ProjectReference
