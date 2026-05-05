@@ -33,11 +33,16 @@ Setup / Planning
 - Multi-targeted ServiceInterfaces to net48 and net10.0.
 - Built the full solution successfully after ApiClientLayer, DataTransferObjects, DataAccessLayerInterfaces, and ServiceInterfaces multi-targeting.
 - Completed core dependency chain multi-targeting for ApiClientLayer, DataTransferObjects, DataAccessLayerInterfaces, and ServiceInterfaces.
+- Converted DataAccessLayer to SDK-style targeting net48.
+- Retained Dapper 1.50.2 as the only DataAccessLayer PackageReference.
+- Removed unused DataAccessLayer references to EPPlus, ExcelLibrary, Newtonsoft.Json, packages.config, and app.config.
+- Identified and excluded root-level orphan usp_GetDatabaseStatus.cs that was not included in the legacy project file but was picked up by SDK-style default compile globbing.
+- Built the full solution successfully after DataAccessLayer SDK-style conversion.
 
 ## What’s Next
-- Inspect DataAccessLayer.csproj as the next implementation-layer migration candidate.
-- Assess DataAccessLayer dependencies for SQL provider, EF, System.Configuration, app.config, and legacy package blockers.
-- Begin runtime smoke-test planning for ApiClientLayer JSON behaviour and DataAccessLayerInterfaces SQL connection contract.
+- Inspect DalConnection.cs before attempting DataAccessLayer net48/net10.0 multi-targeting.
+- Plan target-specific SQL provider handling in DataAccessLayer to align with DataAccessLayerInterfaces.
+- Continue watching for SDK-style default globbing pulling in files not included by legacy project files.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -54,6 +59,8 @@ Setup / Planning
 - Newtonsoft.Json remains the serialization engine for ApiClientLayer to preserve behaviour.
 - Do not migrate Factories until its implementation dependencies such as DataAccessLayer and Services have been assessed or migrated.
 - Continue dependency-order migration from lower-level abstractions into implementation projects.
+- Preserve legacy compile behaviour by excluding source files that were not included in the old project file and are only picked up by SDK-style default globbing.
+- DataAccessLayer remains net48-only after SDK-style conversion; net10.0 targeting is deferred until SQL provider handling is reviewed.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -75,6 +82,9 @@ Setup / Planning
 - Runtime behaviour remains unvalidated despite successful full solution builds.
 - DataAccessLayer may expose higher-risk SQL, EF, configuration, or provider compatibility issues.
 - Downstream implementations of IDalConnection may need target-specific SQL provider handling.
+- SDK-style default compile globbing can include historical/orphaned .cs files that were not compiled by legacy project files.
+- DataAccessLayer still uses System.Data.SqlClient and requires target-specific SQL provider handling before net10.0 targeting.
+- Dapper/stored-procedure runtime behaviour still requires smoke testing.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -94,3 +104,5 @@ Setup / Planning
 - The next dependency-chain target is DataTransferObjects.
 - Core dependency chain now supports net48 and net10.0 at compile time.
 - Next migration focus moves from interfaces/DTOs/API-client support into implementation-layer assessment.
+- DbTools\usp_GetDatabaseStatus.cs remains the intended compiled file.
+- Root-level usp_GetDatabaseStatus.cs is excluded because it was not referenced by the legacy project file.
