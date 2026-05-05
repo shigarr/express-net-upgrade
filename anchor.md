@@ -30,11 +30,14 @@ Setup / Planning
 - Added net10.0 Newtonsoft.Json-based request/response serialization path.
 - Built ApiClientLayer successfully.
 - Built the full solution successfully after ApiClientLayer multi-targeting.
+- Multi-targeted ServiceInterfaces to net48 and net10.0.
+- Built the full solution successfully after ApiClientLayer, DataTransferObjects, DataAccessLayerInterfaces, and ServiceInterfaces multi-targeting.
+- Completed core dependency chain multi-targeting for ApiClientLayer, DataTransferObjects, DataAccessLayerInterfaces, and ServiceInterfaces.
 
 ## What’s Next
-- Multi-target DataTransferObjects to net48 and net10.0.
-- Build ApiClientLayer, DataTransferObjects, DataAccessLayerInterfaces, ServiceInterfaces, and the full solution.
-- If DataTransferObjects succeeds, assess DataAccessLayerInterfaces and ServiceInterfaces for net48/net10.0 multi-targeting.
+- Inspect DataAccessLayer.csproj as the next implementation-layer migration candidate.
+- Assess DataAccessLayer dependencies for SQL provider, EF, System.Configuration, app.config, and legacy package blockers.
+- Begin runtime smoke-test planning for ApiClientLayer JSON behaviour and DataAccessLayerInterfaces SQL connection contract.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -49,6 +52,8 @@ Setup / Planning
 - ApiClientLayer net48 path preserves Microsoft.AspNet.WebApi.Client / JsonMediaTypeFormatter behaviour.
 - ApiClientLayer net10.0 path avoids Microsoft.AspNet.WebApi.Client and uses Newtonsoft.Json directly.
 - Newtonsoft.Json remains the serialization engine for ApiClientLayer to preserve behaviour.
+- Do not migrate Factories until its implementation dependencies such as DataAccessLayer and Services have been assessed or migrated.
+- Continue dependency-order migration from lower-level abstractions into implementation projects.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -67,6 +72,9 @@ Setup / Planning
 - Runtime smoke testing is still required for API client serialization, response handling, retry/logging handlers, and RiskModeler/Hydra request flows.
 - ApiClientLayer net48 and net10.0 JSON serialization paths may differ subtly because net48 uses JsonMediaTypeFormatter while net10.0 uses direct JsonConvert serialization/deserialization.
 - Runtime smoke testing is required for API client request serialization, response deserialization, retry/logging handlers, and Hydra/RiskModeler calls.
+- Runtime behaviour remains unvalidated despite successful full solution builds.
+- DataAccessLayer may expose higher-risk SQL, EF, configuration, or provider compatibility issues.
+- Downstream implementations of IDalConnection may need target-specific SQL provider handling.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -84,3 +92,5 @@ Setup / Planning
 - ApiClientRequest still uses Newtonsoft.Json.JsonIgnore and this serialization behaviour should be preserved.
 - ApiClientLayer no longer blocks DataTransferObjects from attempting net48/net10.0 multi-targeting.
 - The next dependency-chain target is DataTransferObjects.
+- Core dependency chain now supports net48 and net10.0 at compile time.
+- Next migration focus moves from interfaces/DTOs/API-client support into implementation-layer assessment.
