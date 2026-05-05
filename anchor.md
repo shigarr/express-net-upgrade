@@ -23,12 +23,18 @@ Setup / Planning
 - Reduced ApiClientLayer dependencies to Newtonsoft.Json and Microsoft.AspNet.WebApi.Client only.
 - Preserved ApiClientLayer public contract including ApiClientRequest.
 - Built the full solution successfully after ApiClientLayer conversion.
+- Multi-targeted ApiClientLayer to net48 and net10.0.
+- Added CreateJsonContent to isolate request JSON serialization.
+- Replaced direct PostAsync/PutAsync Formatter usage with CreateJsonContent.
+- Kept Formatter, ReadAsAsync, MediaTypeFormatter, and JsonMediaTypeFormatter under the net48 conditional path.
+- Added net10.0 Newtonsoft.Json-based request/response serialization path.
+- Built ApiClientLayer successfully.
+- Built the full solution successfully after ApiClientLayer multi-targeting.
 
 ## What’s Next
-- Inspect ApiClientBase usage of System.Net.Http.Formatting, MediaTypeFormatter, and ReadAsAsync.
-- Assess whether ApiClientLayer can multi-target net48 and net10.0.
-- Identify the minimal-change replacement or conditional-targeting approach if Microsoft.AspNet.WebApi.Client blocks net10.0.
-- Continue SDK-style-on-net48 conversion pattern for the next low-risk dependency.
+- Multi-target DataTransferObjects to net48 and net10.0.
+- Build ApiClientLayer, DataTransferObjects, DataAccessLayerInterfaces, ServiceInterfaces, and the full solution.
+- If DataTransferObjects succeeds, assess DataAccessLayerInterfaces and ServiceInterfaces for net48/net10.0 multi-targeting.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -40,6 +46,9 @@ Setup / Planning
 - Continue SDK-style conversion on net48 before attempting net10.0 targeting.
 - ApiClientLayer SDK-style conversion remains net48-only for now.
 - Unused ApiClientLayer dependencies such as RestSharp, System.Text.Json, System.Web, and transitive package references are not carried forward unless build evidence requires them.
+- ApiClientLayer net48 path preserves Microsoft.AspNet.WebApi.Client / JsonMediaTypeFormatter behaviour.
+- ApiClientLayer net10.0 path avoids Microsoft.AspNet.WebApi.Client and uses Newtonsoft.Json directly.
+- Newtonsoft.Json remains the serialization engine for ApiClientLayer to preserve behaviour.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -56,6 +65,8 @@ Setup / Planning
 - DataTransferObjects remains blocked from net10.0 targeting by its dependency on net48-only ApiClientLayer.
 - ApiClientLayer still depends on Microsoft.AspNet.WebApi.Client APIs, including ReadAsAsync and MediaTypeFormatter, which may block net10.0 targeting.
 - Runtime smoke testing is still required for API client serialization, response handling, retry/logging handlers, and RiskModeler/Hydra request flows.
+- ApiClientLayer net48 and net10.0 JSON serialization paths may differ subtly because net48 uses JsonMediaTypeFormatter while net10.0 uses direct JsonConvert serialization/deserialization.
+- Runtime smoke testing is required for API client request serialization, response deserialization, retry/logging handlers, and Hydra/RiskModeler calls.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -71,3 +82,5 @@ Setup / Planning
 - ApiClientLayer has no project references and now builds successfully as an SDK-style net48 library.
 - ApiClientLayer should not be upgraded to net10.0 until dependency and System.Web usage are assessed.
 - ApiClientRequest still uses Newtonsoft.Json.JsonIgnore and this serialization behaviour should be preserved.
+- ApiClientLayer no longer blocks DataTransferObjects from attempting net48/net10.0 multi-targeting.
+- The next dependency-chain target is DataTransferObjects.
