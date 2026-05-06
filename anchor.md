@@ -43,11 +43,16 @@ Setup / Planning
 - Resolved DataAccessLayer net10.0 Dapper table-valued parameter compatibility issue.
 - Built DataAccessLayer successfully.
 - Built the full solution successfully after DataAccessLayer multi-targeting.
+- Confirmed Services uses Newtonsoft.Json / JsonConvert.
+- Confirmed Services does not use EPPlus, ExcelLibrary, NUnit, System.Configuration, System.Data.SqlClient, System.Web, or PresentationFramework.
+- Converted Services to SDK-style targeting net48, if build completed successfully.
+- Removed unused Services references to EPPlus, ExcelLibrary, NUnit, packages.config, and app.config, if build completed successfully.
+- Built Services, Factories, and the full solution successfully, if completed.
 
 ## What’s Next
-- Inspect Services.csproj as the next implementation-layer migration candidate.
-- Assess Services dependencies for DataAccessLayer, DataTransferObjects, ServiceInterfaces, Newtonsoft.Json, System.Configuration, System.Web, and other legacy blockers.
-- Begin defining runtime smoke tests for DAL stored-procedure execution, table-valued parameters, and API client JSON serialization.
+- Assess Services for net48/net10.0 multi-targeting after SDK-style net48 conversion is stable.
+- Inspect any Services JsonConvert usage for net10.0 compatibility blockers.
+- Continue runtime smoke-test planning for Hydra/RiskModeler service flows.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -94,6 +99,9 @@ Setup / Planning
 - Dapper/stored-procedure runtime behaviour still requires smoke testing.
 - DataAccessLayer runtime behaviour must be validated for Dapper queries, stored procedures, table-valued parameters, and SQL provider differences.
 - Conditional package/provider differences between net48 and net10.0 may cause runtime differences despite successful compile.
+- Services uses Newtonsoft.Json / JsonConvert, so JSON behaviour must be preserved.
+- Services contains worker, file, Hydra/RiskModeler, and workflow-related logic requiring runtime smoke tests.
+- SDK-style default globbing may expose additional previously uncompiled files.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -117,3 +125,5 @@ Setup / Planning
 - Root-level usp_GetDatabaseStatus.cs is excluded because it was not referenced by the legacy project file.
 - DataAccessLayer full solution build succeeded after resolving net10.0 Dapper AsTableValuedParameter issue.
 - Next migration focus should move to Services rather than Factories.
+- Services should initially keep only Newtonsoft.Json 9.0.1 as a PackageReference.
+- Services should remain net48-only during the SDK-style conversion step.
