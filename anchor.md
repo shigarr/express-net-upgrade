@@ -47,12 +47,17 @@ Setup / Planning
 - Confirmed Services does not use EPPlus, ExcelLibrary, NUnit, System.Configuration, System.Data.SqlClient, System.Web, or PresentationFramework.
 - Converted Services to SDK-style targeting net48, if build completed successfully.
 - Removed unused Services references to EPPlus, ExcelLibrary, NUnit, packages.config, and app.config, if build completed successfully.
-- Built Services, Factories, and the full solution successfully, if completed.
+- Multi-targeted Services to net48 and net10.0.
+- Retained Newtonsoft.Json for Services JSON behaviour.
+- Handled Microsoft.CSharp for Services dynamic usage.
+- Built Services successfully.
+- Built Factories successfully.
+- Built the full solution successfully after Services multi-targeting.
 
 ## What’s Next
-- Assess Services for net48/net10.0 multi-targeting after SDK-style net48 conversion is stable.
-- Inspect any Services JsonConvert usage for net10.0 compatibility blockers.
-- Continue runtime smoke-test planning for Hydra/RiskModeler service flows.
+- Inspect Factories.csproj as the next composition-layer migration candidate.
+- Assess Factories dependencies now that ApiClientLayer, DataTransferObjects, DataAccessLayerInterfaces, ServiceInterfaces, DataAccessLayer, and Services are SDK-style and multi-targeted.
+- Begin defining runtime smoke tests for Services worker flows, API client JSON handling, and DAL database execution.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -73,6 +78,8 @@ Setup / Planning
 - DataAccessLayer remains net48-only after SDK-style conversion; net10.0 targeting is deferred until SQL provider handling is reviewed.
 - DataAccessLayer is now part of the net48/net10.0 multi-targeted core chain.
 - Continue dependency-order migration into Services before Factories.
+- Services is now part of the net48/net10.0 multi-targeted core chain.
+- Factories may now be assessed because its major dependencies have been migrated.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -102,6 +109,8 @@ Setup / Planning
 - Services uses Newtonsoft.Json / JsonConvert, so JSON behaviour must be preserved.
 - Services contains worker, file, Hydra/RiskModeler, and workflow-related logic requiring runtime smoke tests.
 - SDK-style default globbing may expose additional previously uncompiled files.
+- Services uses dynamic JSON parsing and Newtonsoft.Json, which require runtime smoke testing.
+- Factories is a composition layer and may expose dependency wiring/configuration assumptions during conversion.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -127,3 +136,4 @@ Setup / Planning
 - Next migration focus should move to Services rather than Factories.
 - Services should initially keep only Newtonsoft.Json 9.0.1 as a PackageReference.
 - Services should remain net48-only during the SDK-style conversion step.
+- The core implementation chain through Services now supports net48 and net10.0 at compile time.
