@@ -65,12 +65,16 @@ Setup / Planning
 - Completed end-to-end smoke testing after core library chain multi-targeting.
 - Smoke testing successfully covered APIs, database access, and Windows Services.
 - Validated the migrated core library chain beyond compile-time build success.
+- Confirmed Amlin.Logging source usage for Serilog, Serilog.Sinks.MSSqlServer, ConfigurationManager, System.Configuration, and System.Web.Http Web API logging helpers.
+- Confirmed Amlin.Logging does not use Azure AppAuthentication, MSAL, ADAL, Microsoft.Data.SqlClient directly, OracleClient, ServiceProcess, or Windows.Forms.
+- Converted Amlin.Logging to SDK-style targeting net48, if build completed successfully.
+- Removed unused Amlin.Logging identity/auth/SQL/Oracle/service package references, if build completed successfully.
+- Built Amlin.Logging and the full solution successfully, if completed.
 
 ## What’s Next
-- Capture the smoke-test scenarios executed, including API, database, and Windows Service flows.
-- Assess Amlin.Logging as the next infrastructure dependency candidate.
-- Inspect Amlin.Logging source usage and dependencies before deciding whether to SDK-style convert, multi-target, or defer.
-- Continue planning higher-risk host/API/UI migration slices after infrastructure dependencies are understood.
+- Smoke-test Amlin.Logging file/console/SQL logging and Web API exception logging behaviour.
+- Assess Amlin.Logging net10.0 feasibility by isolating System.Web.Http-specific classes.
+- Continue higher-risk infrastructure/host migration planning after logging behaviour is validated.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -136,6 +140,9 @@ Setup / Planning
 - Remaining projects such as Amlin.Logging, API hosts, UI host, and Windows service hosts may expose higher-risk System.Web, hosting, logging, or configuration compatibility issues.
 - Smoke testing does not replace full regression testing across all edge cases and environments.
 - Remaining infrastructure and host projects may expose higher-risk logging, hosting, System.Web, configuration, or deployment compatibility issues.
+- Amlin.Logging still uses System.Web.Http Web API logging/exception helper classes, which block direct clean net10.0 targeting.
+- Serilog MSSqlServer sink behaviour must be runtime-tested after package reduction and SDK-style conversion.
+- Logging configuration and connection string behaviour must be validated in host environments.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -168,3 +175,5 @@ Setup / Planning
 - Factories uses conditional System.Configuration handling for multi-targeting.
 - End-to-end smoke test covered APIs, database access, and Windows Services successfully.
 - Current validated migration slice includes the core SDK-style/net48/net10.0 library chain.
+- Amlin.Logging should initially remain net48-only after SDK-style conversion.
+- Microsoft.Data.SqlClient.SNI.targets should not be carried forward unless build evidence requires it.
