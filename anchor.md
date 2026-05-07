@@ -62,14 +62,15 @@ Setup / Planning
 - Built Factories successfully.
 - Built the full solution successfully after Factories multi-targeting.
 - Completed SDK-style conversion and net48/net10.0 multi-targeting for the core library chain: ApiClientLayer, DataTransferObjects, DataAccessLayerInterfaces, ServiceInterfaces, DataAccessLayer, Services, and Factories.
+- Completed end-to-end smoke testing after core library chain multi-targeting.
+- Smoke testing successfully covered APIs, database access, and Windows Services.
+- Validated the migrated core library chain beyond compile-time build success.
 
 ## What’s Next
-- Define runtime smoke-test checklist for the migrated core library chain.
-- Validate Factories ServiceBuilder configuration behaviour.
-- Validate ApiClientLayer JSON request/response behaviour.
-- Validate DataAccessLayer SQL connection, stored procedure, and table-valued parameter behaviour.
-- Validate Services dynamic JSON parsing and key worker/service flows.
-- Assess the next migration area after smoke-test scope is defined, likely Amlin.Logging or host/API projects depending on dependency order.
+- Capture the smoke-test scenarios executed, including API, database, and Windows Service flows.
+- Assess Amlin.Logging as the next infrastructure dependency candidate.
+- Inspect Amlin.Logging source usage and dependencies before deciding whether to SDK-style convert, multi-target, or defer.
+- Continue planning higher-risk host/API/UI migration slices after infrastructure dependencies are understood.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -96,6 +97,8 @@ Setup / Planning
 - Factories remains net48-only after SDK-style conversion until ConfigurationManager handling is confirmed for net10.0.
 - Factories is now part of the net48/net10.0 multi-targeted core chain.
 - Runtime smoke-test definition should occur before moving into higher-risk host/API/UI projects.
+- The core library migration slice is complete after successful build and end-to-end smoke validation.
+- Do not move into host/API/UI migration until the next dependency slice is selected and risks are reviewed.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -131,6 +134,8 @@ Setup / Planning
 - Factories net10.0 targeting may require System.Configuration.ConfigurationManager package and config behaviour validation.
 - Build success does not validate runtime behaviour of configuration loading, service composition, API JSON handling, SQL execution, Dapper table-valued parameters, or worker orchestration.
 - Remaining projects such as Amlin.Logging, API hosts, UI host, and Windows service hosts may expose higher-risk System.Web, hosting, logging, or configuration compatibility issues.
+- Smoke testing does not replace full regression testing across all edge cases and environments.
+- Remaining infrastructure and host projects may expose higher-risk logging, hosting, System.Web, configuration, or deployment compatibility issues.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -161,3 +166,5 @@ Setup / Planning
 - Factories is now eligible for net48/net10.0 multi-targeting assessment.
 - Core application library chain now supports net48 and net10.0 at compile time.
 - Factories uses conditional System.Configuration handling for multi-targeting.
+- End-to-end smoke test covered APIs, database access, and Windows Services successfully.
+- Current validated migration slice includes the core SDK-style/net48/net10.0 library chain.
