@@ -53,10 +53,15 @@ Setup / Planning
 - Built Services successfully.
 - Built Factories successfully.
 - Built the full solution successfully after Services multi-targeting.
+- Converted Factories to SDK-style targeting net48.
+- Removed unused Factories ProjectReference to Amlin.Logging.
+- Removed unused Factories references to EPPlus, ExcelLibrary, Newtonsoft.Json, packages.config, and app.config.
+- Built the full solution successfully after Factories SDK-style conversion.
 
 ## What’s Next
-- Inspect Factories.csproj as the next composition-layer migration candidate.
-- Assess Factories dependencies now that ApiClientLayer, DataTransferObjects, DataAccessLayerInterfaces, ServiceInterfaces, DataAccessLayer, and Services are SDK-style and multi-targeted.
+- Assess Factories multi-targeting to net48 and net10.0.
+- Handle Factories ConfigurationManager usage for net10.0 with System.Configuration.ConfigurationManager if required.
+- Continue assessing remaining high-risk projects, including Amlin.Logging, after the core dependency chain is stable.
 - Begin defining runtime smoke tests for Services worker flows, API client JSON handling, and DAL database execution.
 
 ## Active Decisions
@@ -80,6 +85,8 @@ Setup / Planning
 - Continue dependency-order migration into Services before Factories.
 - Services is now part of the net48/net10.0 multi-targeted core chain.
 - Factories may now be assessed because its major dependencies have been migrated.
+- Amlin.Logging is not required by Factories and has been removed from the Factories dependency graph.
+- Factories remains net48-only after SDK-style conversion until ConfigurationManager handling is confirmed for net10.0.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -111,6 +118,8 @@ Setup / Planning
 - SDK-style default globbing may expose additional previously uncompiled files.
 - Services uses dynamic JSON parsing and Newtonsoft.Json, which require runtime smoke testing.
 - Factories is a composition layer and may expose dependency wiring/configuration assumptions during conversion.
+- Factories still needs runtime validation because ServiceBuilder composes services and reads configuration.
+- Factories net10.0 targeting may require System.Configuration.ConfigurationManager package and config behaviour validation.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -137,3 +146,5 @@ Setup / Planning
 - Services should initially keep only Newtonsoft.Json 9.0.1 as a PackageReference.
 - Services should remain net48-only during the SDK-style conversion step.
 - The core implementation chain through Services now supports net48 and net10.0 at compile time.
+- Removing Amlin.Logging from Factories reduces the immediate migration risk and avoids pulling logging infrastructure into the current slice.
+- Factories is now eligible for net48/net10.0 multi-targeting assessment.
