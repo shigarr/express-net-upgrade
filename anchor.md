@@ -57,12 +57,19 @@ Setup / Planning
 - Removed unused Factories ProjectReference to Amlin.Logging.
 - Removed unused Factories references to EPPlus, ExcelLibrary, Newtonsoft.Json, packages.config, and app.config.
 - Built the full solution successfully after Factories SDK-style conversion.
+- Multi-targeted Factories to net48 and net10.0.
+- Added conditional System.Configuration handling for Factories.
+- Built Factories successfully.
+- Built the full solution successfully after Factories multi-targeting.
+- Completed SDK-style conversion and net48/net10.0 multi-targeting for the core library chain: ApiClientLayer, DataTransferObjects, DataAccessLayerInterfaces, ServiceInterfaces, DataAccessLayer, Services, and Factories.
 
 ## What’s Next
-- Assess Factories multi-targeting to net48 and net10.0.
-- Handle Factories ConfigurationManager usage for net10.0 with System.Configuration.ConfigurationManager if required.
-- Continue assessing remaining high-risk projects, including Amlin.Logging, after the core dependency chain is stable.
-- Begin defining runtime smoke tests for Services worker flows, API client JSON handling, and DAL database execution.
+- Define runtime smoke-test checklist for the migrated core library chain.
+- Validate Factories ServiceBuilder configuration behaviour.
+- Validate ApiClientLayer JSON request/response behaviour.
+- Validate DataAccessLayer SQL connection, stored procedure, and table-valued parameter behaviour.
+- Validate Services dynamic JSON parsing and key worker/service flows.
+- Assess the next migration area after smoke-test scope is defined, likely Amlin.Logging or host/API projects depending on dependency order.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -87,6 +94,8 @@ Setup / Planning
 - Factories may now be assessed because its major dependencies have been migrated.
 - Amlin.Logging is not required by Factories and has been removed from the Factories dependency graph.
 - Factories remains net48-only after SDK-style conversion until ConfigurationManager handling is confirmed for net10.0.
+- Factories is now part of the net48/net10.0 multi-targeted core chain.
+- Runtime smoke-test definition should occur before moving into higher-risk host/API/UI projects.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -120,6 +129,8 @@ Setup / Planning
 - Factories is a composition layer and may expose dependency wiring/configuration assumptions during conversion.
 - Factories still needs runtime validation because ServiceBuilder composes services and reads configuration.
 - Factories net10.0 targeting may require System.Configuration.ConfigurationManager package and config behaviour validation.
+- Build success does not validate runtime behaviour of configuration loading, service composition, API JSON handling, SQL execution, Dapper table-valued parameters, or worker orchestration.
+- Remaining projects such as Amlin.Logging, API hosts, UI host, and Windows service hosts may expose higher-risk System.Web, hosting, logging, or configuration compatibility issues.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -148,3 +159,5 @@ Setup / Planning
 - The core implementation chain through Services now supports net48 and net10.0 at compile time.
 - Removing Amlin.Logging from Factories reduces the immediate migration risk and avoids pulling logging infrastructure into the current slice.
 - Factories is now eligible for net48/net10.0 multi-targeting assessment.
+- Core application library chain now supports net48 and net10.0 at compile time.
+- Factories uses conditional System.Configuration handling for multi-targeting.
