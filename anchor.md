@@ -70,11 +70,17 @@ Setup / Planning
 - Converted Amlin.Logging to SDK-style targeting net48, if build completed successfully.
 - Removed unused Amlin.Logging identity/auth/SQL/Oracle/service package references, if build completed successfully.
 - Built Amlin.Logging and the full solution successfully, if completed.
+- Assessed Amlin.Logging consumers across the solution.
+- Confirmed GUI/ExpressUI uses Amlin.Logging core logging and Web API logging integration via config.UseAmlinLogging().
+- Confirmed ExpressManagerDaemon and HydraJobManagerDaemon use only Amlin.Logging core logging/bootstrap types.
+- Confirmed Amlin.Logging Web API-specific helpers are externally used only by GUI/ExpressUI.
 
 ## What’s Next
-- Smoke-test Amlin.Logging file/console/SQL logging and Web API exception logging behaviour.
-- Assess Amlin.Logging net10.0 feasibility by isolating System.Web.Http-specific classes.
-- Continue higher-risk infrastructure/host migration planning after logging behaviour is validated.
+- Multi-target Amlin.Logging to net48 and net10.0.
+- Keep Web API-specific logging helper classes included only for net48.
+- Exclude HttpConfigurationLoggingExtensions, CorrelationIdHandler, GlobalExceptionHandler, and GlobalExceptionLogger from the net10.0 target.
+- Build Amlin.Logging, GUI/ExpressUI, ExpressManagerDaemon, HydraJobManagerDaemon, and the full solution.
+- Smoke-test GUI Web API logging and worker daemon core logging after Amlin.Logging multi-targeting.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -103,6 +109,9 @@ Setup / Planning
 - Runtime smoke-test definition should occur before moving into higher-risk host/API/UI projects.
 - The core library migration slice is complete after successful build and end-to-end smoke validation.
 - Do not move into host/API/UI migration until the next dependency slice is selected and risks are reviewed.
+- Amlin.Logging net10.0 target will provide core logging only.
+- Amlin.Logging net48 target will retain System.Web.Http Web API logging integration.
+- GUI/ExpressUI remains on the net48 Amlin.Logging path until the UI/API host migration is addressed.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -143,6 +152,9 @@ Setup / Planning
 - Amlin.Logging still uses System.Web.Http Web API logging/exception helper classes, which block direct clean net10.0 targeting.
 - Serilog MSSqlServer sink behaviour must be runtime-tested after package reduction and SDK-style conversion.
 - Logging configuration and connection string behaviour must be validated in host environments.
+- GUI/ExpressUI depends on Amlin.Logging Web API helpers and cannot use a net10.0 Amlin.Logging target without an ASP.NET Core-compatible replacement.
+- Excluding Web API helper classes from Amlin.Logging net10.0 is safe only for consumers that use core logging types.
+- Runtime logging behaviour must be re-smoke-tested after Amlin.Logging multi-targeting.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -177,3 +189,5 @@ Setup / Planning
 - Current validated migration slice includes the core SDK-style/net48/net10.0 library chain.
 - Amlin.Logging should initially remain net48-only after SDK-style conversion.
 - Microsoft.Data.SqlClient.SNI.targets should not be carried forward unless build evidence requires it.
+- Worker daemons use only LoggingBootstrap, LoggingOptions, SerilogLogger, and IAppLogger.
+- The only external UseAmlinLogging() call found is in GUI/ExpressUI Startup.cs.
