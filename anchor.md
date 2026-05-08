@@ -174,7 +174,18 @@ Setup / Planning
 - Built GUI/ExpressUI and the full solution successfully after cleanup if completed.
 - Smoke-tested GUI/ExpressUI startup, representative page/API behaviour, Excel export, SignalR path where practical, and logging if completed.
 
+- Assessed UnitTests as a small legacy net48 NUnit 2 test project.
+- Converted UnitTests to SDK-style targeting net48, if build completed successfully.
+- Preserved NUnit 2.6.4 for existing test discovery/execution behaviour, if retained.
+- Preserved UnitTests app.config for EF configuration and WarpDataEntities connection string.
+- Removed unused UnitTests references to EPPlus, Newtonsoft.Json, and packages.config, if build completed successfully.
+- Built UnitTests successfully, if completed.
+- Built the full solution successfully after UnitTests conversion, if completed.
+
 ## What’s Next
+- Run UnitTests using a compatible NUnit 2 runner if available.
+- Assess remaining stress/support projects after UnitTests.
+- Continue avoiding framework upgrades for test projects until runtime/test-runner compatibility is confirmed.
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
 - Continue build-only validation labelling for non-integrated host/daemon projects.
 - Identify the next migration slice only after confirming the remaining project inventory.
@@ -279,6 +290,9 @@ Setup / Planning
 - GUI/ExpressUI dependency cleanup is limited to source-proven unused packages only.
 
 ## Risks
+- UnitTests use legacy NUnit 2.6.4, so test discovery depends on compatible runner support.
+- UnitTests app.config contains EF configuration and a WarpDataEntities connection string that may be required for integration tests.
+- UnitTests reference WorkflowManager.API, which remains a legacy net48 System.Web/Web API project.
 - System.Web dependencies (unknown extent)
 - Auth model compatibility
 - Hidden coupling across services
@@ -368,6 +382,8 @@ Setup / Planning
 - Api.Express.Utility removal must be checked against solution references, build pipelines, deployment scripts, and release packaging before it is removed from the solution.
 
 ## Notes
+- UnitTests source uses NUnit, ServiceBuilder, WorkflowManager, Factories, and DataTransferObjects.
+- UnitTests has no source usage of EPPlus or Newtonsoft.Json.
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
 - Source code and project files will be provided manually by the user
