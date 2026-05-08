@@ -105,9 +105,16 @@ Setup / Planning
 - Built the full solution successfully after HydraJobManagerDaemon conversion.
 - Smoke-tested HydraJobManagerDaemon startup, logging, and Windows Service behaviour successfully.
 - Completed SDK-style net48 conversion and smoke testing for the HydraJobManager host/daemon pair.
+- Converted FileCopierHost to SDK-style targeting net48.
+- Removed unused FileCopierHost references to EPPlus, Newtonsoft.Json, and packages.config.
+- Preserved FileCopierHost App.config and Settings.settings / Settings.Designer.cs.
+- Built FileCopierHost successfully.
+- Built the full solution successfully after FileCopierHost conversion.
 
 ## What’s Next
-- Assess FileCopierDaemon and FileCopierHost for SDK-style net48 conversion.
+- Assess and convert FileCopierDaemon to SDK-style targeting net48.
+- Preserve FileCopierDaemon Windows Service behaviour, ProjectInstaller, resources, App.config, and installer metadata.
+- Record FileCopierDaemon validation as build-only if runtime testing remains unavailable.
 - Continue applying the one-by-one SDK-style net48 conversion pattern to remaining Windows Service projects.
 - Preserve service/config/resource/installer behaviour and remove only source-proven unused dependencies.
 - Build project and full solution, recording runtime validation as pending/unavailable.
@@ -203,6 +210,8 @@ Setup / Planning
 - HydraJobManagerDaemon has higher migration risk due to Windows Service installer/resource/manifest/logging behaviour.
 - FileCopierDaemon, FileCopierHost, and other non-integrated daemon/host projects cannot currently be runtime smoke-tested through the Express application.
 - Build-only validation does not prove Windows Service install/start behaviour, file operations, configuration transforms, or runtime environment behaviour.
+- FileCopierHost runtime behaviour is not validated because it is not integrated into the Express application.
+- Build-only validation does not prove file-copy host startup, settings resolution, or operational behaviour.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -246,3 +255,5 @@ Setup / Planning
 - HydraJobManagerHost is SDK-style net48 and smoke-tested successfully.
 - HydraJobManagerHost and HydraJobManagerDaemon are both SDK-style net48 and smoke-tested successfully.
 - For non-integrated daemon/host projects, conversion success must be labelled as build-validated only, not runtime-validated.
+- FileCopierHost is SDK-style net48 and build-validated only.
+- Non-integrated daemon/host projects should remain net48 and should not be multi-targeted until runtime validation is available.
