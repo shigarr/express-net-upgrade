@@ -92,11 +92,18 @@ Setup / Planning
 - Built the full solution successfully after ExpressManagerDaemon conversion.
 - Smoke-tested ExpressManagerDaemon startup, logging, and Windows Service behaviour successfully.
 - Completed SDK-style net48 conversion and smoke testing for the ExpressManager host/daemon pair.
+- Converted HydraJobManagerHost to SDK-style targeting net48.
+- Removed unused HydraJobManagerHost references to EPPlus, Newtonsoft.Json, System.Web.Extensions, and packages.config.
+- Preserved HydraJobManagerHost App.config and environment transform files.
+- Built HydraJobManagerHost successfully.
+- Built the full solution successfully after HydraJobManagerHost conversion.
+- Smoke-tested HydraJobManagerHost startup/config behaviour successfully.
 
 ## What’s Next
-- Assess HydraJobManagerDaemon and HydraJobManagerHost as the next Windows Service pair.
-- Apply the same one-by-one SDK-style net48 conversion pattern.
-- Continue preserving Windows Service installer, settings, config transform, manifest, and runtime behaviour.
+- Assess and convert HydraJobManagerDaemon to SDK-style targeting net48.
+- Preserve HydraJobManagerDaemon Windows Service behaviour, ProjectInstaller, embedded resources, manifest/PFX, settings, App.config, and transform files.
+- Remove only source-proven unused HydraJobManagerDaemon packages/references.
+- Build and smoke-test HydraJobManagerDaemon service startup/logging/run behaviour.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -182,6 +189,7 @@ Setup / Planning
 - ExpressManagerDaemon has higher migration risk due to Windows Service installer/resource/manifest behaviour.
 - Environment-specific App.config transform behaviour must still be validated through deployment pipelines.
 - Other Windows Service pairs may contain different dependencies and must be assessed individually.
+- HydraJobManagerDaemon has higher migration risk due to Windows Service installer/resource/manifest/logging behaviour.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -222,3 +230,4 @@ Setup / Planning
 - GUI/ExpressUI remains on the net48 Amlin.Logging path while it uses System.Web.Http/Web API.
 - ExpressManagerHost application behaviour was smoke-tested successfully after SDK-style conversion.
 - ExpressManagerHost and ExpressManagerDaemon are both SDK-style net48 and smoke-tested successfully.
+- HydraJobManagerHost is SDK-style net48 and smoke-tested successfully.
