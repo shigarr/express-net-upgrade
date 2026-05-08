@@ -182,9 +182,18 @@ Setup / Planning
 - Built UnitTests successfully, if completed.
 - Built the full solution successfully after UnitTests conversion, if completed.
 
+- Confirmed stress testing projects are already SDK-style:
+  - StressTesting\Express.ST.DataLayer
+  - StressTesting\Express.ST.DLM
+  - StressTesting\Express.ST.Geocode
+- Confirmed stress testing projects currently target net5.0.
+
 ## What’s Next
 - Run UnitTests using a compatible NUnit 2 runner if available.
 - Assess remaining stress/support projects after UnitTests.
+- Defer stress testing project retargeting until a separate support/test tooling upgrade decision is made.
+- Review remaining active solution projects for any legacy csproj or packages.config usage.
+- Prepare a final migration status summary for the completed slice.
 - Continue avoiding framework upgrades for test projects until runtime/test-runner compatibility is confirmed.
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
 - Continue build-only validation labelling for non-integrated host/daemon projects.
@@ -289,10 +298,14 @@ Setup / Planning
 - Microsoft.AspNet.SignalR is retained in GUI/ExpressUI because it is source-used in Startup.cs.
 - GUI/ExpressUI dependency cleanup is limited to source-proven unused packages only.
 
+- Stress testing projects will not be changed in the current minimal-change production migration slice.
+
 ## Risks
 - UnitTests use legacy NUnit 2.6.4, so test discovery depends on compatible runner support.
 - UnitTests app.config contains EF configuration and a WarpDataEntities connection string that may be required for integration tests.
 - UnitTests reference WorkflowManager.API, which remains a legacy net48 System.Web/Web API project.
+- Stress testing projects target net5.0, which is out of support.
+- Retargeting stress projects may affect stress-test behaviour and should be handled separately from the production migration slice.
 - System.Web dependencies (unknown extent)
 - Auth model compatibility
 - Hidden coupling across services
@@ -437,6 +450,7 @@ Setup / Planning
 - FileDeleterHost is SDK-style net48 and build-validated only.
 - FileDeleterHost App.config still contains System.Data.SqlClient provider names in connection strings; these were intentionally preserved during SDK-style conversion.
 
+- Stress testing projects are SDK-style already and are deferred rather than migrated now.
 - Revised WorkflowManager order is WorkflowManager.DAL, WorkflowManager.DAL.EF, WorkflowManager.Domain, then WorkflowManager.API.
 - WorkflowManager.Domain should preserve EF6/App.config behaviour when eventually converted to SDK-style net48.
 - SQL .sqlproj projects are not C# migration targets and should be handled separately.
