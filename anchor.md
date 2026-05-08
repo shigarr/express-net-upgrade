@@ -133,6 +133,9 @@ Setup / Planning
 - Built FileDeleterHost successfully.
 - Built the full solution successfully after FileDeleterHost conversion.
 
+- Completed remaining migration inventory across the active solution and repository-visible project files.
+- Identified remaining legacy areas: WorkflowManager projects, GUI/ExpressUI, Test projects, WebUtility_IntegrationAdapter / Api.Express.Utility, and some stress/support projects.
+- Confirmed most core libraries, infrastructure logging, workers, and visible Windows service/host projects in the active migration path are now SDK-style.
 ## What’s Next
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
 - Continue build-only validation labelling for non-integrated host/daemon projects.
@@ -144,6 +147,11 @@ Setup / Planning
 - Preserve service/config/resource/installer behaviour and remove only source-proven unused dependencies.
 - Build project and full solution, recording runtime validation as pending/unavailable.
 
+- Reconcile inventory findings for projects visible on disk but not confirmed in the active solution.
+- Confirm whether SrisWorkerDaemon.csproj is referenced by the active solution before treating it as in scope.
+- Confirm whether FileDeleterHost packages.config is still physically present or referenced after SDK-style conversion.
+- Begin WorkflowManager library slice assessment, starting with WorkflowManager.Domain.
+- Defer GUI/ExpressUI and WorkflowManager.API host migration until lower-level WorkflowManager libraries are assessed.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
@@ -186,6 +194,10 @@ Setup / Planning
 - SrisWorkerDaemon is not visible in the current solution scope and will be ignored for now.
 - Only projects present in the current solution scope will be migrated.
 
+- Only projects confirmed in the active solution or deployment scope will be migrated.
+- SrisWorkerDaemon is filesystem-visible but not active-solution-confirmed, so it remains deferred unless later proven in scope.
+- Do not start GUI/ExpressUI or WorkflowManager.API migration yet because System.Web, Web API, OWIN, and web.config make them higher-risk host migrations.
+- Treat WorkflowManager libraries as the next logical migration slice.
 ## Risks
 - System.Web dependencies (unknown extent)
 - Auth model compatibility
@@ -251,6 +263,10 @@ Setup / Planning
 - FileDeleterHost runtime behaviour is not validated because it is not integrated into the Express application.
 - Build-only validation does not prove file deletion host startup, settings resolution, connection string usage, or operational behaviour.
 
+- Repository filesystem inventory may include projects that are not part of the active solution or deployment scope.
+- Some migrated projects may still have physical packages.config files even if no longer referenced by SDK-style csproj files.
+- WorkflowManager projects may expose EF6, Dapper, System.Configuration, packages.config, and legacy data-access compatibility risks.
+- GUI/ExpressUI and WorkflowManager.API remain high-risk due to System.Web, Web API, OWIN, and web.config dependencies.
 ## Notes
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
@@ -304,3 +320,6 @@ Setup / Planning
 - Workers is not yet multi-targeted because JavaScriptSerializer usage requires further review.
 - FileDeleterHost is SDK-style net48 and build-validated only.
 - FileDeleterHost App.config still contains System.Data.SqlClient provider names in connection strings; these were intentionally preserved during SDK-style conversion.
+
+- Recommended next migration slice is WorkflowManager.Domain, then WorkflowManager.DAL, then WorkflowManager.DAL.EF, before WorkflowManager.API.
+- SQL .sqlproj projects are not C# migration targets and should be handled separately.
