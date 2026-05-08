@@ -167,6 +167,12 @@ Setup / Planning
 - Assessed GUI/ExpressUI at summary level.
 - Confirmed GUI/ExpressUI is a legacy ASP.NET Web Application targeting net48.
 - Confirmed GUI/ExpressUI uses System.Web, System.Web.Http, MVC/Web API controllers, OWIN startup, Castle Windsor, Dapper, System.Data.SqlClient, Newtonsoft.Json, EPPlus/OfficeOpenXml, ExcelLibrary, System.Configuration, Amlin.Logging, WorkflowManager integration, AngularJS-style client assets, Web.config transforms, and publish profiles.
+- Completed focused source-usage validation for GUI/ExpressUI dependency cleanup.
+- Confirmed GUI/ExpressUI uses Microsoft.AspNet.SignalR in Startup.cs and retained SignalR dependencies.
+- Confirmed GUI/ExpressUI does not use Application Insights, Microsoft.AspNet.Identity, unused social auth providers, Swashbuckle, Unity/Autofac, or EntityFramework in source.
+- Removed source-proven unused GUI/ExpressUI dependencies if cleanup completed successfully.
+- Built GUI/ExpressUI and the full solution successfully after cleanup if completed.
+- Smoke-tested GUI/ExpressUI startup, representative page/API behaviour, Excel export, SignalR path where practical, and logging if completed.
 
 ## What’s Next
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
@@ -197,9 +203,9 @@ Setup / Planning
 - Decide whether to apply the same safe dependency-cleanup approach to GUI/ExpressUI.
 - Consider preparing a migration status report or commit for the completed core/library/host/WorkflowManager slice.
 - Defer SDK-style conversion and net10.0 targeting for WorkflowManager.API until a separate ASP.NET Core/System.Web migration strategy is defined.
-- Do not attempt SDK-style conversion or net10.0 targeting for GUI/ExpressUI in the current slice.
-- Perform focused source-usage validation for potentially removable GUI dependencies: Application Insights, Identity, social auth providers, SignalR, Swashbuckle, Unity/Autofac, and EntityFramework.
-- Apply only source-proven safe dependency cleanup while keeping GUI/ExpressUI as legacy net48.
+- Keep GUI/ExpressUI as legacy net48.
+- Defer SDK-style conversion and net10.0 migration for GUI/ExpressUI until a separate ASP.NET Core/System.Web strategy is defined.
+- Review remaining test/support projects after GUI cleanup is committed.
 - Preserve Web.config, Web.config transforms, publish profiles, Global.asax, OWIN startup, Castle Windsor wiring, MVC/Web API controllers, and client assets.
 
 ## Active Decisions
@@ -265,6 +271,8 @@ Setup / Planning
 - GUI/ExpressUI remains legacy net48.
 - GUI/ExpressUI is treated as a high-risk host/UI/API project, not a simple SDK-style conversion candidate.
 - GUI/ExpressUI migration to net10.0 requires a separate ASP.NET Core/UI hosting strategy and is deferred.
+- Microsoft.AspNet.SignalR is retained in GUI/ExpressUI because it is source-used in Startup.cs.
+- GUI/ExpressUI dependency cleanup is limited to source-proven unused packages only.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -351,6 +359,8 @@ Setup / Planning
 - GUI/ExpressUI is blocked from direct net10.0 migration by System.Web, System.Web.Http, MVC/Web API, OWIN, Web.config, Global.asax, and classic ASP.NET hosting.
 - GUI/ExpressUI has a large runtime surface including API controllers, repositories, SQL access, Excel export, logging, configuration, DI, and AngularJS-style client assets.
 - Dependency cleanup must be source-proven and smoke-tested because many legacy packages are actively used.
+- GUI/ExpressUI remains tied to System.Web, Web API, MVC, OWIN, Web.config, Global.asax, Castle Windsor, SignalR, and classic ASP.NET hosting.
+- Removing unused packages from GUI/ExpressUI still requires smoke testing because Web.config and startup behaviour may depend on package side effects.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -419,3 +429,5 @@ Setup / Planning
 - WebGrease was intentionally retained because System.Web.Optimization / BundleConfig remain present.
 - Recommended immediate action for GUI/ExpressUI is safe dependency cleanup only, not project format conversion.
 - Potential cleanup candidates require validation: Application Insights, Identity/social auth, SignalR, Swashbuckle, Unity/Autofac, and EntityFramework.
+- GUI/ExpressUI remains a legacy net48 project after cleanup.
+- SignalR is retained due to Startup.cs usage.
