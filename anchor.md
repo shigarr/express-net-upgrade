@@ -79,11 +79,18 @@ Setup / Planning
 - Excluded Amlin.Logging WebApi folder from the net10.0 target.
 - Preserved Amlin.Logging core logging types for net10.0 consumers.
 - Built the full solution successfully after Amlin.Logging multi-targeting.
+- Converted ExpressManagerHost to SDK-style targeting net48.
+- Removed unused ExpressManagerHost references to EPPlus, System.Web.Extensions, and packages.config.
+- Retained ExpressManagerHost App.config and environment transform files.
+- Built ExpressManagerHost successfully.
+- Built the full solution successfully after ExpressManagerHost conversion.
+- Smoke-tested ExpressManagerHost startup/config behaviour successfully.
 
 ## What’s Next
-- Smoke-test Amlin.Logging again after multi-targeting, including file, console, SQL, GUI Web API exception logging, and worker daemon logging.
-- Decide next migration slice after logging smoke-test validation.
-- Assess API host or Windows Service host projects as the next higher-risk migration area.
+- Assess and convert ExpressManagerDaemon to SDK-style targeting net48.
+- Preserve ExpressManagerDaemon Windows Service behaviour, ProjectInstaller, embedded resources, manifest/signing artefacts, App.config, and transform files.
+- Remove only source-proven unused ExpressManagerDaemon packages/references.
+- Build and smoke-test ExpressManagerDaemon service startup/install/run behaviour.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -116,6 +123,8 @@ Setup / Planning
 - Amlin.Logging net48 target will retain System.Web.Http Web API logging integration.
 - GUI/ExpressUI remains on the net48 Amlin.Logging path until the UI/API host migration is addressed.
 - ASP.NET Core-compatible logging/exception middleware is deferred until API host migration.
+- Windows Service host projects are being migrated one by one, starting with SDK-style net48 conversion before any net10.0 targeting.
+- ExpressManagerHost remains net48 after SDK-style conversion.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -161,6 +170,8 @@ Setup / Planning
 - Runtime logging behaviour must be re-smoke-tested after Amlin.Logging multi-targeting.
 - Amlin.Logging net10.0 does not provide Web API helper classes; future API host migration will need an ASP.NET Core-compatible replacement.
 - Runtime logging behaviour must be revalidated after Amlin.Logging multi-targeting.
+- Config transform behaviour must be monitored across non-local environments.
+- ExpressManagerDaemon has higher migration risk due to Windows Service installer/resource/manifest behaviour.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -199,3 +210,4 @@ Setup / Planning
 - The only external UseAmlinLogging() call found is in GUI/ExpressUI Startup.cs.
 - Amlin.Logging is now available to net10.0 consumers for core logging scenarios.
 - GUI/ExpressUI remains on the net48 Amlin.Logging path while it uses System.Web.Http/Web API.
+- ExpressManagerHost application behaviour was smoke-tested successfully after SDK-style conversion.
