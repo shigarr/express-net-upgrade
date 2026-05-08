@@ -136,6 +136,10 @@ Setup / Planning
 - Completed remaining migration inventory across the active solution and repository-visible project files.
 - Identified remaining legacy areas: WorkflowManager projects, GUI/ExpressUI, Test projects, WebUtility_IntegrationAdapter / Api.Express.Utility, and some stress/support projects.
 - Confirmed most core libraries, infrastructure logging, workers, and visible Windows service/host projects in the active migration path are now SDK-style.
+- Assessed WorkflowManager.Domain at summary level.
+- Confirmed WorkflowManager.Domain is a legacy net48 project using packages.config and App.config.
+- Confirmed WorkflowManager.Domain references WorkflowManager.DAL and WorkflowManager.DAL.EF.
+- Confirmed WorkflowManager.Domain has EF6/App.config coupling and should not be the first WorkflowManager project converted.
 ## What’s Next
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
 - Continue build-only validation labelling for non-integrated host/daemon projects.
@@ -150,7 +154,9 @@ Setup / Planning
 - Reconcile inventory findings for projects visible on disk but not confirmed in the active solution.
 - Confirm whether SrisWorkerDaemon.csproj is referenced by the active solution before treating it as in scope.
 - Confirm whether FileDeleterHost packages.config is still physically present or referenced after SDK-style conversion.
-- Begin WorkflowManager library slice assessment, starting with WorkflowManager.Domain.
+- Assess WorkflowManager.DAL before WorkflowManager.Domain.
+- Assess WorkflowManager.DAL.EF before WorkflowManager.Domain.
+- Reorder WorkflowManager library slice to WorkflowManager.DAL, WorkflowManager.DAL.EF, WorkflowManager.Domain, then WorkflowManager.API.
 - Defer GUI/ExpressUI and WorkflowManager.API host migration until lower-level WorkflowManager libraries are assessed.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -198,6 +204,9 @@ Setup / Planning
 - SrisWorkerDaemon is filesystem-visible but not active-solution-confirmed, so it remains deferred unless later proven in scope.
 - Do not start GUI/ExpressUI or WorkflowManager.API migration yet because System.Web, Web API, OWIN, and web.config make them higher-risk host migrations.
 - Treat WorkflowManager libraries as the next logical migration slice.
+- Do not start WorkflowManager.Domain conversion until its DAL dependencies are assessed.
+- Do not attempt net10.0 targeting for WorkflowManager EF6-coupled projects during the initial conversion step.
+- Initial WorkflowManager conversions should target SDK-style net48 only.
 ## Risks
 - System.Web dependencies (unknown extent)
 - Auth model compatibility
@@ -266,6 +275,9 @@ Setup / Planning
 - Repository filesystem inventory may include projects that are not part of the active solution or deployment scope.
 - Some migrated projects may still have physical packages.config files even if no longer referenced by SDK-style csproj files.
 - WorkflowManager projects may expose EF6, Dapper, System.Configuration, packages.config, and legacy data-access compatibility risks.
+- WorkflowManager.Domain depends on DAL implementation projects, so migration order differs from the nominal project name.
+- WorkflowManager.Domain has EF6 6.1.3 and entityFramework App.config configuration, which constrain net10.0 migration.
+- WorkflowManager package references such as EPPlus, ExcelLibrary, and Newtonsoft.Json require source usage validation before cleanup.
 - GUI/ExpressUI and WorkflowManager.API remain high-risk due to System.Web, Web API, OWIN, and web.config dependencies.
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -321,5 +333,6 @@ Setup / Planning
 - FileDeleterHost is SDK-style net48 and build-validated only.
 - FileDeleterHost App.config still contains System.Data.SqlClient provider names in connection strings; these were intentionally preserved during SDK-style conversion.
 
-- Recommended next migration slice is WorkflowManager.Domain, then WorkflowManager.DAL, then WorkflowManager.DAL.EF, before WorkflowManager.API.
+- Revised WorkflowManager order is WorkflowManager.DAL, WorkflowManager.DAL.EF, WorkflowManager.Domain, then WorkflowManager.API.
+- WorkflowManager.Domain should preserve EF6/App.config behaviour when eventually converted to SDK-style net48.
 - SQL .sqlproj projects are not C# migration targets and should be handled separately.
