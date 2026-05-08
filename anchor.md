@@ -85,12 +85,18 @@ Setup / Planning
 - Built ExpressManagerHost successfully.
 - Built the full solution successfully after ExpressManagerHost conversion.
 - Smoke-tested ExpressManagerHost startup/config behaviour successfully.
+- Converted ExpressManagerDaemon to SDK-style targeting net48.
+- Removed unused ExpressManagerDaemon EPPlus reference and packages.config.
+- Preserved ExpressManagerDaemon settings, resources, ProjectInstaller, manifest/PFX, App.config, and environment transform files.
+- Built ExpressManagerDaemon successfully.
+- Built the full solution successfully after ExpressManagerDaemon conversion.
+- Smoke-tested ExpressManagerDaemon startup, logging, and Windows Service behaviour successfully.
+- Completed SDK-style net48 conversion and smoke testing for the ExpressManager host/daemon pair.
 
 ## What’s Next
-- Assess and convert ExpressManagerDaemon to SDK-style targeting net48.
-- Preserve ExpressManagerDaemon Windows Service behaviour, ProjectInstaller, embedded resources, manifest/signing artefacts, App.config, and transform files.
-- Remove only source-proven unused ExpressManagerDaemon packages/references.
-- Build and smoke-test ExpressManagerDaemon service startup/install/run behaviour.
+- Assess HydraJobManagerDaemon and HydraJobManagerHost as the next Windows Service pair.
+- Apply the same one-by-one SDK-style net48 conversion pattern.
+- Continue preserving Windows Service installer, settings, config transform, manifest, and runtime behaviour.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -125,6 +131,8 @@ Setup / Planning
 - ASP.NET Core-compatible logging/exception middleware is deferred until API host migration.
 - Windows Service host projects are being migrated one by one, starting with SDK-style net48 conversion before any net10.0 targeting.
 - ExpressManagerHost remains net48 after SDK-style conversion.
+- Windows Service host/daemon projects remain net48 during initial SDK-style conversion.
+- Windows Service pairs are assessed together but migrated one project at a time.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -172,6 +180,8 @@ Setup / Planning
 - Runtime logging behaviour must be revalidated after Amlin.Logging multi-targeting.
 - Config transform behaviour must be monitored across non-local environments.
 - ExpressManagerDaemon has higher migration risk due to Windows Service installer/resource/manifest behaviour.
+- Environment-specific App.config transform behaviour must still be validated through deployment pipelines.
+- Other Windows Service pairs may contain different dependencies and must be assessed individually.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -211,3 +221,4 @@ Setup / Planning
 - Amlin.Logging is now available to net10.0 consumers for core logging scenarios.
 - GUI/ExpressUI remains on the net48 Amlin.Logging path while it uses System.Web.Http/Web API.
 - ExpressManagerHost application behaviour was smoke-tested successfully after SDK-style conversion.
+- ExpressManagerHost and ExpressManagerDaemon are both SDK-style net48 and smoke-tested successfully.
