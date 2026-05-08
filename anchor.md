@@ -110,11 +110,17 @@ Setup / Planning
 - Preserved FileCopierHost App.config and Settings.settings / Settings.Designer.cs.
 - Built FileCopierHost successfully.
 - Built the full solution successfully after FileCopierHost conversion.
+- Converted FileCopierDaemon to SDK-style targeting net48.
+- Removed unused FileCopierDaemon EPPlus reference and packages.config.
+- Preserved FileCopierDaemon ServiceBase, ProjectInstaller, designer/resource files, and App.config.
+- Built FileCopierDaemon successfully.
+- Built the full solution successfully after FileCopierDaemon conversion.
+- Completed SDK-style net48 conversion for the FileCopierHost/FileCopierDaemon pair with build-only validation.
 
 ## What’s Next
-- Assess and convert FileCopierDaemon to SDK-style targeting net48.
-- Preserve FileCopierDaemon Windows Service behaviour, ProjectInstaller, resources, App.config, and installer metadata.
-- Record FileCopierDaemon validation as build-only if runtime testing remains unavailable.
+- Assess the next remaining non-integrated daemon/host project pair.
+- Continue SDK-style net48 conversion only where dependencies are source-proven and build validation is sufficient.
+- Keep runtime validation marked as pending/unavailable for non-integrated daemon/host projects.
 - Continue applying the one-by-one SDK-style net48 conversion pattern to remaining Windows Service projects.
 - Preserve service/config/resource/installer behaviour and remove only source-proven unused dependencies.
 - Build project and full solution, recording runtime validation as pending/unavailable.
@@ -212,6 +218,8 @@ Setup / Planning
 - Build-only validation does not prove Windows Service install/start behaviour, file operations, configuration transforms, or runtime environment behaviour.
 - FileCopierHost runtime behaviour is not validated because it is not integrated into the Express application.
 - Build-only validation does not prove file-copy host startup, settings resolution, or operational behaviour.
+- FileCopierDaemon runtime behaviour is not validated because it is not integrated into the Express application.
+- Build-only validation does not prove Windows Service install/start behaviour, file-copy behaviour, settings/config resolution, or operational paths.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -256,4 +264,5 @@ Setup / Planning
 - HydraJobManagerHost and HydraJobManagerDaemon are both SDK-style net48 and smoke-tested successfully.
 - For non-integrated daemon/host projects, conversion success must be labelled as build-validated only, not runtime-validated.
 - FileCopierHost is SDK-style net48 and build-validated only.
+- FileCopierHost and FileCopierDaemon are SDK-style net48 and build-validated only.
 - Non-integrated daemon/host projects should remain net48 and should not be multi-targeted until runtime validation is available.
