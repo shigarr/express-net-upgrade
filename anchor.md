@@ -121,6 +121,12 @@ Setup / Planning
 - Preserved RatCatManagerHost App.config and Settings.settings / Settings.Designer.cs.
 - Built RatCatManagerHost successfully.
 - Built the full solution successfully after RatCatManagerHost conversion.
+- Confirmed Workers uses Newtonsoft.Json / JsonConvert and JavaScriptSerializer in HydraJobWorker.cs.
+- Confirmed Workers does not use EPPlus, ExcelLibrary, ConfigurationManager, Settings, direct SQL client APIs, Microsoft.CSharp, or dynamic.
+- Converted Workers to SDK-style targeting net48, if build completed successfully.
+- Removed unused Workers EPPlus reference, packages.config, and app.config, if build completed successfully.
+- Built Workers and dependent host/daemon projects successfully, if completed.
+- Built the full solution successfully after Workers conversion, if completed.
 
 ## What’s Next
 - Assess and convert RatCatManagerDaemon to SDK-style targeting net48.
@@ -128,8 +134,9 @@ Setup / Planning
 - Record RatCatManagerDaemon validation as build-only if runtime testing is unavailable.
 - Continue SDK-style net48 conversion only where dependencies are source-proven and build validation is sufficient.
 - Keep runtime validation marked as pending/unavailable for non-integrated daemon/host projects.
-- Assess Workers.csproj as the next shared worker library candidate.
-- Assess FileDeleterHost after Workers.csproj.
+- Assess Workers net48/net10.0 multi-targeting after SDK-style net48 conversion is stable.
+- Review HydraJobWorker.cs JavaScriptSerializer usage as a future net10.0 compatibility blocker.
+- Continue to FileDeleterHost after Workers is build-validated.
 - Revisit SrisWorkerDaemon only if it is later found in another solution or deployment scope.
 - Continue applying the one-by-one SDK-style net48 conversion pattern to remaining Windows Service projects.
 - Preserve service/config/resource/installer behaviour and remove only source-proven unused dependencies.
@@ -236,6 +243,9 @@ Setup / Planning
 - Build-only validation does not prove Windows Service install/start behaviour, file-copy behaviour, settings/config resolution, or operational paths.
 - solution-structure.md may be stale because it lists SrisWorkerDaemon, but the project is not visible in the current solution.
 - If SrisWorkerDaemon exists outside the current solution, it may require separate migration assessment later.
+- Workers uses JavaScriptSerializer, which requires System.Web.Extensions on net48 and may block direct net10.0 targeting.
+- Workers JSON behaviour must be preserved because HydraJobWorker.cs uses both JsonConvert and JavaScriptSerializer.
+- Some worker paths remain build-validated only if not covered by Express smoke testing.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -284,3 +294,5 @@ Setup / Planning
 - RatCatManagerHost is SDK-style net48 and build-validated only unless a separate runtime test is performed.
 - Non-integrated daemon/host projects should remain net48 and should not be multi-targeted until runtime validation is available.
 - SrisWorkerDaemon is currently out of scope because it is not visible in the active solution.
+- Workers should initially keep Newtonsoft.Json 9.0.1 and System.Web.Extensions during SDK-style net48 conversion.
+- Workers should not be multi-targeted until JavaScriptSerializer usage is reviewed.
