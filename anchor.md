@@ -127,14 +127,16 @@ Setup / Planning
 - Removed unused Workers EPPlus reference, packages.config, and app.config.
 - Built Workers and dependent host/daemon projects successfully.
 - Built the full solution successfully after Workers conversion.
+- Converted FileDeleterHost to SDK-style targeting net48.
+- Removed unused FileDeleterHost references to EPPlus, ExcelLibrary, Newtonsoft.Json, and packages.config.
+- Preserved FileDeleterHost App.config, connection strings, Settings.settings, and Settings.Designer.cs.
+- Built FileDeleterHost successfully.
+- Built the full solution successfully after FileDeleterHost conversion.
 
 ## What’s Next
-- Assess and convert RatCatManagerDaemon to SDK-style targeting net48.
-- Preserve RatCatManagerDaemon Windows Service behaviour, ProjectInstaller, resources, settings, and App.config.
-- Record RatCatManagerDaemon validation as build-only if runtime testing is unavailable.
-- Continue SDK-style net48 conversion only where dependencies are source-proven and build validation is sufficient.
-- Keep runtime validation marked as pending/unavailable for non-integrated daemon/host projects.
-- Assess FileDeleterHost as the next remaining visible host project.
+- Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
+- Continue build-only validation labelling for non-integrated host/daemon projects.
+- Identify the next migration slice only after confirming the remaining project inventory.
 - Assess Workers net48/net10.0 multi-targeting later after JavaScriptSerializer usage is reviewed.
 - Review HydraJobWorker.cs JavaScriptSerializer usage as a future net10.0 compatibility blocker.
 - Revisit SrisWorkerDaemon only if it is later found in another solution or deployment scope.
@@ -246,6 +248,8 @@ Setup / Planning
 - Workers uses JavaScriptSerializer, which requires System.Web.Extensions on net48 and may block direct net10.0 targeting.
 - Workers JSON behaviour must be preserved because HydraJobWorker.cs uses both JsonConvert and JavaScriptSerializer.
 - Some worker paths remain build-validated only if not covered by Express smoke testing.
+- FileDeleterHost runtime behaviour is not validated because it is not integrated into the Express application.
+- Build-only validation does not prove file deletion host startup, settings resolution, connection string usage, or operational behaviour.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -298,3 +302,5 @@ Setup / Planning
 - Workers should not be multi-targeted until JavaScriptSerializer usage is reviewed.
 - Workers is SDK-style net48 and build-validated.
 - Workers is not yet multi-targeted because JavaScriptSerializer usage requires further review.
+- FileDeleterHost is SDK-style net48 and build-validated only.
+- FileDeleterHost App.config still contains System.Data.SqlClient provider names in connection strings; these were intentionally preserved during SDK-style conversion.
