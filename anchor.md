@@ -153,6 +153,11 @@ Setup / Planning
 - Built WorkflowManager.DAL.EF successfully.
 - Built WorkflowManager.DAL, WorkflowManager.Domain, WorkflowManager.API where practical, and the full solution successfully after WorkflowManager.DAL.EF conversion.
 - Smoke-tested WorkflowManager.DAL.EF successfully.
+- Converted WorkflowManager.Domain to SDK-style targeting net48.
+- Preserved WorkflowManager.Domain System.Configuration usage and App.config.
+- Removed unused WorkflowManager.Domain package references and packages.config.
+- Built WorkflowManager.Domain successfully.
+- Built WorkflowManager.API where practical and the full solution successfully after WorkflowManager.Domain conversion.
 ## What’s Next
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
 - Continue build-only validation labelling for non-integrated host/daemon projects.
@@ -174,10 +179,11 @@ Setup / Planning
 - Assess WorkflowManager.DAL.EF for SDK-style net48 conversion.
 - Preserve EF6 behaviour and App.config/entityFramework provider configuration during WorkflowManager.DAL.EF conversion.
 - Defer net10.0 targeting for WorkflowManager EF-coupled projects until EF6 strategy is explicitly decided.
-- Convert WorkflowManager.Domain to SDK-style targeting net48.
-- Preserve WorkflowManager.Domain EF6/App.config behaviour.
-- Validate WorkflowManager.Domain build and smoke-test representative WorkflowManager domain/service flows.
 - Continue to defer net10.0 targeting for WorkflowManager EF6-coupled projects until the EF strategy is explicitly decided.
+- Assess WorkflowManager.API as the next WorkflowManager project.
+- Treat WorkflowManager.API as a higher-risk host/API migration due to likely System.Web, Web API, OWIN, web.config, authentication, and hosting dependencies.
+- Inspect WorkflowManager.API project structure, package references, web.config, OWIN startup, routing, controllers, and dependency injection before conversion.
+- Smoke-test representative WorkflowManager API endpoints if not already covered.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
@@ -232,6 +238,9 @@ Setup / Planning
 - WorkflowManager EF-coupled projects will remain net48 during initial SDK-style conversion.
 - WorkflowManager.DAL.EF remains net48-only after SDK-style conversion.
 - WorkflowManager EF6 projects will not be multi-targeted to net10.0 during the initial conversion slice.
+- WorkflowManager.Domain remains net48-only after SDK-style conversion.
+- WorkflowManager EF6-coupled projects remain net48 during the initial migration slice.
+- WorkflowManager.API will not be changed until its host/API dependencies are assessed.
 ## Risks
 - System.Web dependencies (unknown extent)
 - Auth model compatibility
@@ -309,6 +318,9 @@ Setup / Planning
 - WorkflowManager net10.0 targeting is blocked or high-risk until the EF6 strategy is decided.
 - WorkflowManager.DAL.EF remains EF6-coupled and blocks direct net10.0 targeting.
 - EF model/database runtime behaviour must remain under regression coverage beyond smoke testing.
+- WorkflowManager.Domain runtime behaviour still needs validation for ServiceBuilder, TaskCreator, TaskGetter, and TaskSuccessHandler paths if not already smoke-tested.
+- WorkflowManager.API is a higher-risk System.Web/Web API/OWIN host project and may require special handling.
+- WorkflowManager net10.0 targeting remains blocked/high-risk until EF6 and API-host strategies are decided.
 ## Notes
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
@@ -370,3 +382,5 @@ Setup / Planning
 - Next WorkflowManager target is WorkflowManager.DAL.EF.
 - WorkflowManager.DAL and WorkflowManager.DAL.EF are now SDK-style net48 and have been build-validated.
 - WorkflowManager.DAL.EF smoke testing completed successfully.
+- WorkflowManager.DAL, WorkflowManager.DAL.EF, and WorkflowManager.Domain are now SDK-style net48.
+- Next WorkflowManager target is assessment of WorkflowManager.API, not immediate conversion.
