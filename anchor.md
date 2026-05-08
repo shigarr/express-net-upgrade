@@ -74,13 +74,16 @@ Setup / Planning
 - Confirmed GUI/ExpressUI uses Amlin.Logging core logging and Web API logging integration via config.UseAmlinLogging().
 - Confirmed ExpressManagerDaemon and HydraJobManagerDaemon use only Amlin.Logging core logging/bootstrap types.
 - Confirmed Amlin.Logging Web API-specific helpers are externally used only by GUI/ExpressUI.
+- Multi-targeted Amlin.Logging to net48 and net10.0.
+- Kept Amlin.Logging Web API-specific helper classes on the net48 target only.
+- Excluded Amlin.Logging WebApi folder from the net10.0 target.
+- Preserved Amlin.Logging core logging types for net10.0 consumers.
+- Built the full solution successfully after Amlin.Logging multi-targeting.
 
 ## What’s Next
-- Multi-target Amlin.Logging to net48 and net10.0.
-- Keep Web API-specific logging helper classes included only for net48.
-- Exclude HttpConfigurationLoggingExtensions, CorrelationIdHandler, GlobalExceptionHandler, and GlobalExceptionLogger from the net10.0 target.
-- Build Amlin.Logging, GUI/ExpressUI, ExpressManagerDaemon, HydraJobManagerDaemon, and the full solution.
-- Smoke-test GUI Web API logging and worker daemon core logging after Amlin.Logging multi-targeting.
+- Smoke-test Amlin.Logging again after multi-targeting, including file, console, SQL, GUI Web API exception logging, and worker daemon logging.
+- Decide next migration slice after logging smoke-test validation.
+- Assess API host or Windows Service host projects as the next higher-risk migration area.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -112,6 +115,7 @@ Setup / Planning
 - Amlin.Logging net10.0 target will provide core logging only.
 - Amlin.Logging net48 target will retain System.Web.Http Web API logging integration.
 - GUI/ExpressUI remains on the net48 Amlin.Logging path until the UI/API host migration is addressed.
+- ASP.NET Core-compatible logging/exception middleware is deferred until API host migration.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -155,6 +159,8 @@ Setup / Planning
 - GUI/ExpressUI depends on Amlin.Logging Web API helpers and cannot use a net10.0 Amlin.Logging target without an ASP.NET Core-compatible replacement.
 - Excluding Web API helper classes from Amlin.Logging net10.0 is safe only for consumers that use core logging types.
 - Runtime logging behaviour must be re-smoke-tested after Amlin.Logging multi-targeting.
+- Amlin.Logging net10.0 does not provide Web API helper classes; future API host migration will need an ASP.NET Core-compatible replacement.
+- Runtime logging behaviour must be revalidated after Amlin.Logging multi-targeting.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -191,3 +197,5 @@ Setup / Planning
 - Microsoft.Data.SqlClient.SNI.targets should not be carried forward unless build evidence requires it.
 - Worker daemons use only LoggingBootstrap, LoggingOptions, SerilogLogger, and IAppLogger.
 - The only external UseAmlinLogging() call found is in GUI/ExpressUI Startup.cs.
+- Amlin.Logging is now available to net10.0 consumers for core logging scenarios.
+- GUI/ExpressUI remains on the net48 Amlin.Logging path while it uses System.Web.Http/Web API.
