@@ -107,9 +107,10 @@ Setup / Planning
 - Completed SDK-style net48 conversion and smoke testing for the HydraJobManager host/daemon pair.
 
 ## What’s Next
-- Assess the next Windows Service pair, preferably FileCopierDaemon and FileCopierHost.
+- Assess FileCopierDaemon and FileCopierHost for SDK-style net48 conversion.
 - Continue applying the one-by-one SDK-style net48 conversion pattern to remaining Windows Service projects.
-- Preserve installer, settings, config transform, manifest/resource, and runtime behaviour for each service.
+- Preserve service/config/resource/installer behaviour and remove only source-proven unused dependencies.
+- Build project and full solution, recording runtime validation as pending/unavailable.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -148,6 +149,8 @@ Setup / Planning
 - Windows Service pairs are assessed together but migrated one project at a time.
 - HydraJobManagerHost and HydraJobManagerDaemon remain net48 after SDK-style conversion.
 - Continue Windows Service migration one pair at a time.
+- Remaining non-integrated daemon/host projects may be converted to SDK-style targeting net48 with build-only validation where runtime smoke testing is not available.
+- Non-integrated daemon/host projects should not be multi-targeted to net10.0 until runtime validation is available or a separate test plan exists.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -198,6 +201,8 @@ Setup / Planning
 - Environment-specific App.config transform behaviour must still be validated through deployment pipelines.
 - Remaining Windows Service projects may contain different dependencies and require individual assessment.
 - HydraJobManagerDaemon has higher migration risk due to Windows Service installer/resource/manifest/logging behaviour.
+- FileCopierDaemon, FileCopierHost, and other non-integrated daemon/host projects cannot currently be runtime smoke-tested through the Express application.
+- Build-only validation does not prove Windows Service install/start behaviour, file operations, configuration transforms, or runtime environment behaviour.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -240,3 +245,4 @@ Setup / Planning
 - ExpressManagerHost and ExpressManagerDaemon are both SDK-style net48 and smoke-tested successfully.
 - HydraJobManagerHost is SDK-style net48 and smoke-tested successfully.
 - HydraJobManagerHost and HydraJobManagerDaemon are both SDK-style net48 and smoke-tested successfully.
+- For non-integrated daemon/host projects, conversion success must be labelled as build-validated only, not runtime-validated.
