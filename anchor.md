@@ -98,12 +98,18 @@ Setup / Planning
 - Built HydraJobManagerHost successfully.
 - Built the full solution successfully after HydraJobManagerHost conversion.
 - Smoke-tested HydraJobManagerHost startup/config behaviour successfully.
+- Converted HydraJobManagerDaemon to SDK-style targeting net48.
+- Removed unused HydraJobManagerDaemon references to EPPlus, Newtonsoft.Json, and packages.config.
+- Preserved HydraJobManagerDaemon settings, ProjectInstaller, resources, manifest/PFX, App.config, and environment transform files.
+- Built HydraJobManagerDaemon successfully.
+- Built the full solution successfully after HydraJobManagerDaemon conversion.
+- Smoke-tested HydraJobManagerDaemon startup, logging, and Windows Service behaviour successfully.
+- Completed SDK-style net48 conversion and smoke testing for the HydraJobManager host/daemon pair.
 
 ## What’s Next
-- Assess and convert HydraJobManagerDaemon to SDK-style targeting net48.
-- Preserve HydraJobManagerDaemon Windows Service behaviour, ProjectInstaller, embedded resources, manifest/PFX, settings, App.config, and transform files.
-- Remove only source-proven unused HydraJobManagerDaemon packages/references.
-- Build and smoke-test HydraJobManagerDaemon service startup/logging/run behaviour.
+- Assess the next Windows Service pair, preferably FileCopierDaemon and FileCopierHost.
+- Continue applying the one-by-one SDK-style net48 conversion pattern to remaining Windows Service projects.
+- Preserve installer, settings, config transform, manifest/resource, and runtime behaviour for each service.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -140,6 +146,8 @@ Setup / Planning
 - ExpressManagerHost remains net48 after SDK-style conversion.
 - Windows Service host/daemon projects remain net48 during initial SDK-style conversion.
 - Windows Service pairs are assessed together but migrated one project at a time.
+- HydraJobManagerHost and HydraJobManagerDaemon remain net48 after SDK-style conversion.
+- Continue Windows Service migration one pair at a time.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -188,7 +196,7 @@ Setup / Planning
 - Config transform behaviour must be monitored across non-local environments.
 - ExpressManagerDaemon has higher migration risk due to Windows Service installer/resource/manifest behaviour.
 - Environment-specific App.config transform behaviour must still be validated through deployment pipelines.
-- Other Windows Service pairs may contain different dependencies and must be assessed individually.
+- Remaining Windows Service projects may contain different dependencies and require individual assessment.
 - HydraJobManagerDaemon has higher migration risk due to Windows Service installer/resource/manifest/logging behaviour.
 
 ## Notes
@@ -231,3 +239,4 @@ Setup / Planning
 - ExpressManagerHost application behaviour was smoke-tested successfully after SDK-style conversion.
 - ExpressManagerHost and ExpressManagerDaemon are both SDK-style net48 and smoke-tested successfully.
 - HydraJobManagerHost is SDK-style net48 and smoke-tested successfully.
+- HydraJobManagerHost and HydraJobManagerDaemon are both SDK-style net48 and smoke-tested successfully.
