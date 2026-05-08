@@ -164,6 +164,10 @@ Setup / Planning
 - Built WorkflowManager.API successfully after cleanup.
 - Built the full solution successfully after WorkflowManager.API cleanup.
 - Smoke-tested WorkflowManager.API successfully after cleanup.
+- Assessed GUI/ExpressUI at summary level.
+- Confirmed GUI/ExpressUI is a legacy ASP.NET Web Application targeting net48.
+- Confirmed GUI/ExpressUI uses System.Web, System.Web.Http, MVC/Web API controllers, OWIN startup, Castle Windsor, Dapper, System.Data.SqlClient, Newtonsoft.Json, EPPlus/OfficeOpenXml, ExcelLibrary, System.Configuration, Amlin.Logging, WorkflowManager integration, AngularJS-style client assets, Web.config transforms, and publish profiles.
+
 ## What’s Next
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
 - Continue build-only validation labelling for non-integrated host/daemon projects.
@@ -193,6 +197,11 @@ Setup / Planning
 - Decide whether to apply the same safe dependency-cleanup approach to GUI/ExpressUI.
 - Consider preparing a migration status report or commit for the completed core/library/host/WorkflowManager slice.
 - Defer SDK-style conversion and net10.0 targeting for WorkflowManager.API until a separate ASP.NET Core/System.Web migration strategy is defined.
+- Do not attempt SDK-style conversion or net10.0 targeting for GUI/ExpressUI in the current slice.
+- Perform focused source-usage validation for potentially removable GUI dependencies: Application Insights, Identity, social auth providers, SignalR, Swashbuckle, Unity/Autofac, and EntityFramework.
+- Apply only source-proven safe dependency cleanup while keeping GUI/ExpressUI as legacy net48.
+- Preserve Web.config, Web.config transforms, publish profiles, Global.asax, OWIN startup, Castle Windsor wiring, MVC/Web API controllers, and client assets.
+
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
@@ -253,6 +262,10 @@ Setup / Planning
 - WorkflowManager.API remains legacy net48.
 - WorkflowManager.API will not be converted to SDK-style during the current minimal-change slice.
 - WorkflowManager.API cleanup is limited to source-proven unused dependencies.
+- GUI/ExpressUI remains legacy net48.
+- GUI/ExpressUI is treated as a high-risk host/UI/API project, not a simple SDK-style conversion candidate.
+- GUI/ExpressUI migration to net10.0 requires a separate ASP.NET Core/UI hosting strategy and is deferred.
+
 ## Risks
 - System.Web dependencies (unknown extent)
 - Auth model compatibility
@@ -335,6 +348,10 @@ Setup / Planning
 - WorkflowManager net10.0 targeting remains blocked/high-risk until EF6 and API-host strategies are decided.
 - WorkflowManager.API remains tied to System.Web, System.Web.Http, OWIN, Web.config, Global.asax, and classic ASP.NET hosting.
 - WorkflowManager.API cannot move directly to net10.0 without a separate ASP.NET Core migration strategy.
+- GUI/ExpressUI is blocked from direct net10.0 migration by System.Web, System.Web.Http, MVC/Web API, OWIN, Web.config, Global.asax, and classic ASP.NET hosting.
+- GUI/ExpressUI has a large runtime surface including API controllers, repositories, SQL access, Excel export, logging, configuration, DI, and AngularJS-style client assets.
+- Dependency cleanup must be source-proven and smoke-tested because many legacy packages are actively used.
+
 ## Notes
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
@@ -400,3 +417,5 @@ Setup / Planning
 - Next WorkflowManager target is assessment of WorkflowManager.API, not immediate conversion.
 - WorkflowManager.API cleanup was build-tested and smoke-tested successfully.
 - WebGrease was intentionally retained because System.Web.Optimization / BundleConfig remain present.
+- Recommended immediate action for GUI/ExpressUI is safe dependency cleanup only, not project format conversion.
+- Potential cleanup candidates require validation: Application Insights, Identity/social auth, SignalR, Swashbuckle, Unity/Autofac, and EntityFramework.
