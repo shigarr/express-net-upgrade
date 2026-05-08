@@ -207,6 +207,9 @@ Setup / Planning
 - Defer SDK-style conversion and net10.0 migration for GUI/ExpressUI until a separate ASP.NET Core/System.Web strategy is defined.
 - Review remaining test/support projects after GUI cleanup is committed.
 - Preserve Web.config, Web.config transforms, publish profiles, Global.asax, OWIN startup, Castle Windsor wiring, MVC/Web API controllers, and client assets.
+- Confirm there are no active project, build, deployment, or packaging references to Api.Express.Utility before removing it from the solution.
+- Remove Api.Express.Utility from the solution later if confirmed unused.
+- Continue with remaining test/support project assessment after active runtime projects are complete.
 
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
@@ -249,6 +252,7 @@ Setup / Planning
 - Non-integrated daemon/host projects should not be multi-targeted to net10.0 until runtime validation is available or a separate test plan exists.
 - SrisWorkerDaemon is not visible in the current solution scope and will be ignored for now.
 - Only projects present in the current solution scope will be migrated.
+- WebUtility_IntegrationAdapter / Api.Express.Utility is not required for the active migration scope and will not be migrated.
 
 - Only projects confirmed in the active solution or deployment scope will be migrated.
 - SrisWorkerDaemon is filesystem-visible but not active-solution-confirmed, so it remains deferred unless later proven in scope.
@@ -361,6 +365,7 @@ Setup / Planning
 - Dependency cleanup must be source-proven and smoke-tested because many legacy packages are actively used.
 - GUI/ExpressUI remains tied to System.Web, Web API, MVC, OWIN, Web.config, Global.asax, Castle Windsor, SignalR, and classic ASP.NET hosting.
 - Removing unused packages from GUI/ExpressUI still requires smoke testing because Web.config and startup behaviour may depend on package side effects.
+- Api.Express.Utility removal must be checked against solution references, build pipelines, deployment scripts, and release packaging before it is removed from the solution.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -431,3 +436,4 @@ Setup / Planning
 - Potential cleanup candidates require validation: Application Insights, Identity/social auth, SignalR, Swashbuckle, Unity/Autofac, and EntityFramework.
 - GUI/ExpressUI remains a legacy net48 project after cleanup.
 - SignalR is retained due to Startup.cs usage.
+- Api.Express.Utility is intentionally deferred/ignored because it is not needed in the active Express migration scope.
