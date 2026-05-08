@@ -174,7 +174,17 @@ Setup / Planning
 - Built GUI/ExpressUI and the full solution successfully after cleanup if completed.
 - Smoke-tested GUI/ExpressUI startup, representative page/API behaviour, Excel export, SignalR path where practical, and logging if completed.
 
+- Assessed TestConsole as a small legacy net48 manual/support console project.
+- Converted TestConsole to SDK-style targeting net48, if build completed successfully.
+- Removed unused TestConsole references to EPPlus, Newtonsoft.Json, and packages.config, if build completed successfully.
+- Preserved TestConsole App.config for runtime settings used by referenced layers.
+- Built TestConsole successfully, if completed.
+- Built the full solution successfully after TestConsole conversion, if completed.
+
 ## What’s Next
+- Assess UnitTests as the next test/support project.
+- Continue converting test/support projects conservatively to SDK-style net48.
+- Preserve runtime/config behaviour for manual support projects.
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
 - Continue build-only validation labelling for non-integrated host/daemon projects.
 - Identify the next migration slice only after confirming the remaining project inventory.
@@ -367,7 +377,12 @@ Setup / Planning
 - Removing unused packages from GUI/ExpressUI still requires smoke testing because Web.config and startup behaviour may depend on package side effects.
 - Api.Express.Utility removal must be checked against solution references, build pipelines, deployment scripts, and release packaging before it is removed from the solution.
 
+- TestConsole runtime behaviour may remain unvalidated unless the manual console scenario is run.
+- TestConsole App.config contains runtime settings and must be preserved.
+
 ## Notes
+- TestConsole uses ServiceBuilder / WorkflowManager / Factories via project references.
+- TestConsole has no source usage of EPPlus or Newtonsoft.Json.
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
 - Source code and project files will be provided manually by the user
