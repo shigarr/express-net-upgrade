@@ -128,6 +128,9 @@ Setup / Planning
 - Record RatCatManagerDaemon validation as build-only if runtime testing is unavailable.
 - Continue SDK-style net48 conversion only where dependencies are source-proven and build validation is sufficient.
 - Keep runtime validation marked as pending/unavailable for non-integrated daemon/host projects.
+- Assess Workers.csproj as the next shared worker library candidate.
+- Assess FileDeleterHost after Workers.csproj.
+- Revisit SrisWorkerDaemon only if it is later found in another solution or deployment scope.
 - Continue applying the one-by-one SDK-style net48 conversion pattern to remaining Windows Service projects.
 - Preserve service/config/resource/installer behaviour and remove only source-proven unused dependencies.
 - Build project and full solution, recording runtime validation as pending/unavailable.
@@ -171,6 +174,8 @@ Setup / Planning
 - Continue Windows Service migration one pair at a time.
 - Remaining non-integrated daemon/host projects may be converted to SDK-style targeting net48 with build-only validation where runtime smoke testing is not available.
 - Non-integrated daemon/host projects should not be multi-targeted to net10.0 until runtime validation is available or a separate test plan exists.
+- SrisWorkerDaemon is not visible in the current solution scope and will be ignored for now.
+- Only projects present in the current solution scope will be migrated.
 
 ## Risks
 - System.Web dependencies (unknown extent)
@@ -229,6 +234,8 @@ Setup / Planning
 - Build-only validation does not prove RatCat host startup, settings resolution, or operational behaviour.
 - FileCopierDaemon runtime behaviour is not validated because it is not integrated into the Express application.
 - Build-only validation does not prove Windows Service install/start behaviour, file-copy behaviour, settings/config resolution, or operational paths.
+- solution-structure.md may be stale because it lists SrisWorkerDaemon, but the project is not visible in the current solution.
+- If SrisWorkerDaemon exists outside the current solution, it may require separate migration assessment later.
 
 ## Notes
 - Code sharing limited → snippet-driven approach
@@ -276,3 +283,4 @@ Setup / Planning
 - FileCopierHost and FileCopierDaemon are SDK-style net48 and build-validated only.
 - RatCatManagerHost is SDK-style net48 and build-validated only unless a separate runtime test is performed.
 - Non-integrated daemon/host projects should remain net48 and should not be multi-targeted until runtime validation is available.
+- SrisWorkerDaemon is currently out of scope because it is not visible in the active solution.
