@@ -158,6 +158,12 @@ Setup / Planning
 - Removed unused WorkflowManager.Domain package references and packages.config.
 - Built WorkflowManager.Domain successfully.
 - Built WorkflowManager.API where practical and the full solution successfully after WorkflowManager.Domain conversion.
+- Completed safe dependency cleanup for WorkflowManager.API while keeping it as a legacy net48 ASP.NET Web API project.
+- Removed unused WorkflowManager.API references/packages for EPPlus, ExcelLibrary, Serilog.*, Unity.*, and unused social auth providers: Microsoft.Owin.Security.Facebook, Google, Twitter, and MicrosoftAccount.
+- Preserved WorkflowManager.API Microsoft.AspNet.Identity.*, EntityFramework, Microsoft.Owin core/cookie/oauth packages, Microsoft.AspNet.WebApi.*, Microsoft.AspNet.Mvc/Razor/WebPages, Swashbuckle, Newtonsoft.Json, System.Web.Optimization, and WebGrease.
+- Built WorkflowManager.API successfully after cleanup.
+- Built the full solution successfully after WorkflowManager.API cleanup.
+- Smoke-tested WorkflowManager.API successfully after cleanup.
 ## What’s Next
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
 - Continue build-only validation labelling for non-integrated host/daemon projects.
@@ -184,6 +190,9 @@ Setup / Planning
 - Treat WorkflowManager.API as a higher-risk host/API migration due to likely System.Web, Web API, OWIN, web.config, authentication, and hosting dependencies.
 - Inspect WorkflowManager.API project structure, package references, web.config, OWIN startup, routing, controllers, and dependency injection before conversion.
 - Smoke-test representative WorkflowManager API endpoints if not already covered.
+- Decide whether to apply the same safe dependency-cleanup approach to GUI/ExpressUI.
+- Consider preparing a migration status report or commit for the completed core/library/host/WorkflowManager slice.
+- Defer SDK-style conversion and net10.0 targeting for WorkflowManager.API until a separate ASP.NET Core/System.Web migration strategy is defined.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
@@ -241,6 +250,9 @@ Setup / Planning
 - WorkflowManager.Domain remains net48-only after SDK-style conversion.
 - WorkflowManager EF6-coupled projects remain net48 during the initial migration slice.
 - WorkflowManager.API will not be changed until its host/API dependencies are assessed.
+- WorkflowManager.API remains legacy net48.
+- WorkflowManager.API will not be converted to SDK-style during the current minimal-change slice.
+- WorkflowManager.API cleanup is limited to source-proven unused dependencies.
 ## Risks
 - System.Web dependencies (unknown extent)
 - Auth model compatibility
@@ -321,6 +333,8 @@ Setup / Planning
 - WorkflowManager.Domain runtime behaviour still needs validation for ServiceBuilder, TaskCreator, TaskGetter, and TaskSuccessHandler paths if not already smoke-tested.
 - WorkflowManager.API is a higher-risk System.Web/Web API/OWIN host project and may require special handling.
 - WorkflowManager net10.0 targeting remains blocked/high-risk until EF6 and API-host strategies are decided.
+- WorkflowManager.API remains tied to System.Web, System.Web.Http, OWIN, Web.config, Global.asax, and classic ASP.NET hosting.
+- WorkflowManager.API cannot move directly to net10.0 without a separate ASP.NET Core migration strategy.
 ## Notes
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
@@ -384,3 +398,5 @@ Setup / Planning
 - WorkflowManager.DAL.EF smoke testing completed successfully.
 - WorkflowManager.DAL, WorkflowManager.DAL.EF, and WorkflowManager.Domain are now SDK-style net48.
 - Next WorkflowManager target is assessment of WorkflowManager.API, not immediate conversion.
+- WorkflowManager.API cleanup was build-tested and smoke-tested successfully.
+- WebGrease was intentionally retained because System.Web.Optimization / BundleConfig remain present.
