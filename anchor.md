@@ -140,6 +140,12 @@ Setup / Planning
 - Confirmed WorkflowManager.Domain is a legacy net48 project using packages.config and App.config.
 - Confirmed WorkflowManager.Domain references WorkflowManager.DAL and WorkflowManager.DAL.EF.
 - Confirmed WorkflowManager.Domain has EF6/App.config coupling and should not be the first WorkflowManager project converted.
+- Converted WorkflowManager.DAL to SDK-style targeting net48.
+- Added required WorkflowManager.DAL project references to DataTransferObjects and WorkflowManager.DAL.EF.
+- Retained Dapper for WorkflowManager.DAL stored-procedure wrapper usage.
+- Retained EntityFramework 6.1.3 for WorkflowManager.DAL EF model/type coupling.
+- Built WorkflowManager.DAL successfully.
+- Built WorkflowManager.DAL.EF, WorkflowManager.Domain, WorkflowManager.API where practical, and the full solution successfully after WorkflowManager.DAL conversion.
 ## What’s Next
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
 - Continue build-only validation labelling for non-integrated host/daemon projects.
@@ -158,6 +164,9 @@ Setup / Planning
 - Assess WorkflowManager.DAL.EF before WorkflowManager.Domain.
 - Reorder WorkflowManager library slice to WorkflowManager.DAL, WorkflowManager.DAL.EF, WorkflowManager.Domain, then WorkflowManager.API.
 - Defer GUI/ExpressUI and WorkflowManager.API host migration until lower-level WorkflowManager libraries are assessed.
+- Assess WorkflowManager.DAL.EF for SDK-style net48 conversion.
+- Preserve EF6 behaviour and App.config/entityFramework provider configuration during WorkflowManager.DAL.EF conversion.
+- Defer net10.0 targeting for WorkflowManager EF-coupled projects until EF6 strategy is explicitly decided.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
@@ -207,6 +216,9 @@ Setup / Planning
 - Do not start WorkflowManager.Domain conversion until its DAL dependencies are assessed.
 - Do not attempt net10.0 targeting for WorkflowManager EF6-coupled projects during the initial conversion step.
 - Initial WorkflowManager conversions should target SDK-style net48 only.
+- WorkflowManager.DAL is SDK-style net48 only.
+- WorkflowManager.DAL is EF6-coupled and should not be treated as Dapper-only.
+- WorkflowManager EF-coupled projects will remain net48 during initial SDK-style conversion.
 ## Risks
 - System.Web dependencies (unknown extent)
 - Auth model compatibility
@@ -279,6 +291,9 @@ Setup / Planning
 - WorkflowManager.Domain has EF6 6.1.3 and entityFramework App.config configuration, which constrain net10.0 migration.
 - WorkflowManager package references such as EPPlus, ExcelLibrary, and Newtonsoft.Json require source usage validation before cleanup.
 - GUI/ExpressUI and WorkflowManager.API remain high-risk due to System.Web, Web API, OWIN, and web.config dependencies.
+- WorkflowManager.DAL has EF6 model/type coupling through WorkflowManager.DAL.EF.
+- WorkflowManager.DAL runtime behaviour still needs validation for Dapper stored-procedure wrappers and EF-coupled paths.
+- WorkflowManager net10.0 targeting is blocked or high-risk until the EF6 strategy is decided.
 ## Notes
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
@@ -336,3 +351,5 @@ Setup / Planning
 - Revised WorkflowManager order is WorkflowManager.DAL, WorkflowManager.DAL.EF, WorkflowManager.Domain, then WorkflowManager.API.
 - WorkflowManager.Domain should preserve EF6/App.config behaviour when eventually converted to SDK-style net48.
 - SQL .sqlproj projects are not C# migration targets and should be handled separately.
+- WorkflowManager.DAL conversion required EntityFramework 6.1.3 because DbSet<> types were exposed through referenced EF model types.
+- Next WorkflowManager target is WorkflowManager.DAL.EF.
