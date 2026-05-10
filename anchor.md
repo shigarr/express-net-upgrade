@@ -205,6 +205,7 @@ Setup / Planning
 - Confirmed Api.Express.Utility is referenced only by its own project file and the master solution.
 - Removed Api.Express.Utility from the active solution.
 - Built the full solution successfully after removing Api.Express.Utility.
+- Created migration-status.md as a checkpoint summary for the completed migration slice.
 
 ## What’s Next
 - Delete the remaining unreferenced DataTransferObjects packages.config file if not already done.
@@ -218,6 +219,10 @@ Setup / Planning
 - Commit the final solution cleanup.
 - Keep ExpressUI and WorkflowManager.API as legacy net48 projects until a separate ASP.NET Core/System.Web migration strategy is defined.
 - Defer stress project retargeting from net5.0 until a separate support/test tooling upgrade decision is made.
+- Start the next session by reviewing anchor.md, solution-structure.md, and migration-status.md before making further changes.
+
+## Notes
+- migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
 - Prepare final commit for inventory cleanup and remaining scope documentation.
 - Run UnitTests using a compatible NUnit 2 runner if available.
 - Assess remaining stress/support projects after UnitTests.
