@@ -215,15 +215,16 @@ Setup / Planning
 - Created migration-status.md as a checkpoint summary for the completed migration slice.
 - Completed stress testing successfully after the committed migration slice.
 - Created net10-feasibility-matrix.md documenting current net10.0 feasibility for remaining net48-only and legacy projects.
+- Created aspnetcore-host-migration-strategy.md to document migration options for ExpressUI and WorkflowManager.API.
 
 ## What’s Next
-- Decide the next SDK-style net48-only project to assess for net10.0 feasibility.
-- Continue assessing net10.0 readiness project-by-project rather than assuming all SDK-style projects are ready.
-- Keep Windows service/host projects on net48 until a service-hosting strategy and runtime validation approach are defined.
-- Keep WorkflowManager EF6-coupled projects on net48 until EF strategy is decided.
-- Plan ASP.NET Core strategy for ExpressUI and WorkflowManager.API after net48-only SDK-style project feasibility is assessed.
-- Use net10-feasibility-matrix.md to guide future net10.0 project selection.
-- Begin ASP.NET Core strategy planning for ExpressUI and WorkflowManager.API as a separate strategic phase.
+- Create a WorkflowManager.API endpoint inventory.
+- Identify one low-risk read-only endpoint as a side-by-side ASP.NET Core pilot candidate.
+- Do not make ASP.NET Core implementation changes until endpoint inventory and pilot candidate are reviewed.
+
+## Active Decisions
+- Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
+- ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
 
 ## Risks
 - ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
@@ -232,10 +233,12 @@ Setup / Planning
 - Hydra worker error-path behaviour should be included in regression testing.
 - Windows service/host projects should not be moved to net10.0 until service hosting and runtime validation strategy is defined.
 - WorkflowManager EF6-coupled projects remain blocked from net10.0 until EF strategy is decided.
+- ASP.NET Core migration may change routing, authentication, model binding, configuration, logging, and deployment behaviour if not handled endpoint-by-endpoint.
 
 ## Notes
 - migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
 - net10-feasibility-matrix.md is an assessment artifact and does not replace anchor.md as the source of truth.
+- aspnetcore-host-migration-strategy.md is a planning artifact and does not replace anchor.md.
 - Recommended next track is net10.0 feasibility review for SDK-style net48-only projects, followed by ASP.NET Core host migration planning.
 - Prepare final commit for inventory cleanup and remaining scope documentation.
 - Run UnitTests using a compatible NUnit 2 runner if available.
