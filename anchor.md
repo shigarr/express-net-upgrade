@@ -206,23 +206,22 @@ Setup / Planning
 - Removed Api.Express.Utility from the active solution.
 - Built the full solution successfully after removing Api.Express.Utility.
 - Created migration-status.md as a checkpoint summary for the completed migration slice.
+- Completed stress testing successfully after the committed migration slice.
 
 ## What’s Next
-- Delete the remaining unreferenced DataTransferObjects packages.config file if not already done.
-- Rebuild the full solution.
-- Rerun final inventory and confirm no physical-only packages.config files remain.
-- Commit final packages.config cleanup.
-- Keep net10.0 conversion decisions separate from packages.config cleanup.
-- Confirm Api.Express.Utility has no active build/deployment references, then remove it from the active solution.
-- Rerun final active-solution inventory.
-- Confirm only ExpressUI and WorkflowManager.API remain as intentional legacy net48 projects.
-- Commit the final solution cleanup.
-- Keep ExpressUI and WorkflowManager.API as legacy net48 projects until a separate ASP.NET Core/System.Web migration strategy is defined.
-- Defer stress project retargeting from net5.0 until a separate support/test tooling upgrade decision is made.
-- Start the next session by reviewing anchor.md, solution-structure.md, and migration-status.md before making further changes.
+- Review SDK-style net48-only projects for future net10.0 feasibility before starting ASP.NET Core host migration planning.
+- Start feasibility review with Workers because it is a shared worker library and has a known JavaScriptSerializer/System.Web.Extensions blocker.
+- Plan ASP.NET Core strategy for ExpressUI and WorkflowManager.API after net48-only SDK-style project feasibility is assessed.
+
+## Risks
+- ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
+- Workers has a known future net10.0 blocker due to JavaScriptSerializer/System.Web.Extensions usage.
+- Windows service/host projects should not be moved to net10.0 until service hosting and runtime validation strategy is defined.
+- WorkflowManager EF6-coupled projects remain blocked from net10.0 until EF strategy is decided.
 
 ## Notes
 - migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
+- Recommended next track is net10.0 feasibility review for SDK-style net48-only projects, followed by ASP.NET Core host migration planning.
 - Prepare final commit for inventory cleanup and remaining scope documentation.
 - Run UnitTests using a compatible NUnit 2 runner if available.
 - Assess remaining stress/support projects after UnitTests.
@@ -270,6 +269,8 @@ Setup / Planning
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
 - Dev effort ~10–12 weeks
+- ASP.NET Core migration for ExpressUI and WorkflowManager.API is a separate strategic phase, not a simple project-file upgrade.
+- net10.0 feasibility review will be assessment-first and will not make code changes until blockers and testability are understood.
 - First technical migration step is SDK-style conversion of DataTransferObjects on net48, not net10.0 multi-targeting yet
 - DataTransferObjects will not target net10.0 until ApiClientLayer dependency is resolved or migrated
 - Unused project references may be removed when source search and successful build confirm they are not required.
