@@ -127,6 +127,13 @@ Setup / Planning
 - Removed unused Workers EPPlus reference, packages.config, and app.config.
 - Built Workers and dependent host/daemon projects successfully.
 - Built the full solution successfully after Workers conversion.
+- Completed focused Workers net10.0 feasibility review.
+- Replaced HydraJobWorker JavaScriptSerializer error-message serialization with Newtonsoft.Json JsonConvert.SerializeObject.
+- Removed Workers dependency on System.Web.Extensions.
+- Multi-targeted Workers to net48 and net10.0.
+- Built Workers successfully.
+- Built dependent host/daemon projects successfully.
+- Built the full solution successfully after Workers multi-targeting.
 - Converted FileDeleterHost to SDK-style targeting net48.
 - Removed unused FileDeleterHost references to EPPlus, ExcelLibrary, Newtonsoft.Json, and packages.config.
 - Preserved FileDeleterHost App.config, connection strings, Settings.settings, and Settings.Designer.cs.
@@ -209,13 +216,17 @@ Setup / Planning
 - Completed stress testing successfully after the committed migration slice.
 
 ## What’s Next
-- Review SDK-style net48-only projects for future net10.0 feasibility before starting ASP.NET Core host migration planning.
-- Start feasibility review with Workers because it is a shared worker library and has a known JavaScriptSerializer/System.Web.Extensions blocker.
+- Decide the next SDK-style net48-only project to assess for net10.0 feasibility.
+- Continue assessing net10.0 readiness project-by-project rather than assuming all SDK-style projects are ready.
+- Keep Windows service/host projects on net48 until a service-hosting strategy and runtime validation approach are defined.
+- Keep WorkflowManager EF6-coupled projects on net48 until EF strategy is decided.
 - Plan ASP.NET Core strategy for ExpressUI and WorkflowManager.API after net48-only SDK-style project feasibility is assessed.
 
 ## Risks
 - ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
 - Workers has a known future net10.0 blocker due to JavaScriptSerializer/System.Web.Extensions usage.
+- HydraJobWorker error-message JSON may differ slightly because serialization changed from JavaScriptSerializer to Newtonsoft.Json.
+- Hydra worker error-path behaviour should be included in regression testing.
 - Windows service/host projects should not be moved to net10.0 until service hosting and runtime validation strategy is defined.
 - WorkflowManager EF6-coupled projects remain blocked from net10.0 until EF strategy is decided.
 
@@ -234,6 +245,8 @@ Setup / Planning
 - Identify the next migration slice only after confirming the remaining project inventory.
 - Assess Workers net48/net10.0 multi-targeting later after JavaScriptSerializer usage is reviewed.
 - Review HydraJobWorker.cs JavaScriptSerializer usage as a future net10.0 compatibility blocker.
+- The previous Workers net10.0 blocker was limited to JavaScriptSerializer usage in HydraJobWorker.cs.
+- The JavaScriptSerializer usage was serialization-only and used for task error diagnostic text.
 - Revisit SrisWorkerDaemon only if it is later found in another solution or deployment scope.
 - Continue applying the one-by-one SDK-style net48 conversion pattern to remaining Windows Service projects.
 - Preserve service/config/resource/installer behaviour and remove only source-proven unused dependencies.
@@ -306,6 +319,9 @@ Setup / Planning
 - Continue Windows Service migration one pair at a time.
 - Remaining non-integrated daemon/host projects may be converted to SDK-style targeting net48 with build-only validation where runtime smoke testing is not available.
 - Non-integrated daemon/host projects should not be multi-targeted to net10.0 until runtime validation is available or a separate test plan exists.
+- Workers now supports net48 and net10.0.
+- Workers no longer depends on System.Web.Extensions.
+- Newtonsoft.Json remains the JSON serializer for Workers to preserve existing JSON behaviour as closely as practical.
 - SrisWorkerDaemon is not visible in the current solution scope and will be ignored for now.
 - Only projects present in the current solution scope will be migrated.
 - WebUtility_IntegrationAdapter / Api.Express.Utility is not required for the active migration scope and will not be migrated.
