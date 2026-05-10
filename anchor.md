@@ -194,9 +194,14 @@ Setup / Planning
 - Confirmed only the 3 legacy projects still reference packages.config.
 - Confirmed 16 SDK-style projects still have physical packages.config files that are no longer referenced.
 - Confirmed 3 stress testing projects are SDK-style and target net5.0.
+- Deleted unreferenced physical packages.config files from SDK-style projects.
+- Built the full solution successfully after packages.config cleanup.
 
 ## What’s Next
 - Remove physical packages.config files from SDK-style projects where they are no longer referenced.
+- Commit packages.config cleanup.
+- Confirm final inventory shows packages.config remains only where intentionally required by legacy projects.
+- Keep net10.0 conversion decisions separate from packages.config cleanup.
 - Confirm Api.Express.Utility has no active build/deployment references, then remove it from the active solution.
 - Keep ExpressUI and WorkflowManager.API as legacy net48 projects until a separate ASP.NET Core/System.Web migration strategy is defined.
 - Defer stress project retargeting from net5.0 until a separate support/test tooling upgrade decision is made.
@@ -316,6 +321,8 @@ Setup / Planning
 - Api.Express.Utility is not required for the active migration scope and should be removed from the solution after reference checks.
 - Stress testing projects remain SDK-style net5.0 and are deferred.
 - Physical packages.config files may be deleted from SDK-style projects when they are not referenced by the project file.
+- Removing unreferenced packages.config files from SDK-style projects is cleanup only and does not imply net10.0 readiness.
+- SDK-style net48-only projects remain net48 until individually assessed for net10.0 compatibility.
 
 ## Risks
 - UnitTests use legacy NUnit 2.6.4, so test discovery depends on compatible runner support.
@@ -325,6 +332,8 @@ Setup / Planning
 - ExpressUI and WorkflowManager.API remain tied to classic ASP.NET/System.Web and require a separate host migration strategy for net10.0.
 - Api.Express.Utility removal must be checked against build, deployment, and packaging references.
 - Physical leftover packages.config files may confuse future inventory checks if not cleaned up.
+- Remaining legacy net48 projects still depend on packages.config and classic project structure.
+- Net48-only SDK-style projects may still have runtime or framework blockers for net10.0.
 - Retargeting stress projects may affect stress-test behaviour and should be handled separately from the production migration slice.
 - System.Web dependencies (unknown extent)
 - Auth model compatibility
@@ -489,3 +498,4 @@ Setup / Planning
 - Api.Express.Utility is intentionally deferred/ignored because it is not needed in the active Express migration scope.
 - Final inventory shows the active production/support migration slice is substantially complete.
 - Remaining legacy projects are intentional exceptions or pending removal, not missed conversions.
+- Full solution build passed after deleting unreferenced physical packages.config files.
