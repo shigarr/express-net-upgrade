@@ -196,11 +196,18 @@ Setup / Planning
 - Confirmed 3 stress testing projects are SDK-style and target net5.0.
 - Deleted unreferenced physical packages.config files from SDK-style projects.
 - Built the full solution successfully after packages.config cleanup.
+- Completed final active-solution inventory after packages.config cleanup.
+- Confirmed active solution has 29 C# projects.
+- Confirmed 26 projects are SDK-style.
+- Confirmed 3 projects remain legacy: ExpressUI, WorkflowManager.API, and Api.Express.Utility.
+- Confirmed packages.config is still referenced only by the 3 legacy projects.
+- Removed remaining stale physical packages.config from DataTransferObjects, if deleted successfully.
 
 ## What’s Next
-- Remove physical packages.config files from SDK-style projects where they are no longer referenced.
-- Commit packages.config cleanup.
-- Confirm final inventory shows packages.config remains only where intentionally required by legacy projects.
+- Delete the remaining unreferenced DataTransferObjects packages.config file if not already done.
+- Rebuild the full solution.
+- Rerun final inventory and confirm no physical-only packages.config files remain.
+- Commit final packages.config cleanup.
 - Keep net10.0 conversion decisions separate from packages.config cleanup.
 - Confirm Api.Express.Utility has no active build/deployment references, then remove it from the active solution.
 - Keep ExpressUI and WorkflowManager.API as legacy net48 projects until a separate ASP.NET Core/System.Web migration strategy is defined.
@@ -329,6 +336,9 @@ Setup / Planning
 - UnitTests app.config contains EF configuration and a WarpDataEntities connection string that may be required for integration tests.
 - UnitTests reference WorkflowManager.API, which remains a legacy net48 System.Web/Web API project.
 - Stress testing projects target net5.0, which is out of support.
+- ExpressUI and WorkflowManager.API remain legacy System.Web projects and require a separate host migration strategy for net10.0.
+- Api.Express.Utility remains legacy until removed from the active solution.
+- Stress testing projects remain SDK-style net5.0 and are deferred.
 - ExpressUI and WorkflowManager.API remain tied to classic ASP.NET/System.Web and require a separate host migration strategy for net10.0.
 - Api.Express.Utility removal must be checked against build, deployment, and packaging references.
 - Physical leftover packages.config files may confuse future inventory checks if not cleaned up.
@@ -499,3 +509,5 @@ Setup / Planning
 - Final inventory shows the active production/support migration slice is substantially complete.
 - Remaining legacy projects are intentional exceptions or pending removal, not missed conversions.
 - Full solution build passed after deleting unreferenced physical packages.config files.
+- Final inventory currently shows one remaining physical-only packages.config in DataTransferObjects.
+- Expected clean inventory after deletion: packages.config physical-only count should be zero.
