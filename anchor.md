@@ -214,6 +214,7 @@ Setup / Planning
 - Built the full solution successfully after removing Api.Express.Utility.
 - Created migration-status.md as a checkpoint summary for the completed migration slice.
 - Completed stress testing successfully after the committed migration slice.
+- Created net10-feasibility-matrix.md documenting current net10.0 feasibility for remaining net48-only and legacy projects.
 
 ## What’s Next
 - Decide the next SDK-style net48-only project to assess for net10.0 feasibility.
@@ -221,6 +222,8 @@ Setup / Planning
 - Keep Windows service/host projects on net48 until a service-hosting strategy and runtime validation approach are defined.
 - Keep WorkflowManager EF6-coupled projects on net48 until EF strategy is decided.
 - Plan ASP.NET Core strategy for ExpressUI and WorkflowManager.API after net48-only SDK-style project feasibility is assessed.
+- Use net10-feasibility-matrix.md to guide future net10.0 project selection.
+- Begin ASP.NET Core strategy planning for ExpressUI and WorkflowManager.API as a separate strategic phase.
 
 ## Risks
 - ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
@@ -232,6 +235,7 @@ Setup / Planning
 
 ## Notes
 - migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
+- net10-feasibility-matrix.md is an assessment artifact and does not replace anchor.md as the source of truth.
 - Recommended next track is net10.0 feasibility review for SDK-style net48-only projects, followed by ASP.NET Core host migration planning.
 - Prepare final commit for inventory cleanup and remaining scope documentation.
 - Run UnitTests using a compatible NUnit 2 runner if available.
