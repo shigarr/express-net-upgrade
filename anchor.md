@@ -202,6 +202,9 @@ Setup / Planning
 - Confirmed 3 projects remain legacy: ExpressUI, WorkflowManager.API, and Api.Express.Utility.
 - Confirmed packages.config is still referenced only by the 3 legacy projects.
 - Removed remaining stale physical packages.config from DataTransferObjects, if deleted successfully.
+- Confirmed Api.Express.Utility is referenced only by its own project file and the master solution.
+- Removed Api.Express.Utility from the active solution, if removal completed successfully.
+- Built the full solution successfully after removing Api.Express.Utility, if completed.
 
 ## What’s Next
 - Delete the remaining unreferenced DataTransferObjects packages.config file if not already done.
@@ -210,6 +213,9 @@ Setup / Planning
 - Commit final packages.config cleanup.
 - Keep net10.0 conversion decisions separate from packages.config cleanup.
 - Confirm Api.Express.Utility has no active build/deployment references, then remove it from the active solution.
+- Rerun final active-solution inventory after removing Api.Express.Utility.
+- Confirm only ExpressUI and WorkflowManager.API remain as intentional legacy net48 projects.
+- Commit the solution cleanup.
 - Keep ExpressUI and WorkflowManager.API as legacy net48 projects until a separate ASP.NET Core/System.Web migration strategy is defined.
 - Defer stress project retargeting from net5.0 until a separate support/test tooling upgrade decision is made.
 - Prepare final commit for inventory cleanup and remaining scope documentation.
@@ -326,6 +332,8 @@ Setup / Planning
 - ExpressUI remains legacy net48.
 - WorkflowManager.API remains legacy net48.
 - Api.Express.Utility is not required for the active migration scope and should be removed from the solution after reference checks.
+- Api.Express.Utility is excluded from the active migration scope and removed from the active solution.
+- ExpressUI and WorkflowManager.API remain intentional legacy net48 System.Web projects.
 - Stress testing projects remain SDK-style net5.0 and are deferred.
 - Physical packages.config files may be deleted from SDK-style projects when they are not referenced by the project file.
 - Removing unreferenced packages.config files from SDK-style projects is cleanup only and does not imply net10.0 readiness.
@@ -432,6 +440,7 @@ Setup / Planning
 - GUI/ExpressUI remains tied to System.Web, Web API, MVC, OWIN, Web.config, Global.asax, Castle Windsor, SignalR, and classic ASP.NET hosting.
 - Removing unused packages from GUI/ExpressUI still requires smoke testing because Web.config and startup behaviour may depend on package side effects.
 - Api.Express.Utility removal must be checked against solution references, build pipelines, deployment scripts, and release packaging before it is removed from the solution.
+- Api.Express.Utility removal should still be checked against any external deployment/release process outside the repository search scope.
 
 ## Notes
 - UnitTests source uses NUnit, ServiceBuilder, WorkflowManager, Factories, and DataTransferObjects.
@@ -506,6 +515,7 @@ Setup / Planning
 - GUI/ExpressUI remains a legacy net48 project after cleanup.
 - SignalR is retained due to Startup.cs usage.
 - Api.Express.Utility is intentionally deferred/ignored because it is not needed in the active Express migration scope.
+- Repository search found no active references to Api.Express.Utility outside its project file and the master solution entry.
 - Final inventory shows the active production/support migration slice is substantially complete.
 - Remaining legacy projects are intentional exceptions or pending removal, not missed conversions.
 - Full solution build passed after deleting unreferenced physical packages.config files.
