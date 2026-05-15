@@ -226,10 +226,14 @@ Setup / Planning
 - Confirm whether the endpoint depends on net48-only WorkflowManager.Domain / DAL / EF6 components before implementation.
 - Do not make ASP.NET Core implementation changes until endpoint inventory and pilot candidate are reviewed.
 
+- Document ServiceBuilder simplification as a future migration-enabler refactoring slice after the first ASP.NET Core pilot strategy is validated.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
 
+- Do not broadly refactor ServiceBuilder during the first ASP.NET Core pilot.
+- Existing net48 hosts will continue using ServiceBuilder unchanged.
+- ASP.NET Core pilot endpoints should avoid direct ServiceBuilder usage where possible and use narrow injectable adapters/query services instead.
 ## Risks
 - ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
 - Static endpoint inventory may miss global filters, inherited behaviour, route conventions, auth, DI, and runtime configuration.
@@ -241,6 +245,7 @@ Setup / Planning
 - WorkflowManager EF6-coupled projects remain blocked from net10.0 until EF strategy is decided.
 - ASP.NET Core migration may change routing, authentication, model binding, configuration, logging, and deployment behaviour if not handled endpoint-by-endpoint.
 
+- ServiceBuilder is a static composition/service-locator pattern that hides configuration, DAL, EF Model, and service construction dependencies, making ASP.NET Core DI migration harder.
 ## Notes
 - migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
 - Recommended pilot endpoint is GET /api/Jobs/{jobId}/HasDlmAnalysisTasks because it is read-only and returns a simple boolean response.
@@ -292,6 +297,7 @@ Setup / Planning
 - Remove Api.Express.Utility from the solution later if confirmed unused.
 - Continue with remaining test/support project assessment after active runtime projects are complete.
 
+- ServiceBuilder simplification is valid but should be handled incrementally to avoid destabilising existing controllers, workers, task creators, getters, and success handlers.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
