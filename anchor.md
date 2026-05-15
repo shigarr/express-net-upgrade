@@ -5,6 +5,9 @@ Setup / Planning
 
 ## What’s Done
 - High-level migration plan defined
+- Created WorkflowManager.API endpoint inventory.
+- Exported endpoint inventory to WorkflowManager.API.endpoint-inventory.csv.
+- Identified JobsController.HasDlmAnalysisTasks as the recommended first ASP.NET Core side-by-side pilot candidate.
 - Governance model defined
 - Executive summary created
 - Solution structure snapshot completed
@@ -218,8 +221,9 @@ Setup / Planning
 - Created aspnetcore-host-migration-strategy.md to document migration options for ExpressUI and WorkflowManager.API.
 
 ## What’s Next
-- Create a WorkflowManager.API endpoint inventory.
-- Identify one low-risk read-only endpoint as a side-by-side ASP.NET Core pilot candidate.
+- Create workflowmanager-api-pilot-endpoint.md documenting the selected pilot endpoint and validation requirements.
+- Manually inspect JobsController.HasDlmAnalysisTasks implementation and dependency chain.
+- Confirm whether the endpoint depends on net48-only WorkflowManager.Domain / DAL / EF6 components before implementation.
 - Do not make ASP.NET Core implementation changes until endpoint inventory and pilot candidate are reviewed.
 
 ## Active Decisions
@@ -228,6 +232,8 @@ Setup / Planning
 
 ## Risks
 - ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
+- Static endpoint inventory may miss global filters, inherited behaviour, route conventions, auth, DI, and runtime configuration.
+- Recommended pilot endpoint still requires manual dependency and behaviour verification before code changes.
 - Workers has a known future net10.0 blocker due to JavaScriptSerializer/System.Web.Extensions usage.
 - HydraJobWorker error-message JSON may differ slightly because serialization changed from JavaScriptSerializer to Newtonsoft.Json.
 - Hydra worker error-path behaviour should be included in regression testing.
@@ -237,6 +243,7 @@ Setup / Planning
 
 ## Notes
 - migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
+- Recommended pilot endpoint is GET /api/Jobs/{jobId}/HasDlmAnalysisTasks because it is read-only and returns a simple boolean response.
 - net10-feasibility-matrix.md is an assessment artifact and does not replace anchor.md as the source of truth.
 - aspnetcore-host-migration-strategy.md is a planning artifact and does not replace anchor.md.
 - Recommended next track is net10.0 feasibility review for SDK-style net48-only projects, followed by ASP.NET Core host migration planning.
