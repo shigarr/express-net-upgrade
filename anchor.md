@@ -163,6 +163,10 @@ Setup / Planning
 - Built WorkflowManager.DAL.EF successfully.
 - Built WorkflowManager.DAL, WorkflowManager.Domain, WorkflowManager.API where practical, and the full solution successfully after WorkflowManager.DAL.EF conversion.
 - Smoke-tested WorkflowManager.DAL.EF successfully.
+- Multi-targeted WorkflowManager.DAL.EF to net48 and net10.0.
+- Retained EntityFramework 6.5.2 for WorkflowManager.DAL.EF.
+- Built WorkflowManager.DAL.EF successfully after multi-targeting.
+- Smoke-tested WorkflowManager EF-backed paths successfully after WorkflowManager.DAL.EF multi-targeting.
 - Converted WorkflowManager.Domain to SDK-style targeting net48.
 - Preserved WorkflowManager.Domain System.Configuration usage and App.config.
 - Removed unused WorkflowManager.Domain package references and packages.config.
@@ -221,13 +225,16 @@ Setup / Planning
 - Created aspnetcore-host-migration-strategy.md to document migration options for ExpressUI and WorkflowManager.API.
 
 ## What’s Next
-- Upgrade WorkflowManager.DAL.EF EntityFramework package to latest stable EF6 while keeping net48.
-- Build WorkflowManager.DAL.EF, WorkflowManager.DAL, WorkflowManager.Domain, WorkflowManager.API, and the full solution.
-- Smoke-test WorkflowManager paths after the EF6 package upgrade.
-- If successful, attempt net48/net10.0 multi-targeting for WorkflowManager.DAL.EF, then WorkflowManager.DAL, then WorkflowManager.Domain.
+- Commit WorkflowManager.DAL.EF net48/net10.0 multi-targeting if not already committed.
+- Attempt WorkflowManager.DAL multi-targeting to net48 and net10.0.
+- Apply target-specific SQL provider handling in WorkflowManager.DAL if required.
+- Build WorkflowManager.DAL, WorkflowManager.Domain, WorkflowManager.API, and the full solution after WorkflowManager.DAL multi-targeting.
+- Smoke-test WorkflowManager Dapper and EF-backed paths after WorkflowManager.DAL multi-targeting.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
+- WorkflowManager.DAL.EF now supports net48 and net10.0 using EF6.5.2.
+- Continue WorkflowManager supporting-library enablement before returning to ASP.NET Core API pilot implementation.
 
 - Do not broadly refactor ServiceBuilder during the first ASP.NET Core pilot.
 - Existing net48 hosts will continue using ServiceBuilder unchanged.
@@ -254,10 +261,13 @@ Setup / Planning
 - EF6 to EF Core is not a drop-in package upgrade; it is a behavioural migration requiring model, query, configuration, and runtime validation.
 - ASP.NET Core migration may change routing, authentication, model binding, configuration, logging, and deployment behaviour if not handled endpoint-by-endpoint.
 - Upgrading EF6 and changing target frameworks may affect provider configuration, connection creation, lazy loading/proxy behaviour, query execution, and runtime exceptions.
+- WorkflowManager.DAL may expose net10.0 issues around System.Data.SqlClient, Dapper version compatibility, EF model/type coupling, and stored-procedure wrappers.
+- WorkflowManager Dapper and EF-backed runtime behaviour must be smoke-tested after WorkflowManager.DAL multi-targeting.
 
 - ServiceBuilder is a static composition/service-locator pattern that hides configuration, DAL, EF Model, and service construction dependencies, making ASP.NET Core DI migration harder.
 - SprotoDal is a broad DAL/service-locator-style dependency surface and makes ASP.NET Core DI migration harder.
 ## Notes
+- EF6.5.2 has been validated for WorkflowManager.DAL.EF on net48 and net10.0 in the current branch.
 - migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
 - Recommended pilot endpoint is GET /api/Jobs/{jobId}/HasDlmAnalysisTasks because it is read-only and returns a simple boolean response.
 - net10-feasibility-matrix.md is an assessment artifact and does not replace anchor.md as the source of truth.
