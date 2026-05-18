@@ -225,6 +225,9 @@ Setup / Planning
 - Manually inspect JobsController.HasDlmAnalysisTasks implementation and dependency chain.
 - Confirm whether the endpoint depends on net48-only WorkflowManager.Domain / DAL / EF6 components before implementation.
 - Do not make ASP.NET Core implementation changes until endpoint inventory and pilot candidate are reviewed.
+- Continue planning the HasDlmAnalysisTasks pilot using a narrow net10-compatible read-only query.
+- Document future SprotoDal decomposition candidates such as JobDal, TaskDal, ErrorDal, SystemsDal, ImportDal, and PriorityDal.
+- Defer EF Core migration strategy until after ASP.NET Core pilot boundaries are proven.
 
 - Document ServiceBuilder simplification as a future migration-enabler refactoring slice after the first ASP.NET Core pilot strategy is validated.
 ## Active Decisions
@@ -234,6 +237,10 @@ Setup / Planning
 - Do not broadly refactor ServiceBuilder during the first ASP.NET Core pilot.
 - Existing net48 hosts will continue using ServiceBuilder unchanged.
 - ASP.NET Core pilot endpoints should avoid direct ServiceBuilder usage where possible and use narrow injectable adapters/query services instead.
+- Do not migrate WorkflowManager EF6 to EF Core as part of the first ASP.NET Core pilot.
+- Do not inject SprotoDal directly into the first ASP.NET Core pilot endpoint.
+- Use a narrow query/adapter for the HasDlmAnalysisTasks pilot endpoint.
+- Treat SprotoDal decomposition as a future migration-enabler refactoring slice.
 ## Risks
 - ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
 - Static endpoint inventory may miss global filters, inherited behaviour, route conventions, auth, DI, and runtime configuration.
@@ -243,9 +250,11 @@ Setup / Planning
 - Hydra worker error-path behaviour should be included in regression testing.
 - Windows service/host projects should not be moved to net10.0 until service hosting and runtime validation strategy is defined.
 - WorkflowManager EF6-coupled projects remain blocked from net10.0 until EF strategy is decided.
+- EF6 to EF Core is not a drop-in package upgrade; it is a behavioural migration requiring model, query, configuration, and runtime validation.
 - ASP.NET Core migration may change routing, authentication, model binding, configuration, logging, and deployment behaviour if not handled endpoint-by-endpoint.
 
 - ServiceBuilder is a static composition/service-locator pattern that hides configuration, DAL, EF Model, and service construction dependencies, making ASP.NET Core DI migration harder.
+- SprotoDal is a broad DAL/service-locator-style dependency surface and makes ASP.NET Core DI migration harder.
 ## Notes
 - migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
 - Recommended pilot endpoint is GET /api/Jobs/{jobId}/HasDlmAnalysisTasks because it is read-only and returns a simple boolean response.
@@ -258,6 +267,7 @@ Setup / Planning
 - Defer stress testing project retargeting until a separate support/test tooling upgrade decision is made.
 - Review remaining active solution projects for any legacy csproj or packages.config usage.
 - Prepare a final migration status summary for the completed slice.
+- EF Core migration and SprotoDal decomposition are valid future improvements but should be handled separately from the first ASP.NET Core pilot to preserve migration safety.
 - Continue avoiding framework upgrades for test projects until runtime/test-runner compatibility is confirmed.
 - Review remaining visible solution projects to confirm whether any legacy csproj/packages.config projects are still pending.
 - Continue build-only validation labelling for non-integrated host/daemon projects.
