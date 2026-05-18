@@ -221,16 +221,10 @@ Setup / Planning
 - Created aspnetcore-host-migration-strategy.md to document migration options for ExpressUI and WorkflowManager.API.
 
 ## What’s Next
-- Create workflowmanager-api-pilot-endpoint.md documenting the selected pilot endpoint and validation requirements.
-- Manually inspect JobsController.HasDlmAnalysisTasks implementation and dependency chain.
-- Confirm whether the endpoint depends on net48-only WorkflowManager.Domain / DAL / EF6 components before implementation.
-- Do not make ASP.NET Core implementation changes until endpoint inventory and pilot candidate are reviewed.
-- Continue planning the HasDlmAnalysisTasks pilot using a narrow net10-compatible read-only query.
-- Document future SprotoDal decomposition candidates such as JobDal, TaskDal, ErrorDal, SystemsDal, ImportDal, and PriorityDal.
-- Defer EF Core migration strategy until after ASP.NET Core pilot boundaries are proven.
-- Consider a separate EF6 modernisation spike: upgrade WorkflowManager.DAL.EF from EF6.1.3 to the latest supported EF6 line, validate on net48, then attempt net48/net10.0 multi-targeting for DAL.EF, DAL, and Domain.
-
-- Document ServiceBuilder simplification as a future migration-enabler refactoring slice after the first ASP.NET Core pilot strategy is validated.
+- Upgrade WorkflowManager.DAL.EF EntityFramework package to latest stable EF6 while keeping net48.
+- Build WorkflowManager.DAL.EF, WorkflowManager.DAL, WorkflowManager.Domain, WorkflowManager.API, and the full solution.
+- Smoke-test WorkflowManager paths after the EF6 package upgrade.
+- If successful, attempt net48/net10.0 multi-targeting for WorkflowManager.DAL.EF, then WorkflowManager.DAL, then WorkflowManager.Domain.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -244,6 +238,10 @@ Setup / Planning
 - Treat SprotoDal decomposition as a future migration-enabler refactoring slice.
 - Treat WorkflowManager EF6 net10.0 support as a separate EF6 modernisation spike, not part of the first ASP.NET Core pilot endpoint implementation.
 - Do not assume WorkflowManager.DAL is permanently net48-only until an EF6 modernisation spike has been attempted.
+- Start a dedicated WorkflowManager EF6 modernisation spike before implementing the ASP.NET Core pilot endpoint.
+- First upgrade WorkflowManager.DAL.EF from EF6.1.3 to the latest stable EF6 package while keeping net48.
+- Do not switch to EF Core during this spike.
+- Do not broadly refactor SprotoDal or ServiceBuilder during the first EF6 modernisation step.
 ## Risks
 - ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
 - Static endpoint inventory may miss global filters, inherited behaviour, route conventions, auth, DI, and runtime configuration.
@@ -485,6 +483,9 @@ Setup / Planning
 - WorkflowManager.DAL runtime behaviour still needs validation for Dapper stored-procedure wrappers and EF-coupled paths.
 - WorkflowManager net10.0 targeting is blocked or high-risk until the EF6 strategy is decided.
 - WorkflowManager.DAL.EF remains EF6-coupled and blocks direct net10.0 targeting.
+- EF6 package upgrade may expose provider, configuration, connection, lazy-loading, proxy, query, or runtime behaviour differences.
+- WorkflowManager.DAL and WorkflowManager.Domain depend on WorkflowManager.DAL.EF, so EF changes may ripple through the WorkflowManager stack.
+- EF6 net10.0 feasibility is not proven until DAL.EF, DAL, and Domain build and smoke-test successfully.
 - EF model/database runtime behaviour must remain under regression coverage beyond smoke testing.
 - WorkflowManager.Domain runtime behaviour still needs validation for ServiceBuilder, TaskCreator, TaskGetter, and TaskSuccessHandler paths if not already smoke-tested.
 - WorkflowManager.API is a higher-risk System.Web/Web API/OWIN host project and may require special handling.
@@ -569,6 +570,8 @@ Setup / Planning
 - WorkflowManager.API cleanup was build-tested and smoke-tested successfully.
 - WebGrease was intentionally retained because System.Web.Optimization / BundleConfig remain present.
 - Recommended immediate action for GUI/ExpressUI is safe dependency cleanup only, not project format conversion.
+- EF6 itself is not treated as a permanent net10.0 blocker; the current blocker is the existing EF6.1.3/configuration/project-coupling setup.
+- ASP.NET Core pilot implementation is deferred until the WorkflowManager supporting project feasibility spike is attempted.
 - Potential cleanup candidates require validation: Application Insights, Identity/social auth, SignalR, Swashbuckle, Unity/Autofac, and EntityFramework.
 - GUI/ExpressUI remains a legacy net48 project after cleanup.
 - SignalR is retained due to Startup.cs usage.
