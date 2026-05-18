@@ -228,6 +228,7 @@ Setup / Planning
 - Continue planning the HasDlmAnalysisTasks pilot using a narrow net10-compatible read-only query.
 - Document future SprotoDal decomposition candidates such as JobDal, TaskDal, ErrorDal, SystemsDal, ImportDal, and PriorityDal.
 - Defer EF Core migration strategy until after ASP.NET Core pilot boundaries are proven.
+- Consider a separate EF6 modernisation spike: upgrade WorkflowManager.DAL.EF from EF6.1.3 to the latest supported EF6 line, validate on net48, then attempt net48/net10.0 multi-targeting for DAL.EF, DAL, and Domain.
 
 - Document ServiceBuilder simplification as a future migration-enabler refactoring slice after the first ASP.NET Core pilot strategy is validated.
 ## Active Decisions
@@ -241,6 +242,8 @@ Setup / Planning
 - Do not inject SprotoDal directly into the first ASP.NET Core pilot endpoint.
 - Use a narrow query/adapter for the HasDlmAnalysisTasks pilot endpoint.
 - Treat SprotoDal decomposition as a future migration-enabler refactoring slice.
+- Treat WorkflowManager EF6 net10.0 support as a separate EF6 modernisation spike, not part of the first ASP.NET Core pilot endpoint implementation.
+- Do not assume WorkflowManager.DAL is permanently net48-only until an EF6 modernisation spike has been attempted.
 ## Risks
 - ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
 - Static endpoint inventory may miss global filters, inherited behaviour, route conventions, auth, DI, and runtime configuration.
@@ -252,6 +255,7 @@ Setup / Planning
 - WorkflowManager EF6-coupled projects remain blocked from net10.0 until EF strategy is decided.
 - EF6 to EF Core is not a drop-in package upgrade; it is a behavioural migration requiring model, query, configuration, and runtime validation.
 - ASP.NET Core migration may change routing, authentication, model binding, configuration, logging, and deployment behaviour if not handled endpoint-by-endpoint.
+- Upgrading EF6 and changing target frameworks may affect provider configuration, connection creation, lazy loading/proxy behaviour, query execution, and runtime exceptions.
 
 - ServiceBuilder is a static composition/service-locator pattern that hides configuration, DAL, EF Model, and service construction dependencies, making ASP.NET Core DI migration harder.
 - SprotoDal is a broad DAL/service-locator-style dependency surface and makes ASP.NET Core DI migration harder.
@@ -273,6 +277,7 @@ Setup / Planning
 - Continue build-only validation labelling for non-integrated host/daemon projects.
 - Identify the next migration slice only after confirming the remaining project inventory.
 - Assess Workers net48/net10.0 multi-targeting later after JavaScriptSerializer usage is reviewed.
+- EF6 itself is not necessarily a permanent blocker for net10.0; the current blocker is the WorkflowManager EF6.1.3 setup, App.config/Web.config-style configuration, and EF model coupling across WorkflowManager.DAL.EF, WorkflowManager.DAL, and WorkflowManager.Domain.
 - Review HydraJobWorker.cs JavaScriptSerializer usage as a future net10.0 compatibility blocker.
 - The previous Workers net10.0 blocker was limited to JavaScriptSerializer usage in HydraJobWorker.cs.
 - The JavaScriptSerializer usage was serialization-only and used for task error diagnostic text.
