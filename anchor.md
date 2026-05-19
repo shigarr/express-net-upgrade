@@ -230,11 +230,12 @@ Setup / Planning
 - Created aspnetcore-host-migration-strategy.md to document migration options for ExpressUI and WorkflowManager.API.
 
 ## What’s Next
-- Commit WorkflowManager.DAL net48/net10.0 multi-targeting if not already committed.
-- Attempt WorkflowManager.Domain multi-targeting to net48 and net10.0.
-- Preserve WorkflowManager.Domain System.Configuration / ConfigurationManager behaviour using target-specific configuration handling.
-- Build WorkflowManager.Domain, WorkflowManager.API, and the full solution after WorkflowManager.Domain multi-targeting.
-- Smoke-test representative WorkflowManager domain/service paths after WorkflowManager.Domain multi-targeting.
+- Commit WorkflowManager.Domain net48/net10.0 multi-targeting if not already committed.
+- Create WorkflowManager.API.CorePilot targeting net10.0.
+- Reference WorkflowManager.Domain from the pilot project.
+- Implement GET /api/Jobs/{jobId}/HasDlmAnalysisTasks as the first side-by-side endpoint.
+- Validate whether the ASP.NET Core pilot can call WorkflowManager.Domain successfully.
+- Compare pilot endpoint behaviour against the legacy WorkflowManager.API endpoint.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -242,6 +243,11 @@ Setup / Planning
 - Continue WorkflowManager supporting-library enablement before returning to ASP.NET Core API pilot implementation.
 - WorkflowManager.DAL now supports net48 and net10.0.
 - WorkflowManager supporting-library enablement continues before returning to ASP.NET Core API pilot implementation.
+
+- Begin WorkflowManager.API ASP.NET Core side-by-side pilot now that WorkflowManager.DAL.EF, WorkflowManager.DAL, and WorkflowManager.Domain support net48 and net10.0.
+- Do not modify or replace the existing legacy WorkflowManager.API project during the first pilot.
+- Create a separate ASP.NET Core net10.0 pilot project for the first endpoint.
+- First pilot endpoint remains GET /api/Jobs/{jobId}/HasDlmAnalysisTasks.
 
 - Do not broadly refactor ServiceBuilder during the first ASP.NET Core pilot.
 - Existing net48 hosts will continue using ServiceBuilder unchanged.
@@ -257,6 +263,9 @@ Setup / Planning
 - Do not switch to EF Core during this spike.
 - Do not broadly refactor SprotoDal or ServiceBuilder during the first EF6 modernisation step.
 ## Risks
+- WorkflowManager.API.CorePilot may expose configuration, DI, EF6, SQL provider, or runtime behaviour issues when WorkflowManager.Domain is called from ASP.NET Core.
+- ServiceBuilder remains a static composition pattern and may need later DI-oriented refactoring.
+- The legacy WorkflowManager.API remains System.Web/Web API/OWIN based and is not being replaced by the first pilot.
 - ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
 - Static endpoint inventory may miss global filters, inherited behaviour, route conventions, auth, DI, and runtime configuration.
 - Recommended pilot endpoint still requires manual dependency and behaviour verification before code changes.
@@ -274,6 +283,7 @@ Setup / Planning
 - ServiceBuilder is a static composition/service-locator pattern that hides configuration, DAL, EF Model, and service construction dependencies, making ASP.NET Core DI migration harder.
 - SprotoDal is a broad DAL/service-locator-style dependency surface and makes ASP.NET Core DI migration harder.
 ## Notes
+- The first ASP.NET Core pilot is intended to prove host-to-domain feasibility, not to complete WorkflowManager.API migration.
 - EF6.5.2 has been validated for WorkflowManager.DAL.EF on net48 and net10.0 in the current branch.
 - migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
 - Recommended pilot endpoint is GET /api/Jobs/{jobId}/HasDlmAnalysisTasks because it is read-only and returns a simple boolean response.
