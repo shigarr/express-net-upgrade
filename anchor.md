@@ -233,6 +233,11 @@ Setup / Planning
 - Separated EF and non-EF connection strings for the ASP.NET Core pilot.
 - Preserved EF connection behaviour with MultipleActiveResultSets=True for Model / DbContext usage.
 - Confirmed the legacy WorkflowManager path is working again.
+- Added PriorityController to WorkflowManager.API.Core.
+- Added GET /api/PriorityByJobSize/{jobSize} to the ASP.NET Core pilot.
+- Added GET /api/PriorityByPriorityId/{priorityId} to the ASP.NET Core pilot.
+- Registered the required priority service dependency path in ASP.NET Core DI.
+- Tested both PriorityController pilot endpoints successfully.
 ## What’s Next
 - Commit WorkflowManager.Domain net48/net10.0 multi-targeting if not already committed.
 - Create WorkflowManager.API.CorePilot targeting net10.0.
@@ -243,6 +248,9 @@ Setup / Planning
 - Re-test the WorkflowManager.API.Core HasDlmAnalysisTasks pilot endpoint after separating EF and non-EF connection strings.
 - Confirm ASP.NET Core pilot uses the EF-specific connection string for Model construction.
 - Document the connection string convention for WorkflowManager: EF connection string versus Dapper/direct SQL connection string.
+- Compare PriorityController pilot responses with the legacy WorkflowManager.API responses for representative values if not already completed.
+- Begin standardising reusable ASP.NET Core pilot patterns for DI registration, JSON serialization, error handling, and logging.
+- Select the next read-only WorkflowManager.API endpoint candidate after reviewing pilot pattern reuse.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -441,6 +449,8 @@ Setup / Planning
 - UnitTests reference WorkflowManager.API, which remains a legacy net48 System.Web/Web API project.
 - Stress testing projects target net5.0, which is out of support.
 - ExpressUI and WorkflowManager.API remain legacy System.Web projects and require a separate host migration strategy for net10.0.
+- PriorityController pilot endpoints return object responses, so JSON shape/casing/null/date behaviour should remain under comparison testing.
+- ASP.NET Core pilot error handling and logging may not yet match legacy AbstractController behaviour.
 - Api.Express.Utility remains legacy until removed from the active solution.
 - Stress testing projects remain SDK-style net5.0 and are deferred.
 - ExpressUI and WorkflowManager.API remain tied to classic ASP.NET/System.Web and require a separate host migration strategy for net10.0.
@@ -547,6 +557,8 @@ Setup / Planning
 ## Notes
 - UnitTests source uses NUnit, ServiceBuilder, WorkflowManager, Factories, and DataTransferObjects.
 - UnitTests has no source usage of EPPlus or Newtonsoft.Json.
+- WorkflowManager.API.Core now contains multiple tested side-by-side pilot endpoints.
+- The ASP.NET Core pilot pattern is expanding beyond a single endpoint.
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
 - Source code and project files will be provided manually by the user
