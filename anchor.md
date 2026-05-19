@@ -167,6 +167,11 @@ Setup / Planning
 - Retained EntityFramework 6.5.2 for WorkflowManager.DAL.EF.
 - Built WorkflowManager.DAL.EF successfully after multi-targeting.
 - Smoke-tested WorkflowManager EF-backed paths successfully after WorkflowManager.DAL.EF multi-targeting.
+- Multi-targeted WorkflowManager.DAL to net48 and net10.0.
+- Retained EntityFramework 6.5.2 for WorkflowManager.DAL EF model/type compatibility.
+- Used target-specific Dapper and SQL client dependencies in WorkflowManager.DAL.
+- Built WorkflowManager.DAL successfully after multi-targeting.
+- Smoke-tested WorkflowManager Dapper and EF-backed paths successfully after WorkflowManager.DAL multi-targeting.
 - Converted WorkflowManager.Domain to SDK-style targeting net48.
 - Preserved WorkflowManager.Domain System.Configuration usage and App.config.
 - Removed unused WorkflowManager.Domain package references and packages.config.
@@ -225,16 +230,18 @@ Setup / Planning
 - Created aspnetcore-host-migration-strategy.md to document migration options for ExpressUI and WorkflowManager.API.
 
 ## What’s Next
-- Commit WorkflowManager.DAL.EF net48/net10.0 multi-targeting if not already committed.
-- Attempt WorkflowManager.DAL multi-targeting to net48 and net10.0.
-- Apply target-specific SQL provider handling in WorkflowManager.DAL if required.
-- Build WorkflowManager.DAL, WorkflowManager.Domain, WorkflowManager.API, and the full solution after WorkflowManager.DAL multi-targeting.
-- Smoke-test WorkflowManager Dapper and EF-backed paths after WorkflowManager.DAL multi-targeting.
+- Commit WorkflowManager.DAL net48/net10.0 multi-targeting if not already committed.
+- Attempt WorkflowManager.Domain multi-targeting to net48 and net10.0.
+- Preserve WorkflowManager.Domain System.Configuration / ConfigurationManager behaviour using target-specific configuration handling.
+- Build WorkflowManager.Domain, WorkflowManager.API, and the full solution after WorkflowManager.Domain multi-targeting.
+- Smoke-test representative WorkflowManager domain/service paths after WorkflowManager.Domain multi-targeting.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
 - WorkflowManager.DAL.EF now supports net48 and net10.0 using EF6.5.2.
 - Continue WorkflowManager supporting-library enablement before returning to ASP.NET Core API pilot implementation.
+- WorkflowManager.DAL now supports net48 and net10.0.
+- WorkflowManager supporting-library enablement continues before returning to ASP.NET Core API pilot implementation.
 
 - Do not broadly refactor ServiceBuilder during the first ASP.NET Core pilot.
 - Existing net48 hosts will continue using ServiceBuilder unchanged.
@@ -491,6 +498,8 @@ Setup / Planning
 - GUI/ExpressUI and WorkflowManager.API remain high-risk due to System.Web, Web API, OWIN, and web.config dependencies.
 - WorkflowManager.DAL has EF6 model/type coupling through WorkflowManager.DAL.EF.
 - WorkflowManager.DAL runtime behaviour still needs validation for Dapper stored-procedure wrappers and EF-coupled paths.
+- WorkflowManager.DAL has target-specific Dapper and SQL client dependencies, which require continued regression coverage.
+- WorkflowManager.Domain may expose net10.0 issues around ConfigurationManager, ServiceBuilder, and EF/DAL dependency usage.
 - WorkflowManager net10.0 targeting is blocked or high-risk until the EF6 strategy is decided.
 - WorkflowManager.DAL.EF remains EF6-coupled and blocks direct net10.0 targeting.
 - EF6 package upgrade may expose provider, configuration, connection, lazy-loading, proxy, query, or runtime behaviour differences.
@@ -574,6 +583,7 @@ Setup / Planning
 - WorkflowManager.DAL conversion required EntityFramework 6.1.3 because DbSet<> types were exposed through referenced EF model types.
 - Next WorkflowManager target is WorkflowManager.DAL.EF.
 - WorkflowManager.DAL and WorkflowManager.DAL.EF are now SDK-style net48 and have been build-validated.
+- WorkflowManager.DAL.EF and WorkflowManager.DAL now both support net48 and net10.0 using EF6.5.2.
 - WorkflowManager.DAL.EF smoke testing completed successfully.
 - WorkflowManager.DAL, WorkflowManager.DAL.EF, and WorkflowManager.Domain are now SDK-style net48.
 - Next WorkflowManager target is assessment of WorkflowManager.API, not immediate conversion.
