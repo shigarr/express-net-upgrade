@@ -250,6 +250,11 @@ Setup / Planning
 - Tested UserController.Get successfully.
 - Added ExpressImportDetailsController.Get to WorkflowManager.API.Core.
 - Tested ExpressImportDetailsController.Get successfully.
+- Added RunningTasksController to WorkflowManager.API.Core.
+- Implemented and tested RunningTasksController.Get successfully.
+- Added a TaskGetter factory to support WorkerType-based ITaskGetter selection in ASP.NET Core DI.
+- Preserved the legacy ServiceBuilder.InstantiateTaskGetter mapping behaviour in the ASP.NET Core pilot.
+
 ## What’s Next
 - Commit the current WorkflowManager.API.Core read-only endpoint expansion.
 - Review remaining read-only endpoint candidates before moving to POST/request-body endpoints.
@@ -271,6 +276,9 @@ Setup / Planning
 - Select the next read-only WorkflowManager.API endpoint candidate after reviewing pilot pattern reuse.
 - Continue adding low-risk read-only WorkflowManager.API.Core endpoints before introducing full logging integration.
 - Plan a future Amlin.Logging ASP.NET Core integration slice for global request/exception logging.
+- Continue migrating read-only WorkflowManager.API.Core endpoints.
+- Review remaining endpoints that require factory-style runtime selection.
+- Defer TaskGetter factory cleanup until more endpoint migration patterns are known.
 
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
@@ -303,6 +311,9 @@ Setup / Planning
 - Do not add MultipleActiveResultSets=True to non-EF connection strings unless a specific path requires it.
 - WorkflowManager.API.Core should use Amlin.Logging for cross-layer logging rather than introducing a separate direct Serilog setup.
 - ASP.NET Core-specific logging integration for Amlin.Logging will be handled as a separate slice.
+- Keep the new TaskGetter factory in the ASP.NET Core pilot for now.
+- Do not refactor the TaskGetter factory or ServiceBuilder abstraction until more migration patterns are proven.
+
 ## Risks
 - WorkflowManager.API.CorePilot may expose configuration, DI, EF6, SQL provider, or runtime behaviour issues when WorkflowManager.Domain is called from ASP.NET Core.
 - ServiceBuilder remains a static composition pattern and may need later DI-oriented refactoring.
@@ -328,6 +339,8 @@ Setup / Planning
 - Amlin.Logging net10.0 currently provides core logging only; ASP.NET Core middleware/global exception integration still needs to be designed.
 - Introducing direct Serilog setup in WorkflowManager.API.Core could create inconsistent logging patterns across layers.
 - ExpressImportDetailsController.Get may return more complex detail DTOs, so response-shape comparison with legacy WorkflowManager.API should remain under testing.
+- The TaskGetter factory duplicates ServiceBuilder.InstantiateTaskGetter mapping logic and may need consolidation later.
+- Runtime factory mappings must remain aligned with legacy ServiceBuilder behaviour.
 
 ## Notes
 - WorkflowManager.API.Core now includes a broader set of tested read-only endpoints.
@@ -388,6 +401,8 @@ Setup / Planning
 - ServiceBuilder simplification is valid but should be handled incrementally to avoid destabilising existing controllers, workers, task creators, getters, and success handlers.
 - The legacy application already used different connection string behaviour for EF and non-EF paths.
 - The ASP.NET Core pilot should mirror that separation rather than collapsing to a single connection string.
+- RunningTasksController introduced the first ASP.NET Core pilot factory pattern for runtime service selection.
+
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
