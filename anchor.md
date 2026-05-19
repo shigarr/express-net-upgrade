@@ -238,6 +238,11 @@ Setup / Planning
 - Added GET /api/PriorityByPriorityId/{priorityId} to the ASP.NET Core pilot.
 - Registered the required priority service dependency path in ASP.NET Core DI.
 - Tested both PriorityController pilot endpoints successfully.
+- Added global exception handling to WorkflowManager.API.Core.
+- Removed controller-level try/catch boilerplate from WorkflowManager.API.Core pilot controllers.
+- Added EventRateSchemeController to WorkflowManager.API.Core.
+- Added GET /api/EventRateScheme/{modelRegionCode} to the ASP.NET Core pilot.
+- Tested the EventRateSchemeController pilot endpoint successfully.
 ## What’s Next
 - Commit WorkflowManager.Domain net48/net10.0 multi-targeting if not already committed.
 - Create WorkflowManager.API.CorePilot targeting net10.0.
@@ -451,6 +456,8 @@ Setup / Planning
 - ExpressUI and WorkflowManager.API remain legacy System.Web projects and require a separate host migration strategy for net10.0.
 - PriorityController pilot endpoints return object responses, so JSON shape/casing/null/date behaviour should remain under comparison testing.
 - ASP.NET Core pilot error handling and logging may not yet match legacy AbstractController behaviour.
+- WorkflowManager.API.Core global exception response may not yet match legacy WorkflowManager.API error response shape.
+- Structured exception logging still needs to be standardised.
 - Api.Express.Utility remains legacy until removed from the active solution.
 - Stress testing projects remain SDK-style net5.0 and are deferred.
 - ExpressUI and WorkflowManager.API remain tied to classic ASP.NET/System.Web and require a separate host migration strategy for net10.0.
@@ -558,6 +565,7 @@ Setup / Planning
 - UnitTests source uses NUnit, ServiceBuilder, WorkflowManager, Factories, and DataTransferObjects.
 - UnitTests has no source usage of EPPlus or Newtonsoft.Json.
 - WorkflowManager.API.Core now contains multiple tested side-by-side pilot endpoints.
+- WorkflowManager.API.Core now has multiple tested read-only pilot endpoints and a shared exception-handling pattern.
 - The ASP.NET Core pilot pattern is expanding beyond a single endpoint.
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
