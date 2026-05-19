@@ -246,7 +246,12 @@ Setup / Planning
 - Added RiskLinkServersController to WorkflowManager.API.Core.
 - Added GET /api/RiskLinkServers to the ASP.NET Core pilot.
 - Tested RiskLinkServersController.Get successfully.
+- Added UserController.Get to WorkflowManager.API.Core.
+- Tested UserController.Get successfully.
 ## What’s Next
+- Assess and implement ExpressImportDetailsController.Get as the next read-only WorkflowManager.API.Core endpoint candidate.
+- Continue comparing response shapes between legacy WorkflowManager.API and WorkflowManager.API.Core where practical.
+- Avoid POST/request-body endpoints until the remaining simple read-only candidates are reviewed.
 - Commit WorkflowManager.Domain net48/net10.0 multi-targeting if not already committed.
 - Create WorkflowManager.API.CorePilot targeting net10.0.
 - Reference WorkflowManager.Domain from the pilot project.
@@ -575,6 +580,7 @@ Setup / Planning
 - Api.Express.Utility removal must be checked against solution references, build pipelines, deployment scripts, and release packaging before it is removed from the solution.
 - Api.Express.Utility removal should still be checked against any external deployment/release process outside the repository search scope.
 - ExpressUI and WorkflowManager.API remain blocked from direct net10.0 migration by classic ASP.NET/System.Web dependencies.
+- UserController.Get may expose user-related response-shape or auth assumptions that should remain under comparison testing.
 
 ## Notes
 - UnitTests source uses NUnit, ServiceBuilder, WorkflowManager, Factories, and DataTransferObjects.
@@ -582,6 +588,7 @@ Setup / Planning
 - WorkflowManager.API.Core now contains multiple tested side-by-side pilot endpoints.
 - WorkflowManager.API.Core now has multiple tested read-only pilot endpoints and a shared exception-handling pattern.
 - WorkflowManager.API.Core now has several tested read-only endpoints using the shared IDatabaseService dependency path.
+- WorkflowManager.API.Core now includes tested read-only endpoints for Jobs, Priority, EventRateScheme, RiskLinkServers, Class, and User.
 - The ASP.NET Core pilot pattern is expanding beyond a single endpoint.
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
