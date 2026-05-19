@@ -229,6 +229,10 @@ Setup / Planning
 - Created net10-feasibility-matrix.md documenting current net10.0 feasibility for remaining net48-only and legacy projects.
 - Created aspnetcore-host-migration-strategy.md to document migration options for ExpressUI and WorkflowManager.API.
 
+- Fixed WorkflowManager legacy path regression caused by EF connection string behaviour.
+- Separated EF and non-EF connection strings for the ASP.NET Core pilot.
+- Preserved EF connection behaviour with MultipleActiveResultSets=True for Model / DbContext usage.
+- Confirmed the legacy WorkflowManager path is working again.
 ## What’s Next
 - Commit WorkflowManager.Domain net48/net10.0 multi-targeting if not already committed.
 - Create WorkflowManager.API.CorePilot targeting net10.0.
@@ -236,6 +240,9 @@ Setup / Planning
 - Implement GET /api/Jobs/{jobId}/HasDlmAnalysisTasks as the first side-by-side endpoint.
 - Validate whether the ASP.NET Core pilot can call WorkflowManager.Domain successfully.
 - Compare pilot endpoint behaviour against the legacy WorkflowManager.API endpoint.
+- Re-test the WorkflowManager.API.Core HasDlmAnalysisTasks pilot endpoint after separating EF and non-EF connection strings.
+- Confirm ASP.NET Core pilot uses the EF-specific connection string for Model construction.
+- Document the connection string convention for WorkflowManager: EF connection string versus Dapper/direct SQL connection string.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -262,6 +269,9 @@ Setup / Planning
 - First upgrade WorkflowManager.DAL.EF from EF6.1.3 to the latest stable EF6 package while keeping net48.
 - Do not switch to EF Core during this spike.
 - Do not broadly refactor SprotoDal or ServiceBuilder during the first EF6 modernisation step.
+- Keep EF and Dapper/direct SQL connection strings separate.
+- Use the EF-specific connection string with MultipleActiveResultSets=True for WorkflowManager.DAL.EF Model / DbContext.
+- Do not add MultipleActiveResultSets=True to non-EF connection strings unless a specific path requires it.
 ## Risks
 - WorkflowManager.API.CorePilot may expose configuration, DI, EF6, SQL provider, or runtime behaviour issues when WorkflowManager.Domain is called from ASP.NET Core.
 - ServiceBuilder remains a static composition pattern and may need later DI-oriented refactoring.
@@ -282,6 +292,8 @@ Setup / Planning
 
 - ServiceBuilder is a static composition/service-locator pattern that hides configuration, DAL, EF Model, and service construction dependencies, making ASP.NET Core DI migration harder.
 - SprotoDal is a broad DAL/service-locator-style dependency surface and makes ASP.NET Core DI migration harder.
+- EF paths rely on MultipleActiveResultSets=True and may fail with open DataReader errors if the EF connection string is changed.
+- Connection string naming and usage must remain clear to avoid configuration drift between EF and Dapper/direct SQL paths.
 ## Notes
 - The first ASP.NET Core pilot is intended to prove host-to-domain feasibility, not to complete WorkflowManager.API migration.
 - EF6.5.2 has been validated for WorkflowManager.DAL.EF on net48 and net10.0 in the current branch.
@@ -338,6 +350,8 @@ Setup / Planning
 - Continue with remaining test/support project assessment after active runtime projects are complete.
 
 - ServiceBuilder simplification is valid but should be handled incrementally to avoid destabilising existing controllers, workers, task creators, getters, and success handlers.
+- The legacy application already used different connection string behaviour for EF and non-EF paths.
+- The ASP.NET Core pilot should mirror that separation rather than collapsing to a single connection string.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
