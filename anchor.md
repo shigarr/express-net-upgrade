@@ -248,9 +248,12 @@ Setup / Planning
 - Tested RiskLinkServersController.Get successfully.
 - Added UserController.Get to WorkflowManager.API.Core.
 - Tested UserController.Get successfully.
+- Added ExpressImportDetailsController.Get to WorkflowManager.API.Core.
+- Tested ExpressImportDetailsController.Get successfully.
 ## What’s Next
-- Assess and implement ExpressImportDetailsController.Get as the next read-only WorkflowManager.API.Core endpoint candidate.
-- Continue comparing response shapes between legacy WorkflowManager.API and WorkflowManager.API.Core where practical.
+- Commit the current WorkflowManager.API.Core read-only endpoint expansion.
+- Review remaining read-only endpoint candidates before moving to POST/request-body endpoints.
+- Decide whether RunningTasksController.Get or TasksController.Get should be the next candidate.
 - Avoid POST/request-body endpoints until the remaining simple read-only candidates are reviewed.
 - Commit WorkflowManager.Domain net48/net10.0 multi-targeting if not already committed.
 - Create WorkflowManager.API.CorePilot targeting net10.0.
@@ -300,7 +303,6 @@ Setup / Planning
 - Do not add MultipleActiveResultSets=True to non-EF connection strings unless a specific path requires it.
 - WorkflowManager.API.Core should use Amlin.Logging for cross-layer logging rather than introducing a separate direct Serilog setup.
 - ASP.NET Core-specific logging integration for Amlin.Logging will be handled as a separate slice.
-
 ## Risks
 - WorkflowManager.API.CorePilot may expose configuration, DI, EF6, SQL provider, or runtime behaviour issues when WorkflowManager.Domain is called from ASP.NET Core.
 - ServiceBuilder remains a static composition pattern and may need later DI-oriented refactoring.
@@ -325,8 +327,10 @@ Setup / Planning
 - Connection string naming and usage must remain clear to avoid configuration drift between EF and Dapper/direct SQL paths.
 - Amlin.Logging net10.0 currently provides core logging only; ASP.NET Core middleware/global exception integration still needs to be designed.
 - Introducing direct Serilog setup in WorkflowManager.API.Core could create inconsistent logging patterns across layers.
+- ExpressImportDetailsController.Get may return more complex detail DTOs, so response-shape comparison with legacy WorkflowManager.API should remain under testing.
 
 ## Notes
+- WorkflowManager.API.Core now includes a broader set of tested read-only endpoints.
 - The first ASP.NET Core pilot is intended to prove host-to-domain feasibility, not to complete WorkflowManager.API migration.
 - EF6.5.2 has been validated for WorkflowManager.DAL.EF on net48 and net10.0 in the current branch.
 - migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
