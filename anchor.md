@@ -243,6 +243,9 @@ Setup / Planning
 - Added EventRateSchemeController to WorkflowManager.API.Core.
 - Added GET /api/EventRateScheme/{modelRegionCode} to the ASP.NET Core pilot.
 - Tested the EventRateSchemeController pilot endpoint successfully.
+- Added RiskLinkServersController to WorkflowManager.API.Core.
+- Added GET /api/RiskLinkServers to the ASP.NET Core pilot.
+- Tested RiskLinkServersController.Get successfully.
 ## What’s Next
 - Commit WorkflowManager.Domain net48/net10.0 multi-targeting if not already committed.
 - Create WorkflowManager.API.CorePilot targeting net10.0.
@@ -250,6 +253,8 @@ Setup / Planning
 - Implement GET /api/Jobs/{jobId}/HasDlmAnalysisTasks as the first side-by-side endpoint.
 - Validate whether the ASP.NET Core pilot can call WorkflowManager.Domain successfully.
 - Compare pilot endpoint behaviour against the legacy WorkflowManager.API endpoint.
+- Add ClassController.Get as the next low-risk read-only WorkflowManager.API.Core endpoint candidate.
+- Continue comparing object response shapes between legacy WorkflowManager.API and WorkflowManager.API.Core where practical.
 - Re-test the WorkflowManager.API.Core HasDlmAnalysisTasks pilot endpoint after separating EF and non-EF connection strings.
 - Confirm ASP.NET Core pilot uses the EF-specific connection string for Model construction.
 - Document the connection string convention for WorkflowManager: EF connection string versus Dapper/direct SQL connection string.
@@ -466,6 +471,7 @@ Setup / Planning
 - PriorityController pilot endpoints return object responses, so JSON shape/casing/null/date behaviour should remain under comparison testing.
 - ASP.NET Core pilot error handling and logging may not yet match legacy AbstractController behaviour.
 - WorkflowManager.API.Core global exception response may not yet match legacy WorkflowManager.API error response shape.
+- RiskLinkServersController returns object/list responses, so JSON shape should remain under comparison testing.
 - Structured exception logging still needs to be standardised.
 - Api.Express.Utility remains legacy until removed from the active solution.
 - Stress testing projects remain SDK-style net5.0 and are deferred.
@@ -575,6 +581,7 @@ Setup / Planning
 - UnitTests has no source usage of EPPlus or Newtonsoft.Json.
 - WorkflowManager.API.Core now contains multiple tested side-by-side pilot endpoints.
 - WorkflowManager.API.Core now has multiple tested read-only pilot endpoints and a shared exception-handling pattern.
+- WorkflowManager.API.Core now has several tested read-only endpoints using the shared IDatabaseService dependency path.
 - The ASP.NET Core pilot pattern is expanding beyond a single endpoint.
 - Code sharing limited → snippet-driven approach
 - Codex/control-repository access is available only for migration control context, not for the secured source code repository
