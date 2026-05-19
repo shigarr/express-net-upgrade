@@ -255,6 +255,9 @@ Setup / Planning
 - Added a TaskGetter factory to support WorkerType-based ITaskGetter selection in ASP.NET Core DI.
 - Preserved the legacy ServiceBuilder.InstantiateTaskGetter mapping behaviour in the ASP.NET Core pilot.
 
+- Added TasksController.Get to WorkflowManager.API.Core.
+- Tested TasksController.Get successfully.
+- Reused the ASP.NET Core task getter/factory pattern where applicable.
 ## What’s Next
 - Commit the current WorkflowManager.API.Core read-only endpoint expansion.
 - Review remaining read-only endpoint candidates before moving to POST/request-body endpoints.
@@ -280,6 +283,9 @@ Setup / Planning
 - Review remaining endpoints that require factory-style runtime selection.
 - Defer TaskGetter factory cleanup until more endpoint migration patterns are known.
 
+- Continue with remaining read-only or low-risk WorkflowManager.API.Core task endpoints.
+- Review whether TaskProgressController, TaskStatusController, or TaskStateChangeController should be migrated next.
+- Continue deferring TaskGetter factory cleanup until more endpoint patterns are known.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -342,6 +348,7 @@ Setup / Planning
 - The TaskGetter factory duplicates ServiceBuilder.InstantiateTaskGetter mapping logic and may need consolidation later.
 - Runtime factory mappings must remain aligned with legacy ServiceBuilder behaviour.
 
+- Task-related endpoints may return richer DTOs or workflow state, so response-shape comparison with legacy WorkflowManager.API should remain under testing.
 ## Notes
 - WorkflowManager.API.Core now includes a broader set of tested read-only endpoints.
 - The first ASP.NET Core pilot is intended to prove host-to-domain feasibility, not to complete WorkflowManager.API migration.
@@ -403,6 +410,7 @@ Setup / Planning
 - The ASP.NET Core pilot should mirror that separation rather than collapsing to a single connection string.
 - RunningTasksController introduced the first ASP.NET Core pilot factory pattern for runtime service selection.
 
+- TasksController.Get further validates the ASP.NET Core task getter/factory pattern.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
