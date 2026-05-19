@@ -256,6 +256,9 @@ Setup / Planning
 - Compare PriorityController pilot responses with the legacy WorkflowManager.API responses for representative values if not already completed.
 - Begin standardising reusable ASP.NET Core pilot patterns for DI registration, JSON serialization, error handling, and logging.
 - Select the next read-only WorkflowManager.API endpoint candidate after reviewing pilot pattern reuse.
+- Continue adding low-risk read-only WorkflowManager.API.Core endpoints before introducing full logging integration.
+- Plan a future Amlin.Logging ASP.NET Core integration slice for global request/exception logging.
+
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -285,6 +288,9 @@ Setup / Planning
 - Keep EF and Dapper/direct SQL connection strings separate.
 - Use the EF-specific connection string with MultipleActiveResultSets=True for WorkflowManager.DAL.EF Model / DbContext.
 - Do not add MultipleActiveResultSets=True to non-EF connection strings unless a specific path requires it.
+- WorkflowManager.API.Core should use Amlin.Logging for cross-layer logging rather than introducing a separate direct Serilog setup.
+- ASP.NET Core-specific logging integration for Amlin.Logging will be handled as a separate slice.
+
 ## Risks
 - WorkflowManager.API.CorePilot may expose configuration, DI, EF6, SQL provider, or runtime behaviour issues when WorkflowManager.Domain is called from ASP.NET Core.
 - ServiceBuilder remains a static composition pattern and may need later DI-oriented refactoring.
@@ -307,6 +313,9 @@ Setup / Planning
 - SprotoDal is a broad DAL/service-locator-style dependency surface and makes ASP.NET Core DI migration harder.
 - EF paths rely on MultipleActiveResultSets=True and may fail with open DataReader errors if the EF connection string is changed.
 - Connection string naming and usage must remain clear to avoid configuration drift between EF and Dapper/direct SQL paths.
+- Amlin.Logging net10.0 currently provides core logging only; ASP.NET Core middleware/global exception integration still needs to be designed.
+- Introducing direct Serilog setup in WorkflowManager.API.Core could create inconsistent logging patterns across layers.
+
 ## Notes
 - The first ASP.NET Core pilot is intended to prove host-to-domain feasibility, not to complete WorkflowManager.API migration.
 - EF6.5.2 has been validated for WorkflowManager.DAL.EF on net48 and net10.0 in the current branch.
@@ -647,3 +656,5 @@ Setup / Planning
 - Full solution build passed after removing Api.Express.Utility from the active solution.
 - Final inventory currently shows one remaining physical-only packages.config in DataTransferObjects.
 - Expected clean inventory after deletion: packages.config physical-only count should be zero.
+- Direct Serilog setup in WorkflowManager.API.Core is deferred in favour of reusing Amlin.Logging.
+
