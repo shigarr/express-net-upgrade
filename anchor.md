@@ -262,6 +262,11 @@ Setup / Planning
 - Implemented POST /api/Jobs using the existing JobFilter request body contract.
 - Tested JobsController.Post successfully.
 - Confirmed the ASP.NET Core pilot can support POST/query-style endpoints with complex request bodies.
+- Added TaskStatusController to WorkflowManager.API.Core.
+- Added TaskProgressController to WorkflowManager.API.Core.
+- Implemented and tested POST /api/TaskStatus successfully.
+- Implemented and tested POST /api/TaskProgress successfully.
+- Preserved TaskProgressController legacy behaviour of posting a task error when task progress update fails.
 ## What’s Next
 - Commit the current WorkflowManager.API.Core read-only endpoint expansion.
 - Review remaining read-only endpoint candidates before moving to POST/request-body endpoints.
@@ -293,6 +298,9 @@ Setup / Planning
 - Continue migrating WorkflowManager.API.Core endpoints using the proven GET, POST body-binding, and factory patterns.
 - Review null/malformed request body behaviour for POST /api/Jobs against legacy WorkflowManager.API where practical.
 - Select the next endpoint candidate, preferring low-risk task/status endpoints before file/import/export endpoints.
+- Continue migrating WorkflowManager.API.Core task-related POST endpoints where behaviour is understood.
+- Review remaining task mutation/status endpoints before moving to import/file/export endpoints.
+- Keep workflow state-changing endpoints under regression testing.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -358,6 +366,8 @@ Setup / Planning
 - Task-related endpoints may return richer DTOs or workflow state, so response-shape comparison with legacy WorkflowManager.API should remain under testing.
 - ASP.NET Core model binding and automatic validation may differ from legacy Web API for null body, malformed JSON, missing properties, and validation errors.
 - JobsController.Post returns richer response data, so response-shape comparison with legacy WorkflowManager.API should remain under testing.
+- TaskStatusController appears to call PostTaskProgress, which may be legacy naming drift but should be preserved unless explicitly corrected.
+- Task progress/status endpoints mutate workflow state and require regression coverage.
 ## Notes
 - WorkflowManager.API.Core now includes a broader set of tested read-only endpoints.
 - The first ASP.NET Core pilot is intended to prove host-to-domain feasibility, not to complete WorkflowManager.API migration.
@@ -421,6 +431,7 @@ Setup / Planning
 
 - TasksController.Get further validates the ASP.NET Core task getter/factory pattern.
 - WorkflowManager.API.Core now has a tested POST endpoint using a complex request body.
+- WorkflowManager.API.Core now supports both read-only endpoints and workflow state update POST endpoints.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
