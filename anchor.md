@@ -309,6 +309,12 @@ Setup / Planning
 - Continue with remaining task-related WorkflowManager.API.Core endpoints.
 - Review TaskSuccessController next because it may introduce broader success-handler behaviour.
 - Defer task error reporting helper/factory cleanup until all related task endpoints are migrated.
+- Complete remaining WorkflowManager.API.Core controllers, prioritising non-file/non-import endpoints.
+- Build the full solution after controller completion.
+- Point the UI/client configuration at WorkflowManager.API.Core for integration testing.
+- Exercise one end-to-end workflow and resolve issues as they appear.
+- Defer file/import/export/auth-heavy endpoints to focused passes if they introduce higher-risk behaviour.
+
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -525,6 +531,9 @@ Setup / Planning
 - Physical packages.config files may be deleted from SDK-style projects when they are not referenced by the project file.
 - Removing unreferenced packages.config files from SDK-style projects is cleanup only and does not imply net10.0 readiness.
 - SDK-style net48-only projects remain net48 until individually assessed for net10.0 compatibility.
+- Move from isolated endpoint-by-endpoint manual testing to broader WorkflowManager.API.Core integration testing after completing remaining controllers.
+- Use the UI/client flow to validate complex endpoints such as TaskSuccessController where realistic workflow context is more useful than hand-crafted requests.
+- Keep commits sliced by controller group or issue fix to preserve diagnostic clarity.
 
 ## Risks
 - UnitTests use legacy NUnit 2.6.4, so test discovery depends on compatible runner support.
@@ -640,6 +649,9 @@ Setup / Planning
 - Api.Express.Utility removal should still be checked against any external deployment/release process outside the repository search scope.
 - ExpressUI and WorkflowManager.API remain blocked from direct net10.0 migration by classic ASP.NET/System.Web dependencies.
 - UserController.Get may expose user-related response-shape or auth assumptions that should remain under comparison testing.
+- Broad integration testing can make failures harder to isolate if too many changes are made without checkpoints.
+- TaskSuccessController and other workflow side-effect endpoints may only be safely validated through realistic workflow execution.
+- UI-to-Core integration may expose route, CORS, auth, serialization, and configuration differences.
 
 ## Notes
 - UnitTests source uses NUnit, ServiceBuilder, WorkflowManager, Factories, and DataTransferObjects.
@@ -730,4 +742,5 @@ Setup / Planning
 - Final inventory currently shows one remaining physical-only packages.config in DataTransferObjects.
 - Expected clean inventory after deletion: packages.config physical-only count should be zero.
 - Direct Serilog setup in WorkflowManager.API.Core is deferred in favour of reusing Amlin.Logging.
+- Manual endpoint testing has proven the main ASP.NET Core pilot patterns; broader integration testing is now acceptable on the isolated branch.
 
