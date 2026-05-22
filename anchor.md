@@ -272,7 +272,17 @@ Setup / Planning
 - Implemented and tested POST /api/TaskStateChange successfully.
 - Implemented and tested POST /api/TaskStarted successfully.
 - Preserved legacy task-error fallback behaviour for task state/start update failures.
+- Added HydraJobController to WorkflowManager.API.Core.
+- Added RatCatController to WorkflowManager.API.Core.
+- Added task ExpressController to WorkflowManager.API.Core.
+- Implemented POST /api/HydraJob.
+- Implemented POST /api/RatCat.
+- Implemented POST /api/Express for task Express ID updates.
+- Built the full solution successfully after adding the three task controllers.
 ## What’s Next
+- Runtime-test POST /api/HydraJob, POST /api/RatCat, and POST /api/Express during WorkflowManager.API.Core integration testing.
+- Continue migrating remaining non-import WorkflowManager.API controllers before tackling import/file-oriented endpoints.
+- Review route/name collision risk between the task ExpressController and the remaining legacy root ExpressController.
 - Commit the current WorkflowManager.API.Core read-only endpoint expansion.
 - Review remaining read-only endpoint candidates before moving to POST/request-body endpoints.
 - Decide whether RunningTasksController.Get or TasksController.Get should be the next candidate.
@@ -350,6 +360,8 @@ Setup / Planning
 - Do not refactor the TaskGetter factory or ServiceBuilder abstraction until more migration patterns are proven.
 
 ## Risks
+- The task ExpressController shares a controller name with another legacy ExpressController and may require explicit route handling to avoid ambiguity.
+- HydraJob, RatCat, and Express task endpoints mutate workflow/task state and require integration regression testing.
 - WorkflowManager.API.CorePilot may expose configuration, DI, EF6, SQL provider, or runtime behaviour issues when WorkflowManager.Domain is called from ASP.NET Core.
 - ServiceBuilder remains a static composition pattern and may need later DI-oriented refactoring.
 - The legacy WorkflowManager.API remains System.Web/Web API/OWIN based and is not being replaced by the first pilot.
@@ -385,6 +397,8 @@ Setup / Planning
 - TaskStateChange and TaskStarted mutate workflow state and require regression coverage.
 - Task error reporting logic is duplicated across migrated controllers and may need consolidation later.
 ## Notes
+- HydraJobController preserves legacy Ok(bool) response behaviour.
+- RatCatController and task ExpressController preserve legacy Ok()/500 response behaviour.
 - WorkflowManager.API.Core now includes a broader set of tested read-only endpoints.
 - WorkflowManager.API.Core now supports several task lifecycle update endpoints.
 - The first ASP.NET Core pilot is intended to prove host-to-domain feasibility, not to complete WorkflowManager.API migration.
