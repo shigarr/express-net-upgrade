@@ -279,6 +279,12 @@ Setup / Planning
 - Implemented POST /api/RatCat.
 - Implemented POST /api/Express for task Express ID updates.
 - Built the full solution successfully after adding the three task controllers.
+- Added ApiLogController to WorkflowManager.API.Core.
+- Added ErrorController to WorkflowManager.API.Core.
+- Implemented POST /api/CreateApiLog in WorkflowManager.API.Core.
+- Implemented POST /api/Error in WorkflowManager.API.Core.
+- Registered the API log service dependency path in ASP.NET Core DI where required.
+- Built the full solution successfully after adding ApiLogController and ErrorController.
 ## What’s Next
 - Runtime-test POST /api/HydraJob, POST /api/RatCat, and POST /api/Express during WorkflowManager.API.Core integration testing.
 - Continue migrating remaining non-import WorkflowManager.API controllers before tackling import/file-oriented endpoints.
@@ -324,7 +330,9 @@ Setup / Planning
 - Point the UI/client configuration at WorkflowManager.API.Core for integration testing.
 - Exercise one end-to-end workflow and resolve issues as they appear.
 - Defer file/import/export/auth-heavy endpoints to focused passes if they introduce higher-risk behaviour.
-
+- Runtime-test POST /api/CreateApiLog and POST /api/Error during WorkflowManager.API.Core integration testing.
+- Continue with the remaining non-import WorkflowManager.API controllers before tackling import/file-oriented endpoints.
+- Review the remaining root ExpressController and HomeController to decide whether they are required by the UI/client flow.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -396,6 +404,8 @@ Setup / Planning
 - Task progress/status endpoints mutate workflow state and require regression coverage.
 - TaskStateChange and TaskStarted mutate workflow state and require regression coverage.
 - Task error reporting logic is duplicated across migrated controllers and may need consolidation later.
+- ApiLogController uses a custom route, POST /api/CreateApiLog, which should be checked for route parity during integration.
+- ErrorController participates in task failure reporting and should be regression-tested through worker/task error scenarios.
 ## Notes
 - HydraJobController preserves legacy Ok(bool) response behaviour.
 - RatCatController and task ExpressController preserve legacy Ok()/500 response behaviour.
@@ -463,6 +473,7 @@ Setup / Planning
 - TasksController.Get further validates the ASP.NET Core task getter/factory pattern.
 - WorkflowManager.API.Core now has a tested POST endpoint using a complex request body.
 - WorkflowManager.API.Core now supports both read-only endpoints and workflow state update POST endpoints.
+- WorkflowManager.API.Core now includes task, workflow lookup, API log, and error reporting endpoints.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
