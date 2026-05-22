@@ -267,6 +267,11 @@ Setup / Planning
 - Implemented and tested POST /api/TaskStatus successfully.
 - Implemented and tested POST /api/TaskProgress successfully.
 - Preserved TaskProgressController legacy behaviour of posting a task error when task progress update fails.
+- Added TaskStateChangeController to WorkflowManager.API.Core.
+- Added TaskStartedController to WorkflowManager.API.Core.
+- Implemented and tested POST /api/TaskStateChange successfully.
+- Implemented and tested POST /api/TaskStarted successfully.
+- Preserved legacy task-error fallback behaviour for task state/start update failures.
 ## What’s Next
 - Commit the current WorkflowManager.API.Core read-only endpoint expansion.
 - Review remaining read-only endpoint candidates before moving to POST/request-body endpoints.
@@ -301,6 +306,9 @@ Setup / Planning
 - Continue migrating WorkflowManager.API.Core task-related POST endpoints where behaviour is understood.
 - Review remaining task mutation/status endpoints before moving to import/file/export endpoints.
 - Keep workflow state-changing endpoints under regression testing.
+- Continue with remaining task-related WorkflowManager.API.Core endpoints.
+- Review TaskSuccessController next because it may introduce broader success-handler behaviour.
+- Defer task error reporting helper/factory cleanup until all related task endpoints are migrated.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -368,8 +376,11 @@ Setup / Planning
 - JobsController.Post returns richer response data, so response-shape comparison with legacy WorkflowManager.API should remain under testing.
 - TaskStatusController appears to call PostTaskProgress, which may be legacy naming drift but should be preserved unless explicitly corrected.
 - Task progress/status endpoints mutate workflow state and require regression coverage.
+- TaskStateChange and TaskStarted mutate workflow state and require regression coverage.
+- Task error reporting logic is duplicated across migrated controllers and may need consolidation later.
 ## Notes
 - WorkflowManager.API.Core now includes a broader set of tested read-only endpoints.
+- WorkflowManager.API.Core now supports several task lifecycle update endpoints.
 - The first ASP.NET Core pilot is intended to prove host-to-domain feasibility, not to complete WorkflowManager.API migration.
 - EF6.5.2 has been validated for WorkflowManager.DAL.EF on net48 and net10.0 in the current branch.
 - migration-status.md is a checkpoint/report document and does not replace anchor.md as the source of truth.
