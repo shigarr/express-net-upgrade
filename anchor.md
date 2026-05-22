@@ -285,57 +285,19 @@ Setup / Planning
 - Implemented POST /api/Error in WorkflowManager.API.Core.
 - Registered the API log service dependency path in ASP.NET Core DI where required.
 - Built the full solution successfully after adding ApiLogController and ErrorController.
+- Added DlmSubmissionController to WorkflowManager.API.Core.
+- Added PortfolioImportController to WorkflowManager.API.Core.
+- Added MultiplePortfolioImportController to WorkflowManager.API.Core.
+- Added DatabaseFileImportController to WorkflowManager.API.Core.
+- Added AccLocFileImportController to WorkflowManager.API.Core.
+- Added ImporterWebsiteController to WorkflowManager.API.Core.
+- Added IPathMapper dependency registration for ImporterWebsiteController where required.
+- Built the full solution successfully after adding the import/submission controllers.
 ## What’s Next
-- Runtime-test POST /api/HydraJob, POST /api/RatCat, and POST /api/Express during WorkflowManager.API.Core integration testing.
-- Continue migrating remaining non-import WorkflowManager.API controllers before tackling import/file-oriented endpoints.
-- Review route/name collision risk between the task ExpressController and the remaining legacy root ExpressController.
-- Commit the current WorkflowManager.API.Core read-only endpoint expansion.
-- Review remaining read-only endpoint candidates before moving to POST/request-body endpoints.
-- Decide whether RunningTasksController.Get or TasksController.Get should be the next candidate.
-- Avoid POST/request-body endpoints until the remaining simple read-only candidates are reviewed.
-- Commit WorkflowManager.Domain net48/net10.0 multi-targeting if not already committed.
-- Create WorkflowManager.API.CorePilot targeting net10.0.
-- Reference WorkflowManager.Domain from the pilot project.
-- Implement GET /api/Jobs/{jobId}/HasDlmAnalysisTasks as the first side-by-side endpoint.
-- Validate whether the ASP.NET Core pilot can call WorkflowManager.Domain successfully.
-- Compare pilot endpoint behaviour against the legacy WorkflowManager.API endpoint.
-- Add ClassController.Get as the next low-risk read-only WorkflowManager.API.Core endpoint candidate.
-- Continue comparing object response shapes between legacy WorkflowManager.API and WorkflowManager.API.Core where practical.
-- Re-test the WorkflowManager.API.Core HasDlmAnalysisTasks pilot endpoint after separating EF and non-EF connection strings.
-- Confirm ASP.NET Core pilot uses the EF-specific connection string for Model construction.
-- Document the connection string convention for WorkflowManager: EF connection string versus Dapper/direct SQL connection string.
-- Compare PriorityController pilot responses with the legacy WorkflowManager.API responses for representative values if not already completed.
-- Begin standardising reusable ASP.NET Core pilot patterns for DI registration, JSON serialization, error handling, and logging.
-- Select the next read-only WorkflowManager.API endpoint candidate after reviewing pilot pattern reuse.
-- Continue adding low-risk read-only WorkflowManager.API.Core endpoints before introducing full logging integration.
-- Plan a future Amlin.Logging ASP.NET Core integration slice for global request/exception logging.
-- Continue migrating read-only WorkflowManager.API.Core endpoints.
-- Review remaining endpoints that require factory-style runtime selection.
-- Defer TaskGetter factory cleanup until more endpoint migration patterns are known.
-
-- Continue with remaining read-only or low-risk WorkflowManager.API.Core task endpoints.
-- Review whether TaskProgressController, TaskStatusController, or TaskStateChangeController should be migrated next.
-- Continue deferring TaskGetter factory cleanup until more endpoint patterns are known.
-- Continue migrating WorkflowManager.API.Core endpoints using the proven GET, POST body-binding, and factory patterns.
-- Review null/malformed request body behaviour for POST /api/Jobs against legacy WorkflowManager.API where practical.
-- Select the next endpoint candidate, preferring low-risk task/status endpoints before file/import/export endpoints.
-- Continue migrating WorkflowManager.API.Core task-related POST endpoints where behaviour is understood.
-- Review remaining task mutation/status endpoints before moving to import/file/export endpoints.
-- Keep workflow state-changing endpoints under regression testing.
-- Continue with remaining task-related WorkflowManager.API.Core endpoints.
-- Review TaskSuccessController next because it may introduce broader success-handler behaviour.
-- Defer task error reporting helper/factory cleanup until all related task endpoints are migrated.
-- Complete remaining WorkflowManager.API.Core controllers, prioritising non-file/non-import endpoints.
-- Build the full solution after controller completion.
-- Point the UI/client configuration at WorkflowManager.API.Core for integration testing.
-- Exercise one end-to-end workflow and resolve issues as they appear.
-- Defer file/import/export/auth-heavy endpoints to focused passes if they introduce higher-risk behaviour.
-- Runtime-test POST /api/CreateApiLog and POST /api/Error during WorkflowManager.API.Core integration testing.
-- Continue with the remaining non-import WorkflowManager.API controllers before tackling import/file-oriented endpoints.
-- Review the remaining root ExpressController and HomeController to decide whether they are required by the UI/client flow.
-- Begin reviewing remaining import/submission controllers, starting with DlmSubmissionController if it is a straightforward message POST.
-- Leave HomeController and root ExpressController aside during the current migration pass.
-
+- Runtime-test import/submission endpoints during WorkflowManager.API.Core integration testing.
+- Point the UI/client configuration at WorkflowManager.API.Core for broader integration testing.
+- Exercise one end-to-end import/workflow path and resolve issues as they appear.
+- Revisit HomeController and root ExpressController only if UI/Core integration shows they are required.
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -412,6 +374,9 @@ Setup / Planning
 - ErrorController participates in task failure reporting and should be regression-tested through worker/task error scenarios.
 - HomeController or root ExpressController may still be used indirectly by diagnostics, scripts, health checks, or legacy tooling and may need to be revisited during integration testing.
 
+- Import/submission endpoints create jobs/tasks and may trigger workflow side effects, so they require integration testing.
+- ImporterWebsiteController depends on path-mapping behaviour and the mapped root path should eventually be externalised to configuration.
+- Some import controllers preserve legacy 500-on-failure behaviour and may need response-shape/error parity checks during integration.
 ## Notes
 - HydraJobController preserves legacy Ok(bool) response behaviour.
 - RatCatController and task ExpressController preserve legacy Ok()/500 response behaviour.
@@ -480,6 +445,8 @@ Setup / Planning
 - WorkflowManager.API.Core now has a tested POST endpoint using a complex request body.
 - WorkflowManager.API.Core now supports both read-only endpoints and workflow state update POST endpoints.
 - WorkflowManager.API.Core now includes task, workflow lookup, API log, and error reporting endpoints.
+- WorkflowManager.API.Core now includes the main task, workflow, support, and import/submission controllers needed for UI/Core integration testing.
+- HomeController and root ExpressController remain deferred unless integration testing proves they are required.
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
