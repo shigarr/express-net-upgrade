@@ -333,6 +333,9 @@ Setup / Planning
 - Runtime-test POST /api/CreateApiLog and POST /api/Error during WorkflowManager.API.Core integration testing.
 - Continue with the remaining non-import WorkflowManager.API controllers before tackling import/file-oriented endpoints.
 - Review the remaining root ExpressController and HomeController to decide whether they are required by the UI/client flow.
+- Begin reviewing remaining import/submission controllers, starting with DlmSubmissionController if it is a straightforward message POST.
+- Leave HomeController and root ExpressController aside during the current migration pass.
+
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -366,6 +369,7 @@ Setup / Planning
 - ASP.NET Core-specific logging integration for Amlin.Logging will be handled as a separate slice.
 - Keep the new TaskGetter factory in the ASP.NET Core pilot for now.
 - Do not refactor the TaskGetter factory or ServiceBuilder abstraction until more migration patterns are proven.
+- Defer HomeController and root ExpressController migration unless UI/Core integration shows they are required.
 
 ## Risks
 - The task ExpressController shares a controller name with another legacy ExpressController and may require explicit route handling to avoid ambiguity.
@@ -406,6 +410,8 @@ Setup / Planning
 - Task error reporting logic is duplicated across migrated controllers and may need consolidation later.
 - ApiLogController uses a custom route, POST /api/CreateApiLog, which should be checked for route parity during integration.
 - ErrorController participates in task failure reporting and should be regression-tested through worker/task error scenarios.
+- HomeController or root ExpressController may still be used indirectly by diagnostics, scripts, health checks, or legacy tooling and may need to be revisited during integration testing.
+
 ## Notes
 - HydraJobController preserves legacy Ok(bool) response behaviour.
 - RatCatController and task ExpressController preserve legacy Ok()/500 response behaviour.
@@ -768,4 +774,4 @@ Setup / Planning
 - Expected clean inventory after deletion: packages.config physical-only count should be zero.
 - Direct Serilog setup in WorkflowManager.API.Core is deferred in favour of reusing Amlin.Logging.
 - Manual endpoint testing has proven the main ASP.NET Core pilot patterns; broader integration testing is now acceptable on the isolated branch.
-
+- HomeController and root ExpressController are currently considered unused by the app and are deferred to avoid unnecessary migration work.
