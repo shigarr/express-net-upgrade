@@ -293,11 +293,19 @@ Setup / Planning
 - Added ImporterWebsiteController to WorkflowManager.API.Core.
 - Added IPathMapper dependency registration for ImporterWebsiteController where required.
 - Built the full solution successfully after adding the import/submission controllers.
+- Ran legacy versus WorkflowManager.API.Core controller inventory comparison.
+- Confirmed WorkflowManager.API.Core has no unexpected extra controllers.
+- Confirmed only AbstractController and HomeController are missing from WorkflowManager.API.Core.
+- Confirmed AbstractController is intentionally not migrated directly.
+- Confirmed HomeController remains deferred unless integration testing proves it is required.
+- Confirmed WorkflowManager.API.Core now covers the meaningful task, workflow, support, and import/submission API controller surface.
 ## What’s Next
-- Runtime-test import/submission endpoints during WorkflowManager.API.Core integration testing.
-- Point the UI/client configuration at WorkflowManager.API.Core for broader integration testing.
-- Exercise one end-to-end import/workflow path and resolve issues as they appear.
-- Revisit HomeController and root ExpressController only if UI/Core integration shows they are required.
+- Commit the import/submission controller batch if not already committed.
+- Begin UI/client integration testing against WorkflowManager.API.Core.
+- Verify route behaviour for controllers with possible legacy naming/route ambiguity, especially ExpressController.
+- Resolve integration issues one by one while keeping commits sliced.
+- Revisit HomeController only if UI/client integration, diagnostics, scripts, or tooling require it.
+
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
@@ -377,7 +385,13 @@ Setup / Planning
 - Import/submission endpoints create jobs/tasks and may trigger workflow side effects, so they require integration testing.
 - ImporterWebsiteController depends on path-mapping behaviour and the mapped root path should eventually be externalised to configuration.
 - Some import controllers preserve legacy 500-on-failure behaviour and may need response-shape/error parity checks during integration.
+- Controller name comparison does not prove exact route parity; route behaviour must be validated during integration testing.
+- Legacy had multiple ExpressController files, so Express route behaviour needs explicit validation during integration.
+- AbstractController logging/error behaviour is not migrated directly and must remain covered by global middleware/logging decisions.
+- HomeController may still be used indirectly by diagnostics, scripts, health checks, or legacy tooling.
 ## Notes
+- WorkflowManager.API.Core controller coverage is sufficient to move into broader UI/client integration testing.
+- Missing AbstractController and HomeController are intentional at this stage.
 - HydraJobController preserves legacy Ok(bool) response behaviour.
 - RatCatController and task ExpressController preserve legacy Ok()/500 response behaviour.
 - WorkflowManager.API.Core now includes a broader set of tested read-only endpoints.
