@@ -299,12 +299,22 @@ Setup / Planning
 - Confirmed AbstractController is intentionally not migrated directly.
 - Confirmed HomeController remains deferred unless integration testing proves it is required.
 - Confirmed WorkflowManager.API.Core now covers the meaningful task, workflow, support, and import/submission API controller surface.
+- Completed end-to-end integration testing using WorkflowManager.API.Core.
+- Confirmed the application works as expected against the ASP.NET Core API path.
+- Validated WorkflowManager.API.Core routing, DI, configuration, EF/DAL/domain integration, and UI/client integration through an end-to-end workflow.
+- Confirmed WorkflowManager.API.Core controller coverage is sufficient for current application workflow testing.
+
 ## What’s Next
 - Commit the import/submission controller batch if not already committed.
 - Begin UI/client integration testing against WorkflowManager.API.Core.
 - Verify route behaviour for controllers with possible legacy naming/route ambiguity, especially ExpressController.
 - Resolve integration issues one by one while keeping commits sliced.
 - Revisit HomeController only if UI/client integration, diagnostics, scripts, or tooling require it.
+
+- Commit the WorkflowManager.API.Core end-to-end integration milestone.
+- Document remaining deferred items: HomeController, root/home diagnostics if needed, Amlin.Logging ASP.NET Core integration, and deeper edge-case regression testing.
+- Review whether WorkflowManager.API.Core should become the preferred development/test API path.
+- Plan a follow-up hardening pass for logging, route parity, error response parity, configuration externalisation, and edge-case task/import workflows.
 
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
@@ -389,6 +399,10 @@ Setup / Planning
 - Legacy had multiple ExpressController files, so Express route behaviour needs explicit validation during integration.
 - AbstractController logging/error behaviour is not migrated directly and must remain covered by global middleware/logging decisions.
 - HomeController may still be used indirectly by diagnostics, scripts, health checks, or legacy tooling.
+- End-to-end testing validates the tested workflow but does not guarantee all rare task types, import variants, failure paths, or TaskSuccess concrete message types.
+- Logging and error response parity still require a hardening pass.
+- Route parity should remain under review for any legacy clients not covered by the tested UI flow.
+
 ## Notes
 - WorkflowManager.API.Core controller coverage is sufficient to move into broader UI/client integration testing.
 - Missing AbstractController and HomeController are intentional at this stage.
@@ -461,6 +475,11 @@ Setup / Planning
 - WorkflowManager.API.Core now includes task, workflow lookup, API log, and error reporting endpoints.
 - WorkflowManager.API.Core now includes the main task, workflow, support, and import/submission controllers needed for UI/Core integration testing.
 - HomeController and root ExpressController remain deferred unless integration testing proves they are required.
+- Commit the WorkflowManager.API.Core end-to-end integration milestone.
+- Document remaining deferred items: HomeController, root/home diagnostics if needed, Amlin.Logging ASP.NET Core integration, and deeper edge-case regression testing.
+- Review whether WorkflowManager.API.Core should become the preferred development/test API path.
+- Plan a follow-up hardening pass for logging, route parity, error response parity, configuration externalisation, and edge-case task/import workflows.
+
 ## Active Decisions
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
@@ -546,6 +565,9 @@ Setup / Planning
 - Move from isolated endpoint-by-endpoint manual testing to broader WorkflowManager.API.Core integration testing after completing remaining controllers.
 - Use the UI/client flow to validate complex endpoints such as TaskSuccessController where realistic workflow context is more useful than hand-crafted requests.
 - Keep commits sliced by controller group or issue fix to preserve diagnostic clarity.
+- WorkflowManager.API.Core is now validated through end-to-end application testing on the isolated branch.
+- Continue treating HomeController as deferred unless integration, diagnostics, scripts, health checks, or tooling require it.
+- Treat Amlin.Logging ASP.NET Core integration as a separate hardening slice.
 
 ## Risks
 - UnitTests use legacy NUnit 2.6.4, so test discovery depends on compatible runner support.
@@ -738,6 +760,8 @@ Setup / Planning
 - WorkflowManager.DAL, WorkflowManager.DAL.EF, and WorkflowManager.Domain are now SDK-style net48.
 - Next WorkflowManager target is assessment of WorkflowManager.API, not immediate conversion.
 - WorkflowManager.API cleanup was build-tested and smoke-tested successfully.
+- WorkflowManager.API.Core has moved from endpoint pilot to successful application-level integration in the isolated branch.
+- Remaining work is now hardening, parity validation, and deferred edge-case coverage rather than initial feasibility.
 - WebGrease was intentionally retained because System.Web.Optimization / BundleConfig remain present.
 - Recommended immediate action for GUI/ExpressUI is safe dependency cleanup only, not project format conversion.
 - EF6 itself is not treated as a permanent net10.0 blocker; the current blocker is the existing EF6.1.3/configuration/project-coupling setup.
