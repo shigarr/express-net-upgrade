@@ -318,6 +318,8 @@ Setup / Planning
 - Document remaining deferred items: HomeController, root/home diagnostics if needed, Amlin.Logging ASP.NET Core integration, and deeper edge-case regression testing.
 - Review whether WorkflowManager.API.Core should become the preferred development/test API path.
 - Plan a follow-up hardening pass for logging, route parity, error response parity, configuration externalisation, and edge-case task/import workflows.
+- Continue WorkflowManager.API.Core hardening without changing PathMapper configuration.
+- Revisit PathMapper later as a separate cleanup/removal candidate after confirming no active usage.
 
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
@@ -354,6 +356,8 @@ Setup / Planning
 - Do not refactor the TaskGetter factory or ServiceBuilder abstraction until more migration patterns are proven.
 - Defer HomeController and root ExpressController migration unless UI/Core integration shows they are required.
 - Keep path-parameter routes for RunningTasksController, TasksController, and ExpressImportDetailsController in WorkflowManager.API.Core.
+- Do not externalise PathMapper root path configuration during the current WorkflowManager.API.Core hardening pass.
+- Treat PathMapper as legacy/deferred cleanup because it is not currently used by the application.
 
 ## Risks
 - The task ExpressController shares a controller name with another legacy ExpressController and may require explicit route handling to avoid ambiguity.
@@ -408,10 +412,12 @@ Setup / Planning
 - End-to-end testing validates the tested workflow but does not guarantee all rare task types, import variants, failure paths, or TaskSuccess concrete message types.
 - Logging and error response parity still require a hardening pass.
 - Route parity should remain under review for any legacy clients not covered by the tested UI flow.
+- PathMapper may still be used by dormant legacy import paths or old clients, so removal should only happen after confirming no active references.
 
 ## Notes
 - WorkflowManager.API.Core controller coverage is sufficient to move into broader UI/client integration testing.
 - RunningTasks, Tasks, and ExpressImportDetails route inventory differences are accepted because active client code uses /api/RunningTasks/{workerType}, /api/Tasks/{workerType}, and /api/ExpressImportDetails/{jobId}.
+- PathMapper hard-coded root path is intentionally left unchanged for now because the path is legacy and not currently used by the application.
 - Missing AbstractController and HomeController are intentional at this stage.
 - HydraJobController preserves legacy Ok(bool) response behaviour.
 - RatCatController and task ExpressController preserve legacy Ok()/500 response behaviour.
