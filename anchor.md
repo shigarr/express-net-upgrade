@@ -303,6 +303,9 @@ Setup / Planning
 - Confirmed the application works as expected against the ASP.NET Core API path.
 - Validated WorkflowManager.API.Core routing, DI, configuration, EF/DAL/domain integration, and UI/client integration through an end-to-end workflow.
 - Confirmed WorkflowManager.API.Core controller coverage is sufficient for current application workflow testing.
+- Reviewed route inventory differences for RunningTasksController, TasksController, and ExpressImportDetailsController.
+- Confirmed active client code calls RunningTasks, Tasks, and ExpressImportDetails using path parameters.
+- Confirmed current WorkflowManager.API.Core route shape matches active client usage for these endpoints.
 
 ## What’s Next
 - Commit the import/submission controller batch if not already committed.
@@ -350,6 +353,7 @@ Setup / Planning
 - Keep the new TaskGetter factory in the ASP.NET Core pilot for now.
 - Do not refactor the TaskGetter factory or ServiceBuilder abstraction until more migration patterns are proven.
 - Defer HomeController and root ExpressController migration unless UI/Core integration shows they are required.
+- Keep path-parameter routes for RunningTasksController, TasksController, and ExpressImportDetailsController in WorkflowManager.API.Core.
 
 ## Risks
 - The task ExpressController shares a controller name with another legacy ExpressController and may require explicit route handling to avoid ambiguity.
@@ -359,6 +363,8 @@ Setup / Planning
 - The legacy WorkflowManager.API remains System.Web/Web API/OWIN based and is not being replaced by the first pilot.
 - ExpressUI and WorkflowManager.API remain high-risk host migrations due to classic ASP.NET/System.Web, Web API/MVC, OWIN, Web.config, Global.asax, DI, auth, SignalR, and client asset dependencies.
 - Static endpoint inventory may miss global filters, inherited behaviour, route conventions, auth, DI, and runtime configuration.
+- Static route inventory can produce false positives where controller-level and action-level routes or legacy convention routes are involved.
+- Route parity should be validated against active client call sites, not only static scanner output.
 - Recommended pilot endpoint still requires manual dependency and behaviour verification before code changes.
 - Workers has a known future net10.0 blocker due to JavaScriptSerializer/System.Web.Extensions usage.
 - HydraJobWorker error-message JSON may differ slightly because serialization changed from JavaScriptSerializer to Newtonsoft.Json.
@@ -405,6 +411,7 @@ Setup / Planning
 
 ## Notes
 - WorkflowManager.API.Core controller coverage is sufficient to move into broader UI/client integration testing.
+- RunningTasks, Tasks, and ExpressImportDetails route inventory differences are accepted because active client code uses /api/RunningTasks/{workerType}, /api/Tasks/{workerType}, and /api/ExpressImportDetails/{jobId}.
 - Missing AbstractController and HomeController are intentional at this stage.
 - HydraJobController preserves legacy Ok(bool) response behaviour.
 - RatCatController and task ExpressController preserve legacy Ok()/500 response behaviour.
