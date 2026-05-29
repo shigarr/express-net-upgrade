@@ -331,15 +331,14 @@ Setup / Planning
 - Confirmed HydraJobManagerDaemon works after handling empty response bodies correctly.
 
 ## What’s Next
-- Commit the ExpressManagerDaemon net10.0 daemon migration milestone.
-- Use ExpressManagerDaemon as the template for the next daemon migration.
-- Assess HydraJobManagerDaemon next because it already follows a similar Amlin.Logging-enabled structure.
-- Keep legacy Host projects deferred as redundant cleanup candidates.
+- Continue migrating remaining daemon hosts to net10.0 using the ExpressManagerDaemon and HydraJobManagerDaemon patterns.
+- Revisit RiskLinkClient after the net10.0 host migration is complete and stable.
 
 ## Active Decisions
 - Use net10.0-only console-style daemon implementation for migrated daemon hosts.
 - Do not preserve legacy Windows Service installer/start/stop command behaviour in migrated net10.0 daemon hosts.
 - Use appsettings.json and Amlin.Logging for migrated daemon host configuration/logging.
+- Defer RiskLinkClient redesign/cleanup until after the current application runtime path is upgraded to net10.0 and stabilised.
 - Supporting/shared projects should remain multi-targeted where needed to preserve compatibility across net48 and net10.0 callers.
 - Final application hosts should be migrated or replaced as net10.0-only rather than multi-targeted.
 - Windows Service/daemon projects will follow the WorkflowManager.API.Core pattern: net10.0 host shape only, with legacy host behaviour not preserved in the same project.
@@ -449,10 +448,12 @@ Setup / Planning
 - Amlin.Logging ASP.NET Core integration has been validated in WorkflowManager.API.Core but should be reused carefully in other hosts.
 - Empty response bodies are valid for some accepted/asynchronous API responses, but may be unexpected for other API calls and should be considered at call sites.
 - net10.0 replacement for Web API ReadAsAsync may not behave exactly like the legacy formatter pipeline for empty content and should be watched in other HTTP client paths.
+- RiskLinkClient remains a known technical debt area and may contain additional net10.0 HTTP behaviour differences that surface during testing.
 
 ## Notes
 - ExpressManagerDaemon now proves the daemon-host migration pattern against WorkflowManager.API.Core.
 - The Moodys/RMS response issue was caused by net10.0 deserialization of an empty response body, not by incorrect URL/token configuration.
+- RiskLinkClient was intentionally not redesigned during the HydraJobManagerDaemon migration; only the minimal empty-response handling fix was made to preserve behaviour.
 - The workflow Location header remains the source of the accepted workflow URL.
 - Host projects remain deferred because daemons can now run directly in console mode.
 - The distinction is now explicit: shared/supporting libraries preserve compatibility through multi-targeting; final application hosts move to clean net10.0 implementations.
