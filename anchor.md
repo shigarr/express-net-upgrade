@@ -308,10 +308,20 @@ Setup / Planning
 - Confirmed current WorkflowManager.API.Core route shape matches active client usage for these endpoints.
 - Created workflowmanager-api-core-hardening.md.
 - Documented WorkflowManager.API.Core completed work, intentional deferrals, known risks, and hardening checklist.
+- Added ASP.NET Core integration to Amlin.Logging for net10.0.
+- Added ASP.NET Core correlation ID middleware to Amlin.Logging.
+- Added ASP.NET Core global exception handling/logging middleware to Amlin.Logging.
+- Added Amlin.Logging service/application builder integration for ASP.NET Core.
+- Wired WorkflowManager.API.Core to use Amlin.Logging.
+- Replaced the local WorkflowManager.API.Core exception handling path with Amlin.Logging global exception handling/logging.
+- Verified WorkflowManager.API.Core creates the configured log file.
+- Verified information logging works through Amlin.Logging in WorkflowManager.API.Core.
 
 ## What’s Next
-- Commit workflowmanager-api-core-hardening.md if not already committed.
-- Decide the next migration focus after WorkflowManager.API.Core: hardening pass, Amlin.Logging ASP.NET Core integration, or ExpressUI strategy.
+- Commit the Amlin.Logging ASP.NET Core integration milestone.
+- Re-run WorkflowManager.API.Core end-to-end smoke testing with Amlin.Logging enabled.
+- Trigger or simulate one controlled exception to verify 500 response, correlation ID, and exception log output.
+- Review whether Amlin.Logging ASP.NET Core integration should also be reused by future ASP.NET Core UI/API migration work.
 
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
@@ -350,6 +360,9 @@ Setup / Planning
 - Keep path-parameter routes for RunningTasksController, TasksController, and ExpressImportDetailsController in WorkflowManager.API.Core.
 - Do not externalise PathMapper root path configuration during the current WorkflowManager.API.Core hardening pass.
 - Treat PathMapper as legacy/deferred cleanup because it is not currently used by the application.
+- Use Amlin.Logging as the shared logging integration for WorkflowManager.API.Core rather than direct per-project Serilog setup.
+- Keep Amlin.Logging.WebApi for legacy net48 Web API integration and Amlin.Logging.AspNetCore for net10.0 ASP.NET Core integration.
+- Use global middleware for exception logging instead of per-controller try/catch boilerplate.
 
 ## Risks
 - The task ExpressController shares a controller name with another legacy ExpressController and may require explicit route handling to avoid ambiguity.
@@ -405,8 +418,13 @@ Setup / Planning
 - Logging and error response parity still require a hardening pass.
 - Route parity should remain under review for any legacy clients not covered by the tested UI flow.
 - PathMapper may still be used by dormant legacy import paths or old clients, so removal should only happen after confirming no active references.
+- Middleware order matters for correlation ID and exception logging.
+- Logging must avoid sensitive data such as request bodies, tokens, credentials, and connection strings.
+- Amlin.Logging ASP.NET Core integration has been validated in WorkflowManager.API.Core but should be reused carefully in other hosts.
 
 ## Notes
+- Amlin.Logging now supports both legacy Web API and ASP.NET Core integration paths.
+- WorkflowManager.API.Core now has centralised logging and exception handling to replace the excluded legacy AbstractController behaviour.
 - WorkflowManager.API.Core has a documented hardening checklist following successful end-to-end testing.
 - WorkflowManager.API.Core controller coverage is sufficient to move into broader UI/client integration testing.
 - RunningTasks, Tasks, and ExpressImportDetails route inventory differences are accepted because active client code uses /api/RunningTasks/{workerType}, /api/Tasks/{workerType}, and /api/ExpressImportDetails/{jobId}.
