@@ -306,20 +306,12 @@ Setup / Planning
 - Reviewed route inventory differences for RunningTasksController, TasksController, and ExpressImportDetailsController.
 - Confirmed active client code calls RunningTasks, Tasks, and ExpressImportDetails using path parameters.
 - Confirmed current WorkflowManager.API.Core route shape matches active client usage for these endpoints.
+- Created workflowmanager-api-core-hardening.md.
+- Documented WorkflowManager.API.Core completed work, intentional deferrals, known risks, and hardening checklist.
 
 ## What’s Next
-- Commit the import/submission controller batch if not already committed.
-- Begin UI/client integration testing against WorkflowManager.API.Core.
-- Verify route behaviour for controllers with possible legacy naming/route ambiguity, especially ExpressController.
-- Resolve integration issues one by one while keeping commits sliced.
-- Revisit HomeController only if UI/client integration, diagnostics, scripts, or tooling require it.
-
-- Commit the WorkflowManager.API.Core end-to-end integration milestone.
-- Document remaining deferred items: HomeController, root/home diagnostics if needed, Amlin.Logging ASP.NET Core integration, and deeper edge-case regression testing.
-- Review whether WorkflowManager.API.Core should become the preferred development/test API path.
-- Plan a follow-up hardening pass for logging, route parity, error response parity, configuration externalisation, and edge-case task/import workflows.
-- Continue WorkflowManager.API.Core hardening without changing PathMapper configuration.
-- Revisit PathMapper later as a separate cleanup/removal candidate after confirming no active usage.
+- Commit workflowmanager-api-core-hardening.md if not already committed.
+- Decide the next migration focus after WorkflowManager.API.Core: hardening pass, Amlin.Logging ASP.NET Core integration, or ExpressUI strategy.
 
 ## Active Decisions
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
@@ -415,6 +407,7 @@ Setup / Planning
 - PathMapper may still be used by dormant legacy import paths or old clients, so removal should only happen after confirming no active references.
 
 ## Notes
+- WorkflowManager.API.Core has a documented hardening checklist following successful end-to-end testing.
 - WorkflowManager.API.Core controller coverage is sufficient to move into broader UI/client integration testing.
 - RunningTasks, Tasks, and ExpressImportDetails route inventory differences are accepted because active client code uses /api/RunningTasks/{workerType}, /api/Tasks/{workerType}, and /api/ExpressImportDetails/{jobId}.
 - PathMapper hard-coded root path is intentionally left unchanged for now because the path is legacy and not currently used by the application.
