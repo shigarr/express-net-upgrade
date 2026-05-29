@@ -329,11 +329,18 @@ Setup / Planning
 - Confirmed Moodys/RMS submission returns HTTP 202 Accepted with an empty response body and a workflow Location header.
 - Updated net10.0 HTTP content deserialization to safely return default for null or empty response content.
 - Confirmed HydraJobManagerDaemon works after handling empty response bodies correctly.
+- Converted FileCopierDaemon to a net10.0-only console-style daemon.
+- Removed legacy Windows Service runtime mechanics from the migrated FileCopierDaemon path.
+- Added appsettings.json-based configuration for FileCopierDaemon.
+- Wired FileCopierDaemon to use Amlin.Logging.
+- Built the full solution successfully after converting FileCopierDaemon.
+- Treated FileCopierDaemon as a compile-only migration because there is no active application test path.
 
 ## What’s Next
-- Convert FileCopierDaemon to a net10.0-only console-style daemon.
-- Use build success as the acceptance check for FileCopierDaemon unless a runtime path becomes available.
-- Continue with remaining unused daemons after FileCopierDaemon.
+- Commit the FileCopierDaemon net10.0 migration.
+- Convert RatCatManagerDaemon to a net10.0-only console-style daemon next.
+- Use build success as the acceptance check for RatCatManagerDaemon unless a runtime path becomes available.
+- Continue keeping redundant Host projects deferred as cleanup candidates.
 
 ## Active Decisions
 - Use net10.0-only console-style daemon implementation for migrated daemon hosts.
@@ -391,6 +398,8 @@ Setup / Planning
 - If Windows Service deployment is required later, a modern deployment/hosting approach must be planned separately.
 - Remaining daemons may require additional logging/configuration cleanup before matching the ExpressManagerDaemon pattern.
 - Compile-only daemon migrations may hide runtime issues in file access, permissions, worker execution, configuration, or API interaction.
+- FileCopierDaemon runtime behaviour is unvalidated because there is no active application test path.
+- File copy permissions, paths, worker lifecycle, and API interaction may require validation if FileCopierDaemon becomes active again.
 - Unused daemon behaviour will require validation later if the daemon becomes active again.
 - Net10.0 daemon projects will not preserve legacy install/uninstall Windows Service behaviour in the same project.
 - If Windows Service deployment is required later, a modern hosting/deployment approach must be planned separately.
@@ -808,6 +817,7 @@ Setup / Planning
 - HydraJobManagerHost is SDK-style net48 and smoke-tested successfully.
 - HydraJobManagerHost and HydraJobManagerDaemon are both SDK-style net48 and smoke-tested successfully.
 - For non-integrated daemon/host projects, conversion success must be labelled as build-validated only, not runtime-validated.
+- FileCopierDaemon follows the same clean net10.0 daemon-host pattern as the tested daemons but is currently validated by build only.
 - FileCopierHost is SDK-style net48 and build-validated only.
 - FileCopierHost and FileCopierDaemon are SDK-style net48 and build-validated only.
 - RatCatManagerHost is SDK-style net48 and build-validated only unless a separate runtime test is performed.
