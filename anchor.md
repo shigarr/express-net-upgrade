@@ -331,8 +331,9 @@ Setup / Planning
 - Confirmed HydraJobManagerDaemon works after handling empty response bodies correctly.
 
 ## What’s Next
-- Continue migrating remaining daemon hosts to net10.0 using the ExpressManagerDaemon and HydraJobManagerDaemon patterns.
-- Revisit RiskLinkClient after the net10.0 host migration is complete and stable.
+- Convert FileCopierDaemon to a net10.0-only console-style daemon.
+- Use build success as the acceptance check for FileCopierDaemon unless a runtime path becomes available.
+- Continue with remaining unused daemons after FileCopierDaemon.
 
 ## Active Decisions
 - Use net10.0-only console-style daemon implementation for migrated daemon hosts.
@@ -343,6 +344,8 @@ Setup / Planning
 - Final application hosts should be migrated or replaced as net10.0-only rather than multi-targeted.
 - Windows Service/daemon projects will follow the WorkflowManager.API.Core pattern: net10.0 host shape only, with legacy host behaviour not preserved in the same project.
 - For daemon projects, old Windows Service-specific mechanics such as ServiceBase, ProjectInstaller, System.Configuration.Install, and ServiceController command handling are not required for the net10.0 migration path.
+- Remaining unused daemon projects will be upgraded to net10.0 on a compile-only basis where no active application test path exists.
+- Runtime/end-to-end testing for unused daemons is deferred until a real usage path or requirement exists.
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
 - WorkflowManager.DAL.EF now supports net48 and net10.0 using EF6.5.2.
@@ -387,6 +390,8 @@ Setup / Planning
 - Migrated daemon hosts no longer provide legacy install/uninstall Windows Service command behaviour.
 - If Windows Service deployment is required later, a modern deployment/hosting approach must be planned separately.
 - Remaining daemons may require additional logging/configuration cleanup before matching the ExpressManagerDaemon pattern.
+- Compile-only daemon migrations may hide runtime issues in file access, permissions, worker execution, configuration, or API interaction.
+- Unused daemon behaviour will require validation later if the daemon becomes active again.
 - Net10.0 daemon projects will not preserve legacy install/uninstall Windows Service behaviour in the same project.
 - If Windows Service deployment is required later, a modern hosting/deployment approach must be planned separately.
 - Host project rollback is source-control based rather than same-project multi-target fallback.
@@ -452,6 +457,7 @@ Setup / Planning
 
 ## Notes
 - ExpressManagerDaemon now proves the daemon-host migration pattern against WorkflowManager.API.Core.
+- ExpressManagerDaemon and HydraJobManagerDaemon had runtime/end-to-end validation paths; remaining unused daemons may not.
 - The Moodys/RMS response issue was caused by net10.0 deserialization of an empty response body, not by incorrect URL/token configuration.
 - RiskLinkClient was intentionally not redesigned during the HydraJobManagerDaemon migration; only the minimal empty-response handling fix was made to preserve behaviour.
 - The workflow Location header remains the source of the accepted workflow URL.
