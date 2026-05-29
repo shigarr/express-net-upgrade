@@ -335,12 +335,18 @@ Setup / Planning
 - Wired FileCopierDaemon to use Amlin.Logging.
 - Built the full solution successfully after converting FileCopierDaemon.
 - Treated FileCopierDaemon as a compile-only migration because there is no active application test path.
+- Converted RatCatManagerDaemon to a net10.0-only console-style daemon.
+- Removed legacy Windows Service runtime mechanics from the migrated RatCatManagerDaemon path.
+- Added appsettings.json-based configuration for RatCatManagerDaemon.
+- Wired RatCatManagerDaemon to use Amlin.Logging.
+- Built RatCatManagerDaemon successfully after conversion.
+- Built the full solution successfully after converting RatCatManagerDaemon.
+- Treated RatCatManagerDaemon as a compile-only migration because there is no active application test path.
 
 ## What’s Next
-- Commit the FileCopierDaemon net10.0 migration.
-- Convert RatCatManagerDaemon to a net10.0-only console-style daemon next.
-- Use build success as the acceptance check for RatCatManagerDaemon unless a runtime path becomes available.
-- Continue keeping redundant Host projects deferred as cleanup candidates.
+- Commit the RatCatManagerDaemon net10.0 migration.
+- Re-run daemon/project inventory to confirm remaining daemon hosts and redundant Host projects.
+- Decide whether any remaining daemon requires migration or whether the next step is cleanup/documentation.
 
 ## Active Decisions
 - Use net10.0-only console-style daemon implementation for migrated daemon hosts.
@@ -400,6 +406,8 @@ Setup / Planning
 - Compile-only daemon migrations may hide runtime issues in file access, permissions, worker execution, configuration, or API interaction.
 - FileCopierDaemon runtime behaviour is unvalidated because there is no active application test path.
 - File copy permissions, paths, worker lifecycle, and API interaction may require validation if FileCopierDaemon becomes active again.
+- RatCatManagerDaemon runtime behaviour is unvalidated because there is no active application test path.
+- RatCat API interaction, permissions, worker lifecycle, and external dependencies may require validation if RatCatManagerDaemon becomes active again.
 - Unused daemon behaviour will require validation later if the daemon becomes active again.
 - Net10.0 daemon projects will not preserve legacy install/uninstall Windows Service behaviour in the same project.
 - If Windows Service deployment is required later, a modern hosting/deployment approach must be planned separately.
@@ -467,6 +475,7 @@ Setup / Planning
 ## Notes
 - ExpressManagerDaemon now proves the daemon-host migration pattern against WorkflowManager.API.Core.
 - ExpressManagerDaemon and HydraJobManagerDaemon had runtime/end-to-end validation paths; remaining unused daemons may not.
+- RatCatManagerDaemon follows the same clean net10.0 daemon-host pattern as the other migrated daemons but is currently validated by build only.
 - The Moodys/RMS response issue was caused by net10.0 deserialization of an empty response body, not by incorrect URL/token configuration.
 - RiskLinkClient was intentionally not redesigned during the HydraJobManagerDaemon migration; only the minimal empty-response handling fix was made to preserve behaviour.
 - The workflow Location header remains the source of the accepted workflow URL.
