@@ -325,6 +325,10 @@ Setup / Planning
 - Confirmed ExpressManagerDaemon creates log files and writes worker messages.
 - Confirmed ExpressManagerDaemon connects to WorkflowManager.API.Core.
 - Completed end-to-end testing successfully with ExpressManagerDaemon and WorkflowManager.API.Core.
+- Investigated HydraJobManagerDaemon net10.0 Moodys/RMS API response handling difference.
+- Confirmed Moodys/RMS submission returns HTTP 202 Accepted with an empty response body and a workflow Location header.
+- Updated net10.0 HTTP content deserialization to safely return default for null or empty response content.
+- Confirmed HydraJobManagerDaemon works after handling empty response bodies correctly.
 
 ## What’s Next
 - Commit the ExpressManagerDaemon net10.0 daemon migration milestone.
@@ -443,9 +447,13 @@ Setup / Planning
 - Middleware order matters for correlation ID and exception logging.
 - Logging must avoid sensitive data such as request bodies, tokens, credentials, and connection strings.
 - Amlin.Logging ASP.NET Core integration has been validated in WorkflowManager.API.Core but should be reused carefully in other hosts.
+- Empty response bodies are valid for some accepted/asynchronous API responses, but may be unexpected for other API calls and should be considered at call sites.
+- net10.0 replacement for Web API ReadAsAsync may not behave exactly like the legacy formatter pipeline for empty content and should be watched in other HTTP client paths.
 
 ## Notes
 - ExpressManagerDaemon now proves the daemon-host migration pattern against WorkflowManager.API.Core.
+- The Moodys/RMS response issue was caused by net10.0 deserialization of an empty response body, not by incorrect URL/token configuration.
+- The workflow Location header remains the source of the accepted workflow URL.
 - Host projects remain deferred because daemons can now run directly in console mode.
 - The distinction is now explicit: shared/supporting libraries preserve compatibility through multi-targeting; final application hosts move to clean net10.0 implementations.
 - Amlin.Logging now supports both legacy Web API and ASP.NET Core integration paths.
