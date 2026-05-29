@@ -318,12 +318,17 @@ Setup / Planning
 - Verified information logging works through Amlin.Logging in WorkflowManager.API.Core.
 
 ## What’s Next
-- Commit the Amlin.Logging ASP.NET Core integration milestone.
-- Re-run WorkflowManager.API.Core end-to-end smoke testing with Amlin.Logging enabled.
-- Trigger or simulate one controlled exception to verify 500 response, correlation ID, and exception log output.
-- Review whether Amlin.Logging ASP.NET Core integration should also be reused by future ASP.NET Core UI/API migration work.
+- Convert ExpressManagerDaemon to a net10.0-only console-style daemon first.
+- Remove or exclude legacy Windows Service installer/designer/settings patterns from ExpressManagerDaemon.
+- Add appsettings.json-based configuration for ExpressManagerDaemon.
+- Reuse Amlin.Logging for ExpressManagerDaemon logging.
+- Test ExpressManagerDaemon against WorkflowManager.API.Core.
 
 ## Active Decisions
+- Supporting/shared projects should remain multi-targeted where needed to preserve compatibility across net48 and net10.0 callers.
+- Final application hosts should be migrated or replaced as net10.0-only rather than multi-targeted.
+- Windows Service/daemon projects will follow the WorkflowManager.API.Core pattern: net10.0 host shape only, with legacy host behaviour not preserved in the same project.
+- For daemon projects, old Windows Service-specific mechanics such as ServiceBase, ProjectInstaller, System.Configuration.Install, and ServiceController command handling are not required for the net10.0 migration path.
 - Preferred future host strategy is side-by-side / strangler-style ASP.NET Core migration rather than big-bang rewrite.
 - ExpressUI and WorkflowManager.API remain legacy net48 until a pilot migration strategy is proven.
 - WorkflowManager.DAL.EF now supports net48 and net10.0 using EF6.5.2.
@@ -365,6 +370,9 @@ Setup / Planning
 - Use global middleware for exception logging instead of per-controller try/catch boilerplate.
 
 ## Risks
+- Net10.0 daemon projects will not preserve legacy install/uninstall Windows Service behaviour in the same project.
+- If Windows Service deployment is required later, a modern hosting/deployment approach must be planned separately.
+- Host project rollback is source-control based rather than same-project multi-target fallback.
 - The task ExpressController shares a controller name with another legacy ExpressController and may require explicit route handling to avoid ambiguity.
 - HydraJob, RatCat, and Express task endpoints mutate workflow/task state and require integration regression testing.
 - WorkflowManager.API.CorePilot may expose configuration, DI, EF6, SQL provider, or runtime behaviour issues when WorkflowManager.Domain is called from ASP.NET Core.
@@ -423,6 +431,7 @@ Setup / Planning
 - Amlin.Logging ASP.NET Core integration has been validated in WorkflowManager.API.Core but should be reused carefully in other hosts.
 
 ## Notes
+- The distinction is now explicit: shared/supporting libraries preserve compatibility through multi-targeting; final application hosts move to clean net10.0 implementations.
 - Amlin.Logging now supports both legacy Web API and ASP.NET Core integration paths.
 - WorkflowManager.API.Core now has centralised logging and exception handling to replace the excluded legacy AbstractController behaviour.
 - WorkflowManager.API.Core has a documented hardening checklist following successful end-to-end testing.
@@ -505,6 +514,10 @@ Setup / Planning
 - Plan a follow-up hardening pass for logging, route parity, error response parity, configuration externalisation, and edge-case task/import workflows.
 
 ## Active Decisions
+- Supporting/shared projects should remain multi-targeted where needed to preserve compatibility across net48 and net10.0 callers.
+- Final application hosts should be migrated or replaced as net10.0-only rather than multi-targeted.
+- Windows Service/daemon projects will follow the WorkflowManager.API.Core pattern: net10.0 host shape only, with legacy host behaviour not preserved in the same project.
+- For daemon projects, old Windows Service-specific mechanics such as ServiceBase, ProjectInstaller, System.Configuration.Install, and ServiceController command handling are not required for the net10.0 migration path.
 - Migration is framework-only (no UI/business changes)
 - Independent branch strategy
 - Dev effort ~10–12 weeks
@@ -594,6 +607,9 @@ Setup / Planning
 - Treat Amlin.Logging ASP.NET Core integration as a separate hardening slice.
 
 ## Risks
+- Net10.0 daemon projects will not preserve legacy install/uninstall Windows Service behaviour in the same project.
+- If Windows Service deployment is required later, a modern hosting/deployment approach must be planned separately.
+- Host project rollback is source-control based rather than same-project multi-target fallback.
 - UnitTests use legacy NUnit 2.6.4, so test discovery depends on compatible runner support.
 - UnitTests app.config contains EF configuration and a WarpDataEntities connection string that may be required for integration tests.
 - UnitTests reference WorkflowManager.API, which remains a legacy net48 System.Web/Web API project.
@@ -712,6 +728,7 @@ Setup / Planning
 - UI-to-Core integration may expose route, CORS, auth, serialization, and configuration differences.
 
 ## Notes
+- The distinction is now explicit: shared/supporting libraries preserve compatibility through multi-targeting; final application hosts move to clean net10.0 implementations.
 - UnitTests source uses NUnit, ServiceBuilder, WorkflowManager, Factories, and DataTransferObjects.
 - UnitTests has no source usage of EPPlus or Newtonsoft.Json.
 - WorkflowManager.API.Core now contains multiple tested side-by-side pilot endpoints.
