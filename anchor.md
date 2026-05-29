@@ -317,14 +317,25 @@ Setup / Planning
 - Verified WorkflowManager.API.Core creates the configured log file.
 - Verified information logging works through Amlin.Logging in WorkflowManager.API.Core.
 
+- Converted ExpressManagerDaemon to a net10.0-only console-style daemon.
+- Removed dependency on legacy Windows Service runtime mechanics for the net10.0 ExpressManagerDaemon path.
+- Added appsettings.json-based configuration for ExpressManagerDaemon.
+- Wired ExpressManagerDaemon to use Amlin.Logging.
+- Confirmed ExpressManagerDaemon starts cleanly as a console process.
+- Confirmed ExpressManagerDaemon creates log files and writes worker messages.
+- Confirmed ExpressManagerDaemon connects to WorkflowManager.API.Core.
+- Completed end-to-end testing successfully with ExpressManagerDaemon and WorkflowManager.API.Core.
+
 ## What’s Next
-- Convert ExpressManagerDaemon to a net10.0-only console-style daemon first.
-- Remove or exclude legacy Windows Service installer/designer/settings patterns from ExpressManagerDaemon.
-- Add appsettings.json-based configuration for ExpressManagerDaemon.
-- Reuse Amlin.Logging for ExpressManagerDaemon logging.
-- Test ExpressManagerDaemon against WorkflowManager.API.Core.
+- Commit the ExpressManagerDaemon net10.0 daemon migration milestone.
+- Use ExpressManagerDaemon as the template for the next daemon migration.
+- Assess HydraJobManagerDaemon next because it already follows a similar Amlin.Logging-enabled structure.
+- Keep legacy Host projects deferred as redundant cleanup candidates.
 
 ## Active Decisions
+- Use net10.0-only console-style daemon implementation for migrated daemon hosts.
+- Do not preserve legacy Windows Service installer/start/stop command behaviour in migrated net10.0 daemon hosts.
+- Use appsettings.json and Amlin.Logging for migrated daemon host configuration/logging.
 - Supporting/shared projects should remain multi-targeted where needed to preserve compatibility across net48 and net10.0 callers.
 - Final application hosts should be migrated or replaced as net10.0-only rather than multi-targeted.
 - Windows Service/daemon projects will follow the WorkflowManager.API.Core pattern: net10.0 host shape only, with legacy host behaviour not preserved in the same project.
@@ -370,6 +381,9 @@ Setup / Planning
 - Use global middleware for exception logging instead of per-controller try/catch boilerplate.
 
 ## Risks
+- Migrated daemon hosts no longer provide legacy install/uninstall Windows Service command behaviour.
+- If Windows Service deployment is required later, a modern deployment/hosting approach must be planned separately.
+- Remaining daemons may require additional logging/configuration cleanup before matching the ExpressManagerDaemon pattern.
 - Net10.0 daemon projects will not preserve legacy install/uninstall Windows Service behaviour in the same project.
 - If Windows Service deployment is required later, a modern hosting/deployment approach must be planned separately.
 - Host project rollback is source-control based rather than same-project multi-target fallback.
@@ -431,6 +445,8 @@ Setup / Planning
 - Amlin.Logging ASP.NET Core integration has been validated in WorkflowManager.API.Core but should be reused carefully in other hosts.
 
 ## Notes
+- ExpressManagerDaemon now proves the daemon-host migration pattern against WorkflowManager.API.Core.
+- Host projects remain deferred because daemons can now run directly in console mode.
 - The distinction is now explicit: shared/supporting libraries preserve compatibility through multi-targeting; final application hosts move to clean net10.0 implementations.
 - Amlin.Logging now supports both legacy Web API and ASP.NET Core integration paths.
 - WorkflowManager.API.Core now has centralised logging and exception handling to replace the excluded legacy AbstractController behaviour.
