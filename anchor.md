@@ -355,13 +355,27 @@ Setup / Planning
 - Confirmed ExpressUI remains the main unresolved production application host on legacy ASP.NET/System.Web.
 - Confirmed WebUtility_IntegrationAdapter and SrisWorkerDaemon are outside the main solution and out of current migration scope.
 
+- Created ExpressUI.Core as a side-by-side net10.0 ASP.NET Core MVC Web App.
+- Added shared project references to ExpressUI.Core.
+- Wired ExpressUI.Core to use Amlin.Logging.
+- Confirmed ExpressUI.Core builds and starts successfully.
+- Copied initial legacy ExpressUI static Scripts and Content assets into ExpressUI.Core.
+- Copied/adapted initial Home shell views into ExpressUI.Core.
+- Replaced legacy layout dependencies on WebApiConfig, StylesheetModifier, and ViewContext.Controller with ASP.NET Core-compatible equivalents or temporary safe defaults.
+- Added a minimal Core-safe HtmlModifier for initial Home shell rendering.
+- Copied ImportType into ExpressUI.Core for view compatibility.
+- Confirmed the ExpressUI.Core Home page loads in the browser.
+
 ## What’s Next
-- Inspect ExpressUI project structure and dependencies before defining an ExpressUI migration strategy.
-- Decide later whether to remove redundant Host projects from the solution.
-- Decide later whether TestConsole and UnitTests should be upgraded, replaced, or removed.
-- Keep out-of-solution projects out of current scope unless solution membership changes.
+- Use browser Network tab to identify failing Home page API calls in ExpressUI.Core.
+- Migrate the minimum Home page API controllers needed for the first AngularJS shell slice.
+- Restore user-specific HtmlModifier/default import tab behaviour later after user settings flow is migrated.
+- Continue preserving AngularJS frontend behaviour without rewriting the UI.
 
 ## Active Decisions
+- ExpressUI.Core will preserve the AngularJS frontend and migrate the ASP.NET host/API surface incrementally.
+- Initial ExpressUI.Core migration uses a side-by-side ASP.NET Core MVC Web App rather than converting legacy UI.csproj in place.
+- Temporary HtmlModifier behaviour defaults the active import tab to Portfolio until user settings are wired.
 - Treat WorkerHosts Host projects as redundant deferred cleanup candidates.
 - Treat WorkflowManager.API as legacy-retained/replaced by WorkflowManager.API.Core during transition.
 - Treat ExpressUI as the next major production host requiring migration strategy.
@@ -417,6 +431,9 @@ Setup / Planning
 - Use global middleware for exception logging instead of per-controller try/catch boilerplate.
 
 ## Risks
+- ExpressUI.Core currently loads the Home shell but Home page API endpoints may still be missing or failing.
+- Temporary HtmlModifier behaviour does not yet preserve user-specific default import tab selection.
+- Static assets were copied for initial migration and may need a sync/ownership strategy later.
 - ExpressUI is likely the largest remaining migration area because it depends on legacy ASP.NET/System.Web.
 - Redundant Host projects remain net48 and may create inventory noise until removed or explicitly excluded.
 - Test projects remain net48 and may block a fully net10.0 solution unless upgraded or removed from the main solution.
@@ -497,6 +514,8 @@ Setup / Planning
 - RiskLinkClient remains a known technical debt area and may contain additional net10.0 HTTP behaviour differences that surface during testing.
 
 ## Notes
+- The first ExpressUI.Core UI milestone is shell rendering, not full functional parity.
+- AngularJS remains in place and is not being rewritten.
 - Backend API and daemon migration work is substantially complete.
 - Remaining production migration focus is now ExpressUI, subject to a dedicated strategy review.
 - Known relevant daemon hosts now follow the clean net10.0 console-style daemon pattern.
