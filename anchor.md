@@ -342,11 +342,16 @@ Setup / Planning
 - Built RatCatManagerDaemon successfully after conversion.
 - Built the full solution successfully after converting RatCatManagerDaemon.
 - Treated RatCatManagerDaemon as a compile-only migration because there is no active application test path.
+- Ran WorkerHosts/daemon/host project inventory after daemon conversions.
+- Confirmed ExpressManagerDaemon, HydraJobManagerDaemon, FileCopierDaemon, and RatCatManagerDaemon now target net10.0.
+- Confirmed remaining net48 WorkerHosts projects are Host projects currently considered redundant/deferred cleanup candidates.
+- Confirmed SrisWorkerDaemon is not part of the solution and is ignored for the current migration scope.
+- Confirmed full solution builds after daemon conversions.
 
 ## What’s Next
-- Commit the RatCatManagerDaemon net10.0 migration.
-- Re-run daemon/project inventory to confirm remaining daemon hosts and redundant Host projects.
-- Decide whether any remaining daemon requires migration or whether the next step is cleanup/documentation.
+- Commit the RatCatManagerDaemon migration and daemon inventory result if not already committed.
+- Decide whether to document or remove redundant Host projects in a later cleanup pass.
+- Review the next major migration area after WorkflowManager.API.Core and daemon host conversion.
 
 ## Active Decisions
 - Use net10.0-only console-style daemon implementation for migrated daemon hosts.
@@ -404,6 +409,9 @@ Setup / Planning
 - If Windows Service deployment is required later, a modern deployment/hosting approach must be planned separately.
 - Remaining daemons may require additional logging/configuration cleanup before matching the ExpressManagerDaemon pattern.
 - Compile-only daemon migrations may hide runtime issues in file access, permissions, worker execution, configuration, or API interaction.
+- FileCopierDaemon and RatCatManagerDaemon are compile-only migrations and remain runtime-unvalidated.
+- Redundant Host projects remain net48 until a cleanup/removal decision is made.
+- SrisWorkerDaemon is ignored because it is outside the solution, but should be revisited only if solution membership changes.
 - FileCopierDaemon runtime behaviour is unvalidated because there is no active application test path.
 - File copy permissions, paths, worker lifecycle, and API interaction may require validation if FileCopierDaemon becomes active again.
 - RatCatManagerDaemon runtime behaviour is unvalidated because there is no active application test path.
@@ -473,6 +481,9 @@ Setup / Planning
 - RiskLinkClient remains a known technical debt area and may contain additional net10.0 HTTP behaviour differences that surface during testing.
 
 ## Notes
+- Known relevant daemon hosts now follow the clean net10.0 console-style daemon pattern.
+- Remaining Host projects are not prioritised because daemon projects can now run directly in console mode.
+- SrisWorkerDaemon is out of scope because it is not part of the solution.
 - ExpressManagerDaemon now proves the daemon-host migration pattern against WorkflowManager.API.Core.
 - ExpressManagerDaemon and HydraJobManagerDaemon had runtime/end-to-end validation paths; remaining unused daemons may not.
 - RatCatManagerDaemon follows the same clean net10.0 daemon-host pattern as the other migrated daemons but is currently validated by build only.
