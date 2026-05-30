@@ -347,13 +347,25 @@ Setup / Planning
 - Confirmed remaining net48 WorkerHosts projects are Host projects currently considered redundant/deferred cleanup candidates.
 - Confirmed SrisWorkerDaemon is not part of the solution and is ignored for the current migration scope.
 - Confirmed full solution builds after daemon conversions.
+- Ran full solution/project inventory after WorkflowManager.API.Core and daemon migrations.
+- Confirmed 29 projects are in the main solution.
+- Confirmed 17 projects in the solution are net10.0-capable.
+- Confirmed remaining net48-only projects are TestConsole, UnitTests, and five redundant WorkerHosts Host projects.
+- Confirmed WorkflowManager.API.Core is the net10.0 replacement for the legacy WorkflowManager.API project.
+- Confirmed ExpressUI remains the main unresolved production application host on legacy ASP.NET/System.Web.
+- Confirmed WebUtility_IntegrationAdapter and SrisWorkerDaemon are outside the main solution and out of current migration scope.
 
 ## What’s Next
-- Commit the RatCatManagerDaemon migration and daemon inventory result if not already committed.
-- Decide whether to document or remove redundant Host projects in a later cleanup pass.
-- Review the next major migration area after WorkflowManager.API.Core and daemon host conversion.
+- Inspect ExpressUI project structure and dependencies before defining an ExpressUI migration strategy.
+- Decide later whether to remove redundant Host projects from the solution.
+- Decide later whether TestConsole and UnitTests should be upgraded, replaced, or removed.
+- Keep out-of-solution projects out of current scope unless solution membership changes.
 
 ## Active Decisions
+- Treat WorkerHosts Host projects as redundant deferred cleanup candidates.
+- Treat WorkflowManager.API as legacy-retained/replaced by WorkflowManager.API.Core during transition.
+- Treat ExpressUI as the next major production host requiring migration strategy.
+- Treat TestConsole and UnitTests as non-production projects requiring a separate upgrade/remove/replace decision.
 - Use net10.0-only console-style daemon implementation for migrated daemon hosts.
 - Do not preserve legacy Windows Service installer/start/stop command behaviour in migrated net10.0 daemon hosts.
 - Use appsettings.json and Amlin.Logging for migrated daemon host configuration/logging.
@@ -405,6 +417,10 @@ Setup / Planning
 - Use global middleware for exception logging instead of per-controller try/catch boilerplate.
 
 ## Risks
+- ExpressUI is likely the largest remaining migration area because it depends on legacy ASP.NET/System.Web.
+- Redundant Host projects remain net48 and may create inventory noise until removed or explicitly excluded.
+- Test projects remain net48 and may block a fully net10.0 solution unless upgraded or removed from the main solution.
+- Legacy WorkflowManager.API remains in the solution as a replaced project and may need eventual removal after cutover.
 - Migrated daemon hosts no longer provide legacy install/uninstall Windows Service command behaviour.
 - If Windows Service deployment is required later, a modern deployment/hosting approach must be planned separately.
 - Remaining daemons may require additional logging/configuration cleanup before matching the ExpressManagerDaemon pattern.
@@ -481,6 +497,8 @@ Setup / Planning
 - RiskLinkClient remains a known technical debt area and may contain additional net10.0 HTTP behaviour differences that surface during testing.
 
 ## Notes
+- Backend API and daemon migration work is substantially complete.
+- Remaining production migration focus is now ExpressUI, subject to a dedicated strategy review.
 - Known relevant daemon hosts now follow the clean net10.0 console-style daemon pattern.
 - Remaining Host projects are not prioritised because daemon projects can now run directly in console mode.
 - SrisWorkerDaemon is out of scope because it is not part of the solution.
