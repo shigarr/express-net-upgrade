@@ -365,12 +365,14 @@ Setup / Planning
 - Added a minimal Core-safe HtmlModifier for initial Home shell rendering.
 - Copied ImportType into ExpressUI.Core for view compatibility.
 - Confirmed the ExpressUI.Core Home page loads in the browser.
+- Migrated and validated SuperUserStatusController in ExpressUI.Core.
+- Fixed ExpressUI.Core SQL access issue caused by app pool identity / Windows authentication configuration.
+- Confirmed /api/SuperUserStatus works end-to-end from ExpressUI.Core.
 
 ## What’s Next
-- Use browser Network tab to identify failing Home page API calls in ExpressUI.Core.
-- Migrate the minimum Home page API controllers needed for the first AngularJS shell slice.
-- Restore user-specific HtmlModifier/default import tab behaviour later after user settings flow is migrated.
-- Continue preserving AngularJS frontend behaviour without rewriting the UI.
+- Migrate and validate GetUserSettingsController next.
+- Continue first Home page API batch in order: GetUserInfoController, HomePageController, ImportsController, ImportPageController.
+- Continue validating each ExpressUI.Core API endpoint individually before moving to larger batches.
 
 ## Active Decisions
 - ExpressUI.Core will preserve the AngularJS frontend and migrate the ASP.NET host/API surface incrementally.
@@ -432,6 +434,8 @@ Setup / Planning
 
 ## Risks
 - ExpressUI.Core currently loads the Home shell but Home page API endpoints may still be missing or failing.
+- Remaining ExpressUI.Core API endpoints may still expose route, model binding, current-user, SQL permissions, or configuration differences.
+- Windows/app pool identity must be consistently configured for ExpressUI.Core database access.
 - Temporary HtmlModifier behaviour does not yet preserve user-specific default import tab selection.
 - Static assets were copied for initial migration and may need a sync/ownership strategy later.
 - ExpressUI is likely the largest remaining migration area because it depends on legacy ASP.NET/System.Web.
@@ -515,6 +519,7 @@ Setup / Planning
 
 ## Notes
 - The first ExpressUI.Core UI milestone is shell rendering, not full functional parity.
+- The SuperUserStatusController issue was caused by hosting/database identity configuration, not controller migration logic.
 - AngularJS remains in place and is not being rewritten.
 - Backend API and daemon migration work is substantially complete.
 - Remaining production migration focus is now ExpressUI, subject to a dedicated strategy review.
