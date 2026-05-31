@@ -368,16 +368,38 @@ Setup / Planning
 - Migrated and validated SuperUserStatusController in ExpressUI.Core.
 - Fixed ExpressUI.Core SQL access issue caused by app pool identity / Windows authentication configuration.
 - Confirmed /api/SuperUserStatus works end-to-end from ExpressUI.Core.
+- Completed and tested the first ExpressUI.Core Home/import/settings API batch.
+- Migrated and validated GetUserSettingsController in ExpressUI.Core.
+- Migrated and validated GetUserInfoController in ExpressUI.Core.
+- Migrated and validated HomePageController in ExpressUI.Core.
+- Migrated and validated ImportsController in ExpressUI.Core.
+- Migrated and validated ImportPageController in ExpressUI.Core.
+- Migrated and validated SettingsPageController in ExpressUI.Core.
+- Confirmed the initial AngularJS Home/import/settings API calls work against ExpressUI.Core.
+- Configured ExpressUI.Core JSON serialization to preserve PascalCase property names for legacy AngularJS compatibility.
+- Registered IRiskLinkClient and IWorkflowManagerApiService through ExpressUI.Core dependency injection.
+- Registered ICurrencyService through ExpressUI.Core dependency injection.
+- Simplified HomePageController, ImportPageController, and SettingsPageController to use IRiskLinkClient directly where legacy code only used IHydraJobDatabaseService as a thin pass-through.
+- Avoided porting unused ILookupRepository for SettingsPageController.
+- Kept ServiceBuilder unchanged and deferred broader factory/builder cleanup until required.
 
 ## What’s Next
-- Migrate and validate GetUserSettingsController next.
-- Continue first Home page API batch in order: GetUserInfoController, HomePageController, ImportsController, ImportPageController.
-- Continue validating each ExpressUI.Core API endpoint individually before moving to larger batches.
+- Commit the first ExpressUI.Core Home/import/settings API batch.
+- Continue testing AngularJS UI interactions in ExpressUI.Core.
+- Use browser Network tab to identify the next failing API endpoint group.
+- Migrate the next ExpressUI.Core controller batch based on actual UI interaction order.
+- Continue validating each endpoint individually before broadening the migration.
 
 ## Active Decisions
 - ExpressUI.Core will preserve the AngularJS frontend and migrate the ASP.NET host/API surface incrementally.
 - Initial ExpressUI.Core migration uses a side-by-side ASP.NET Core MVC Web App rather than converting legacy UI.csproj in place.
 - Temporary HtmlModifier behaviour defaults the active import tab to Portfolio until user settings are wired.
+- Preserve PascalCase JSON responses in ExpressUI.Core to maintain AngularJS compatibility.
+- Use ASP.NET Core dependency injection for ExpressUI.Core services instead of adding new ServiceBuilder usage.
+- Do not redesign ServiceBuilder globally during the ExpressUI.Core migration.
+- Fix factory/builder patterns incrementally only where they block net10.0 migration.
+- Prefer direct IRiskLinkClient injection in ExpressUI.Core controllers when legacy service layers are only thin pass-throughs.
+- Avoid porting unused repositories/interfaces into ExpressUI.Core unless required by a validated vertical slice.
 - Treat WorkerHosts Host projects as redundant deferred cleanup candidates.
 - Treat WorkflowManager.API as legacy-retained/replaced by WorkflowManager.API.Core during transition.
 - Treat ExpressUI as the next major production host requiring migration strategy.
@@ -438,6 +460,10 @@ Setup / Planning
 - Windows/app pool identity must be consistently configured for ExpressUI.Core database access.
 - Temporary HtmlModifier behaviour does not yet preserve user-specific default import tab selection.
 - Static assets were copied for initial migration and may need a sync/ownership strategy later.
+- Remaining ExpressUI.Core endpoints may still expose route, model binding, configuration, SQL, authentication, or external API differences.
+- Later UI flows may require additional repository/model ports and must be migrated incrementally.
+- ServiceBuilder remains a legacy static factory and should not be expanded further in Core paths unless unavoidable.
+- AngularJS depends on PascalCase API response properties, so any future JSON configuration change could break the UI.
 - ExpressUI is likely the largest remaining migration area because it depends on legacy ASP.NET/System.Web.
 - Redundant Host projects remain net48 and may create inventory noise until removed or explicitly excluded.
 - Test projects remain net48 and may block a fully net10.0 solution unless upgraded or removed from the main solution.
@@ -521,6 +547,9 @@ Setup / Planning
 - The first ExpressUI.Core UI milestone is shell rendering, not full functional parity.
 - The SuperUserStatusController issue was caused by hosting/database identity configuration, not controller migration logic.
 - AngularJS remains in place and is not being rewritten.
+- First ExpressUI.Core vertical slice now proves MVC shell rendering plus real AngularJS Home/import/settings API calls.
+- HomePageController, ImportPageController, and SettingsPageController intentionally diverge from legacy construction by using DI-managed IRiskLinkClient directly.
+- SettingsPageController legacy constructor dependency on ILookupRepository was not ported because it was unused by the endpoint.
 - Backend API and daemon migration work is substantially complete.
 - Remaining production migration focus is now ExpressUI, subject to a dedicated strategy review.
 - Known relevant daemon hosts now follow the clean net10.0 console-style daemon pattern.
