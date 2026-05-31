@@ -382,13 +382,21 @@ Setup / Planning
 - Simplified HomePageController, ImportPageController, and SettingsPageController to use IRiskLinkClient directly where legacy code only used IHydraJobDatabaseService as a thin pass-through.
 - Avoided porting unused ILookupRepository for SettingsPageController.
 - Kept ServiceBuilder unchanged and deferred broader factory/builder cleanup until required.
+- Completed the required ExpressUI.Core Controllers/Api/Home migration batch.
+- Migrated and validated HideJobController in ExpressUI.Core.
+- Migrated and validated TaskProgressController in ExpressUI.Core.
+- Migrated and validated SaveUserSettingsController in ExpressUI.Core.
+- Migrated and validated JobDetailsDatabaseController in ExpressUI.Core.
+- Migrated and validated JobDetailsPortfolioListController in ExpressUI.Core.
+- Migrated and validated JobDetailsDlmAnalysisListController in ExpressUI.Core.
+- Confirmed the Home page job details flow works in ExpressUI.Core.
+- Confirmed remaining legacy Home API controllers are not required for current application flows.
 
 ## What’s Next
-- Commit the first ExpressUI.Core Home/import/settings API batch.
-- Continue testing AngularJS UI interactions in ExpressUI.Core.
-- Use browser Network tab to identify the next failing API endpoint group.
+- Commit the completed required Controllers/Api/Home migration batch.
+- Continue browser-based UI testing in ExpressUI.Core.
+- Use Network tab to identify the next failing endpoint group outside Controllers/Api/Home.
 - Migrate the next ExpressUI.Core controller batch based on actual UI interaction order.
-- Continue validating each endpoint individually before broadening the migration.
 
 ## Active Decisions
 - ExpressUI.Core will preserve the AngularJS frontend and migrate the ASP.NET host/API surface incrementally.
@@ -453,6 +461,9 @@ Setup / Planning
 - Use Amlin.Logging as the shared logging integration for WorkflowManager.API.Core rather than direct per-project Serilog setup.
 - Keep Amlin.Logging.WebApi for legacy net48 Web API integration and Amlin.Logging.AspNetCore for net10.0 ASP.NET Core integration.
 - Use global middleware for exception logging instead of per-controller try/catch boilerplate.
+- Do not migrate unused legacy Home API controllers unless they are later shown to be required by browser Network testing or functional validation.
+- EdmListController, EdmRdmListController, CheckEdmExistsOnDataBridgeController, CheckEdmPermissionsController, and EdmRdmDatabaseCheckController are intentionally not migrated at this stage.
+- Continue migrating ExpressUI.Core endpoints based on actual AngularJS UI usage rather than copying the entire legacy controller surface.
 
 ## Risks
 - ExpressUI.Core currently loads the Home shell but Home page API endpoints may still be missing or failing.
@@ -542,6 +553,8 @@ Setup / Planning
 - Empty response bodies are valid for some accepted/asynchronous API responses, but may be unexpected for other API calls and should be considered at call sites.
 - net10.0 replacement for Web API ReadAsAsync may not behave exactly like the legacy formatter pipeline for empty content and should be watched in other HTTP client paths.
 - RiskLinkClient remains a known technical debt area and may contain additional net10.0 HTTP behaviour differences that surface during testing.
+- Some intentionally skipped legacy Home API endpoints may need migration later if hidden or rarely used UI paths reference them.
+- Remaining ExpressUI.Core areas outside Home may still expose route, model binding, repository, configuration, SQL, authentication, or external API differences.
 
 ## Notes
 - The first ExpressUI.Core UI milestone is shell rendering, not full functional parity.
@@ -643,6 +656,8 @@ Setup / Planning
 - Document remaining deferred items: HomeController, root/home diagnostics if needed, Amlin.Logging ASP.NET Core integration, and deeper edge-case regression testing.
 - Review whether WorkflowManager.API.Core should become the preferred development/test API path.
 - Plan a follow-up hardening pass for logging, route parity, error response parity, configuration externalisation, and edge-case task/import workflows.
+- The Home controller migration was completed by required behaviour, not by mechanically porting every legacy controller.
+- Unused legacy endpoints will remain deferred until proven necessary.
 
 ## Active Decisions
 - Supporting/shared projects should remain multi-targeted where needed to preserve compatibility across net48 and net10.0 callers.
