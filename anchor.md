@@ -391,12 +391,20 @@ Setup / Planning
 - Migrated and validated JobDetailsDlmAnalysisListController in ExpressUI.Core.
 - Confirmed the Home page job details flow works in ExpressUI.Core.
 - Confirmed remaining legacy Home API controllers are not required for current application flows.
+- Completed and tested the active ExpressUI.Core Import popup API slice.
+- Migrated and validated CurrencyController in ExpressUI.Core.
+- Migrated and validated GetPortfolioListController in ExpressUI.Core.
+- Migrated and validated SubmitPortfolioImportController in ExpressUI.Core.
+- Migrated and validated SubmitMultiplePortfolioImportController in ExpressUI.Core.
+- Confirmed IWorkflowManagerApiService is registered for WorkerType.ExpressUI for ExpressUI.Core submit flows.
+- Confirmed IRMDatabaseService is registered through ExpressUI.Core dependency injection for RiskModeler database resolution.
+- Removed unused CheckDlmProfilesForClassController migration from the active slice.
 
 ## What’s Next
-- Commit the completed required Controllers/Api/Home migration batch.
-- Continue browser-based UI testing in ExpressUI.Core.
-- Use Network tab to identify the next failing endpoint group outside Controllers/Api/Home.
-- Migrate the next ExpressUI.Core controller batch based on actual UI interaction order.
+- Commit the active ExpressUI.Core Import popup API slice.
+- Continue browser-based testing to identify the next active UI workflow/page to migrate.
+- Defer DLM Submissions API controllers until the DLM Submissions page is implemented in ExpressUI.Core.
+- Continue excluding stale RiskModeler import paths unless the business explicitly reintroduces them.
 
 ## Active Decisions
 - ExpressUI.Core will preserve the AngularJS frontend and migrate the ASP.NET host/API surface incrementally.
@@ -464,6 +472,11 @@ Setup / Planning
 - Do not migrate unused legacy Home API controllers unless they are later shown to be required by browser Network testing or functional validation.
 - EdmListController, EdmRdmListController, CheckEdmExistsOnDataBridgeController, CheckEdmPermissionsController, and EdmRdmDatabaseCheckController are intentionally not migrated at this stage.
 - Continue migrating ExpressUI.Core endpoints based on actual AngularJS UI usage rather than copying the entire legacy controller surface.
+- Do not migrate SubmitDatabaseFileImportController because the functionality is stale, inactive, and irrelevant to the current RiskModeler adaptation.
+- Do not migrate SubmitAccLocFileImportController because the functionality is stale, inactive, and irrelevant to the current RiskModeler adaptation.
+- If database file import or AccLoc import is reintroduced later, rewrite the functionality rather than mechanically porting the legacy controllers.
+- Defer LoadImportSelectionDataController, LoadDlmSubmissionDataController, SubmitDlmProfilesController, and EdmRdmDatabaseCheckController until the DLM Submissions page is migrated and testable.
+- Treat controller folder location as secondary to actual UI workflow ownership.
 
 ## Risks
 - ExpressUI.Core currently loads the Home shell but Home page API endpoints may still be missing or failing.
@@ -555,8 +568,13 @@ Setup / Planning
 - RiskLinkClient remains a known technical debt area and may contain additional net10.0 HTTP behaviour differences that surface during testing.
 - Some intentionally skipped legacy Home API endpoints may need migration later if hidden or rarely used UI paths reference them.
 - Remaining ExpressUI.Core areas outside Home may still expose route, model binding, repository, configuration, SQL, authentication, or external API differences.
+- Deferred DLM Submissions controllers may require additional repository/model ports and should not be migrated until the page can validate them.
+- Legacy AngularJS may still contain references to stale database file import or AccLoc import endpoints; these should be treated as UI cleanup if encountered.
+- Submit endpoints must continue to be tested only with safe/dev data because they create workflow jobs.
 
 ## Notes
+- Import-folder controllers were classified by actual workflow usage, not by physical folder location.
+- The active Import popup slice is now separate from the later DLM Submissions page slice.
 - The first ExpressUI.Core UI milestone is shell rendering, not full functional parity.
 - The SuperUserStatusController issue was caused by hosting/database identity configuration, not controller migration logic.
 - AngularJS remains in place and is not being rewritten.
