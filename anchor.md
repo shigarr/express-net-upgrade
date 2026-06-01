@@ -411,14 +411,43 @@ Setup / Planning
 - Registered IAdminRepository in ExpressUI.Core dependency injection.
 - Added a narrow Admin audit export repository for GetSbuAuditData instead of porting the full IAuditRepository.
 - Confirmed Admin page load, class selection, query save, DLM profile save, and CSV export work in ExpressUI.Core.
+- Completed and tested the ExpressUI.Core Results page shell.
+- Migrated and validated ResultsController and Views/Results/Results.cshtml in ExpressUI.Core.
+- Migrated and validated ExpressImportDetailsController.
+- Migrated and validated ResultsLookupDataController.
+- Migrated and validated ResultsPageController.
+- Migrated and validated LoadDataQualityEmfController.
+- Migrated and validated LoadDataQualityCountryController.
+- Migrated and validated LoadDataQualityPerilController.
+- Migrated and validated ConstructionClassListController.
+- Migrated and validated OccupancyTypeListController.
+- Migrated and validated LoadFailedDataController.
+- Migrated and validated OverrideAuditQueryController.
+- Migrated and validated CancelOverrideAuditQueryController.
+- Migrated and validated ExportFailedAuditResultsController.
+- Migrated and validated ReRunAuditScriptsController.
+- Migrated and validated StandardUpdatesController.
+- Migrated and validated UpdateAllPolicyCurrenciesController.
+- Migrated and validated UpdateAllLocationCurrenciesController.
+- Migrated and validated UpdateConstructionController.
+- Migrated and validated UpdateOccupancyController.
+- Added narrow Results repositories for data quality, audit, import notes, and updates.
+- Fixed failed audit data serialization by converting DataTable results to AngularJS-compatible row dictionaries.
+- Fixed cancel override client payload to send ImportIds instead of the unused ImportId value.
+- Fixed failed audit CSV export TVP handling for Microsoft.Data.SqlClient.
+- Replaced controller-level ServiceBuilder usage in ReRunAuditScriptsController with DI-based ICurrencyService.
 
 ## What’s Next
-- Commit the completed ExpressUI.Core Admin page slice.
-- Continue browser-based testing to identify the next page/workflow to migrate.
-- Consider Results page as the next major slice if it is the next active workflow after Admin.
-- Defer DLM Submissions controllers until the DLM Submissions page is implemented and testable.
+- Commit the completed ExpressUI.Core Results page slice.
+- Verify whether Data Quality CSV export endpoints are required and migrate them if the Results page download buttons are in active use.
+- Continue to defer DLM Submissions controllers until the DLM Submissions page is implemented and testable.
+- After committing Results, identify the next active page/workflow to migrate.
 
 ## Active Decisions
+- Continue using narrow workflow-specific repositories in ExpressUI.Core instead of porting full legacy repositories before they are needed.
+- Keep Results page migration grouped by browser-testable workflow rather than by physical legacy folder.
+- Preserve legacy stored procedure behaviour and TVP usage while adapting SqlClient/Dapper usage correctly.
+- Use DI for service dependencies when migrating controllers that previously used ServiceBuilder directly.
 - Use a narrow Admin audit export repository for Admin CSV export rather than porting the full legacy IAuditRepository.
 - Defer full IAuditRepository migration until the Results/Audit workflow requires it.
 - Continue grouping ExpressUI.Core migration work by page/workflow rather than physical folder alone.
@@ -495,6 +524,10 @@ Setup / Planning
 - Treat controller folder location as secondary to actual UI workflow ownership.
 
 ## Risks
+- Data Quality CSV export endpoints may still be missing if users need the Data Quality download buttons.
+- DLM Submissions workflow remains unmigrated and may require LoadImportSelectionDataController, LoadDlmSubmissionDataController, SubmitDlmProfilesController, and EdmRdmDatabaseCheckController.
+- Results update actions mutate exposure/import data and should continue to be validated only against safe/dev jobs until final sign-off.
+- Some migrated behaviour fixed legacy-broken functionality, so regression comparison should account for known legacy defects.
 - Full Results/Audit workflow may require the remaining IAuditRepository methods and additional model/controller ports.
 - Legacy ExposureProcessing connection string replacement using XXXXX remains in use and should be revisited only after migration stabilises.
 - CSV export date parsing still follows legacy DateTime.Parse behaviour and may be culture-sensitive.
@@ -592,6 +625,10 @@ Setup / Planning
 - Submit endpoints must continue to be tested only with safe/dev data because they create workflow jobs.
 
 ## Notes
+- Failed audit CSV export was found to be broken in the legacy-style implementation and was corrected during the Core migration by using explicit structured TVP parameters with Microsoft.Data.SqlClient.
+- LoadFailedDataController cannot return a raw DataTable under System.Text.Json; the response is converted to a row dictionary list to preserve AngularJS grid behaviour.
+- Cancel override previously sent ImportId from an unmaintained scope variable; Core-compatible behaviour now sends ImportIds based on the selected audit import.
+- ReRunAuditScriptsController uses DI for ICurrencyService rather than ServiceBuilder.InstantiateCurrencyService.
 - SaveClassDlmsController existed in the legacy project under the singular file name SaveClassDlmController.cs, but the route/class name is SaveClassDlmsController.
 - Admin CSV export was treated as a separate Admin sub-slice because it returns a file download rather than JSON.
 - Import-folder controllers were classified by actual workflow usage, not by physical folder location.
