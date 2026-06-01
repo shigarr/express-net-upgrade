@@ -436,12 +436,15 @@ Setup / Planning
 - Fixed cancel override client payload to send ImportIds instead of the unused ImportId value.
 - Fixed failed audit CSV export TVP handling for Microsoft.Data.SqlClient.
 - Replaced controller-level ServiceBuilder usage in ReRunAuditScriptsController with DI-based ICurrencyService.
+- Migrated and validated ExportDataQualityResultsEmfController.
+- Migrated and validated ExportDataQualityResultsCountryController.
+- Migrated and validated ExportDataQualityResultsPerilController.
+- Confirmed Data Quality CSV downloads work from the Results page for EMF, Country, and Peril breakdowns.
 
 ## What’s Next
-- Commit the completed ExpressUI.Core Results page slice.
-- Verify whether Data Quality CSV export endpoints are required and migrate them if the Results page download buttons are in active use.
+- Commit the Data Quality export controller changes.
 - Continue to defer DLM Submissions controllers until the DLM Submissions page is implemented and testable.
-- After committing Results, identify the next active page/workflow to migrate.
+- Identify the next active page/workflow to migrate after Results.
 
 ## Active Decisions
 - Continue using narrow workflow-specific repositories in ExpressUI.Core instead of porting full legacy repositories before they are needed.
@@ -625,6 +628,8 @@ Setup / Planning
 - Submit endpoints must continue to be tested only with safe/dev data because they create workflow jobs.
 
 ## Notes
+- Data Quality export controllers reuse the existing Results data quality repository methods and preserve the legacy RecordExport.csv download behaviour.
+- CSV generation intentionally preserves legacy formatting rather than introducing broader export redesign.
 - Failed audit CSV export was found to be broken in the legacy-style implementation and was corrected during the Core migration by using explicit structured TVP parameters with Microsoft.Data.SqlClient.
 - LoadFailedDataController cannot return a raw DataTable under System.Text.Json; the response is converted to a row dictionary list to preserve AngularJS grid behaviour.
 - Cancel override previously sent ImportId from an unmaintained scope variable; Core-compatible behaviour now sends ImportIds based on the selected audit import.
