@@ -440,13 +440,22 @@ Setup / Planning
 - Migrated and validated ExportDataQualityResultsCountryController.
 - Migrated and validated ExportDataQualityResultsPerilController.
 - Confirmed Data Quality CSV downloads work from the Results page for EMF, Country, and Peril breakdowns.
+- Added and validated the ExpressUI.Core DlmSelections page shell.
+- Migrated and validated LoadImportSelectionDataController.
+- Added a narrow DLM selections import repository for DLM page load data.
+- Migrated and validated LoadDlmSubmissionDataController.
+- Migrated and validated SubmitDlmProfilesController.
+- Confirmed the DLM Selections workflow works from page load through DLM profile submission.
 
 ## What’s Next
-- Commit the Data Quality export controller changes.
-- Continue to defer DLM Submissions controllers until the DLM Submissions page is implemented and testable.
-- Identify the next active page/workflow to migrate after Results.
+- Commit the completed DLM Selections workflow slice.
+- Verify whether EdmRdmDatabaseCheckController is still used anywhere in the current DLM flow; defer if no active usage appears.
+- Run a navigation sweep across Home, Import popup, Admin, Results, Results exports, and DLM Selections.
 
 ## Active Decisions
+- Continue migrating DLM Selections by active browser-tested flow rather than porting all legacy Import folder controllers.
+- Use DI for workflow submission dependencies instead of ServiceBuilder in Core controllers.
+- Keep DLM page repositories narrow and workflow-specific.
 - Continue using narrow workflow-specific repositories in ExpressUI.Core instead of porting full legacy repositories before they are needed.
 - Keep Results page migration grouped by browser-testable workflow rather than by physical legacy folder.
 - Preserve legacy stored procedure behaviour and TVP usage while adapting SqlClient/Dapper usage correctly.
@@ -527,6 +536,9 @@ Setup / Planning
 - Treat controller folder location as secondary to actual UI workflow ownership.
 
 ## Risks
+- EdmRdmDatabaseCheckController remains a possible dormant endpoint from DLM importService.js.
+- DLM submission creates workflow messages and should continue to be tested only with safe/dev data until final validation.
+- Some older DLM-related legacy controllers may remain intentionally unported if they are not active in the current UI flow.
 - Data Quality CSV export endpoints may still be missing if users need the Data Quality download buttons.
 - DLM Submissions workflow remains unmigrated and may require LoadImportSelectionDataController, LoadDlmSubmissionDataController, SubmitDlmProfilesController, and EdmRdmDatabaseCheckController.
 - Results update actions mutate exposure/import data and should continue to be validated only against safe/dev jobs until final sign-off.
@@ -628,6 +640,9 @@ Setup / Planning
 - Submit endpoints must continue to be tested only with safe/dev data because they create workflow jobs.
 
 ## Notes
+- DLM Selections submission now uses DI-based workflow API integration with WorkerType.ExpressUI rather than ServiceBuilder usage in the controller.
+- LoadImportSelectionDataController uses a narrow DLM selections import repository to retrieve portfolios, treaty lists, treaty dependencies, and exposed DLM profiles.
+- SubmitDlmProfilesController preserves the legacy non-super-user validation preventing unauthorized DLM output profile/default selection changes.
 - Data Quality export controllers reuse the existing Results data quality repository methods and preserve the legacy RecordExport.csv download behaviour.
 - CSV generation intentionally preserves legacy formatting rather than introducing broader export redesign.
 - Failed audit CSV export was found to be broken in the legacy-style implementation and was corrected during the Core migration by using explicit structured TVP parameters with Microsoft.Data.SqlClient.
