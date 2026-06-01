@@ -399,14 +399,30 @@ Setup / Planning
 - Confirmed IWorkflowManagerApiService is registered for WorkerType.ExpressUI for ExpressUI.Core submit flows.
 - Confirmed IRMDatabaseService is registered through ExpressUI.Core dependency injection for RiskModeler database resolution.
 - Removed unused CheckDlmProfilesForClassController migration from the active slice.
+- Completed and tested the ExpressUI.Core Admin page slice.
+- Migrated and validated AdminController and Views/Admin/Admin.cshtml in ExpressUI.Core.
+- Migrated and validated AdminPageController in ExpressUI.Core.
+- Migrated and validated LoadClassQueriesController in ExpressUI.Core.
+- Migrated and validated SaveClassQueriesController in ExpressUI.Core.
+- Migrated and validated LoadClassDlmsController in ExpressUI.Core.
+- Migrated and validated SaveClassDlmsController in ExpressUI.Core.
+- Migrated and validated GetSbuAuditDataController CSV export in ExpressUI.Core.
+- Ported AdminRepository using IConfiguration and Microsoft.Data.SqlClient.
+- Registered IAdminRepository in ExpressUI.Core dependency injection.
+- Added a narrow Admin audit export repository for GetSbuAuditData instead of porting the full IAuditRepository.
+- Confirmed Admin page load, class selection, query save, DLM profile save, and CSV export work in ExpressUI.Core.
 
 ## What’s Next
-- Commit the active ExpressUI.Core Import popup API slice.
-- Continue browser-based testing to identify the next active UI workflow/page to migrate.
-- Defer DLM Submissions API controllers until the DLM Submissions page is implemented in ExpressUI.Core.
-- Continue excluding stale RiskModeler import paths unless the business explicitly reintroduces them.
+- Commit the completed ExpressUI.Core Admin page slice.
+- Continue browser-based testing to identify the next page/workflow to migrate.
+- Consider Results page as the next major slice if it is the next active workflow after Admin.
+- Defer DLM Submissions controllers until the DLM Submissions page is implemented and testable.
 
 ## Active Decisions
+- Use a narrow Admin audit export repository for Admin CSV export rather than porting the full legacy IAuditRepository.
+- Defer full IAuditRepository migration until the Results/Audit workflow requires it.
+- Continue grouping ExpressUI.Core migration work by page/workflow rather than physical folder alone.
+- Preserve legacy ExposureProcessing connection string server replacement behaviour for now.
 - ExpressUI.Core will preserve the AngularJS frontend and migrate the ASP.NET host/API surface incrementally.
 - Initial ExpressUI.Core migration uses a side-by-side ASP.NET Core MVC Web App rather than converting legacy UI.csproj in place.
 - Temporary HtmlModifier behaviour defaults the active import tab to Portfolio until user settings are wired.
@@ -479,6 +495,9 @@ Setup / Planning
 - Treat controller folder location as secondary to actual UI workflow ownership.
 
 ## Risks
+- Full Results/Audit workflow may require the remaining IAuditRepository methods and additional model/controller ports.
+- Legacy ExposureProcessing connection string replacement using XXXXX remains in use and should be revisited only after migration stabilises.
+- CSV export date parsing still follows legacy DateTime.Parse behaviour and may be culture-sensitive.
 - ExpressUI.Core currently loads the Home shell but Home page API endpoints may still be missing or failing.
 - Remaining ExpressUI.Core API endpoints may still expose route, model binding, current-user, SQL permissions, or configuration differences.
 - Windows/app pool identity must be consistently configured for ExpressUI.Core database access.
@@ -573,6 +592,8 @@ Setup / Planning
 - Submit endpoints must continue to be tested only with safe/dev data because they create workflow jobs.
 
 ## Notes
+- SaveClassDlmsController existed in the legacy project under the singular file name SaveClassDlmController.cs, but the route/class name is SaveClassDlmsController.
+- Admin CSV export was treated as a separate Admin sub-slice because it returns a file download rather than JSON.
 - Import-folder controllers were classified by actual workflow usage, not by physical folder location.
 - The active Import popup slice is now separate from the later DLM Submissions page slice.
 - The first ExpressUI.Core UI milestone is shell rendering, not full functional parity.
