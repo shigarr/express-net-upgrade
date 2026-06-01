@@ -446,13 +446,23 @@ Setup / Planning
 - Migrated and validated LoadDlmSubmissionDataController.
 - Migrated and validated SubmitDlmProfilesController.
 - Confirmed the DLM Selections workflow works from page load through DLM profile submission.
+- Completed browser-tested functional migration for the active ExpressUI.Core workflows.
+- Confirmed Home, Import popup, Admin, Results, Results exports, and DLM Selections workflows are functionally working in ExpressUI.Core.
+- Established ExpressUI.Core as a management-facing reference implementation rather than a production-ready deployment candidate.
 
 ## What’s Next
-- Commit the completed DLM Selections workflow slice.
-- Verify whether EdmRdmDatabaseCheckController is still used anywhere in the current DLM flow; defer if no active usage appears.
-- Run a navigation sweep across Home, Import popup, Admin, Results, Results exports, and DLM Selections.
+- Produce a solution inventory showing all projects, target frameworks, project references, and possible host/startup projects.
+- Identify projects still targeting net48, projects multi-targeting net48 and net10.0, and projects that should remain net10.0 only.
+- Identify legacy host projects and stale projects that should be removed from the active solution.
+- Remove agreed obsolete projects from the solution in small batches, rebuilding after each batch.
+- Defer physical deletion of project folders until after explicit review/sign-off.
 
 ## Active Decisions
+- Treat the current ExpressUI.Core implementation as functionally complete for active workflows, but not production-ready.
+- Do not promote to production without full SIT, regression, UAT, security, performance, and operational testing.
+- Move next to solution rationalisation instead of migrating more dormant controllers.
+- Remove obsolete projects from the solution first before considering physical deletion from the repository.
+- Keep legacy projects available as behavioural/reference material until formal sign-off.
 - Continue migrating DLM Selections by active browser-tested flow rather than porting all legacy Import folder controllers.
 - Use DI for workflow submission dependencies instead of ServiceBuilder in Core controllers.
 - Keep DLM page repositories narrow and workflow-specific.
@@ -536,6 +546,10 @@ Setup / Planning
 - Treat controller folder location as secondary to actual UI workflow ownership.
 
 ## Risks
+- The team is currently stretched and SIT testing cannot be performed immediately.
+- The migration is not production-ready until full testing has been completed.
+- Removing projects too aggressively could lose legacy reference behaviour before SIT.
+- Some net48 or multi-targeted projects may still be required by workers, tooling, or non-UI workflows not yet exercised.
 - EdmRdmDatabaseCheckController remains a possible dormant endpoint from DLM importService.js.
 - DLM submission creates workflow messages and should continue to be tested only with safe/dev data until final validation.
 - Some older DLM-related legacy controllers may remain intentionally unported if they are not active in the current UI flow.
@@ -640,6 +654,9 @@ Setup / Planning
 - Submit endpoints must continue to be tested only with safe/dev data because they create workflow jobs.
 
 ## Notes
+- The current implementation should be used as a reference point to demonstrate feasibility and support management buy-in.
+- Solution cleanup should be performed conservatively by removing projects from the solution first, not deleting source folders.
+- Each cleanup batch should be followed by a clean full solution build and basic browser smoke test.
 - DLM Selections submission now uses DI-based workflow API integration with WorkerType.ExpressUI rather than ServiceBuilder usage in the controller.
 - LoadImportSelectionDataController uses a narrow DLM selections import repository to retrieve portfolios, treaty lists, treaty dependencies, and exposed DLM profiles.
 - SubmitDlmProfilesController preserves the legacy non-super-user validation preventing unauthorized DLM output profile/default selection changes.
