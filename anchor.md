@@ -463,11 +463,15 @@ Setup / Planning
 - Moved FileCopierDaemon host-level object composition to DI.
 - Removed FileCopierDaemon direct dependency on Factories and ServiceBuilder at the daemon host level.
 - Confirmed WARP_Prototype.Master.sln builds successfully after FileCopierDaemon DI change.
+- Moved ExpressManagerDaemon host-level object composition to DI.
+- Removed ExpressManagerDaemon direct dependency on Factories and ServiceBuilder at the daemon host level.
+- Confirmed WARP_Prototype.Master.sln builds successfully after ExpressManagerDaemon DI change.
+- Smoke tested ExpressManagerDaemon successfully after DI change.
 
 ## What’s Next
-- Continue DI hardening with ExpressManagerDaemon or HydraJobManagerDaemon because they can be runtime-tested.
-- Do not refactor RatCatManagerDaemon until a runtime test path is available.
-- Defer worker-level ServiceBuilder removal until host-level daemon changes are complete and testable.
+- Continue host-level DI hardening with HydraJobManagerDaemon because it can be runtime-tested.
+- Continue deferring RatCatManagerDaemon until a runtime test path is available.
+- Defer worker-level ServiceBuilder removal until host-level daemon changes are complete.
 
 ## Active Decisions
 - Treat the active solution as a clean net10.0 reference implementation.
@@ -679,6 +683,9 @@ Setup / Planning
 - Production promotion remains blocked until SIT, regression, UAT, security, performance, and operational testing are completed.
 
 ## Notes
+- ExpressManagerDaemon host-level DI change was runtime smoke tested successfully.
+- ExpressWorker and ExpressTaskRunner still contain worker-level ServiceBuilder usage and are deferred for later refactor.
+- Factories remains in the active solution because Workers still depends on ServiceBuilder.
 - FileCopyWorker still contains worker-level ServiceBuilder usage and is deferred for a later refactor.
 - FileCopierDaemon was build-validated only; runtime execution could not be tested in the current environment.
 - ExpressManagerDaemon and HydraJobManagerDaemon are the only daemon runtime paths currently available for testing.
