@@ -472,12 +472,13 @@ Setup / Planning
 - Preserved HydraJobWorker construction with WarpUrl to maintain existing priority lookup behaviour.
 - Confirmed WARP_Prototype.Master.sln builds successfully after HydraJobManagerDaemon DI change.
 - Smoke tested HydraJobManagerDaemon successfully after DI change.
+- Moved RatCatManagerDaemon host-level object composition from ServiceBuilder to Microsoft.Extensions.DependencyInjection.
+- Removed RatCatManagerDaemon direct project dependency on Factories after host-level ServiceBuilder usage was removed.
+- Build validated RatCatManagerDaemon host-level DI cleanup.
 
 ## What’s Next
-- Inspect RatCatManagerDaemon and RatCatWorker wiring.
-- Move RatCatManagerDaemon host-level object composition to DI only.
-- Remove RatCatManagerDaemon direct dependency on Factories if the daemon host no longer references ServiceBuilder.
-- Keep Workers dependency on Factories because RatCatWorker and other worker internals still use ServiceBuilder.
+- Continue avoiding worker-level ServiceBuilder removal unless a tested migration slice is defined.
+- Treat RatCatManagerDaemon as build-validated only unless a runtime validation path becomes available.
 
 ## Active Decisions
 - Proceed with RatCatManagerDaemon host-level DI cleanup despite lack of runtime test path, because the daemon is legacy-unused and the goal is to remove direct host-level ServiceBuilder dependency for consistency.
@@ -577,6 +578,7 @@ Setup / Planning
 - Treat controller folder location as secondary to actual UI workflow ownership.
 
 ## Risks
+- 🟠 RatCatManagerDaemon runtime behaviour remains unverified because the daemon is legacy-unused and no smoke test path is currently available.
 - 🟠 RatCatManagerDaemon cannot currently be runtime smoke tested because it has not been used by this or any other application for a long time.
 - 🟢 Business impact of RatCatManagerDaemon host-level cleanup is considered low because the daemon is legacy-unused.
 - 🔴 RatCatWorker internals and worker-level ServiceBuilder usage must not be removed as part of the host-level cleanup.
