@@ -456,12 +456,14 @@ Setup / Planning
 - Converted remaining active shared projects from net48;net10.0 multi-targeting to net10.0 only.
 - Confirmed WARP_Prototype.Master.sln builds successfully after removing net48 target framework support from active projects.
 - Completed end-to-end validation after target framework rationalisation with no issues.
+- Removed the unused Factories project reference from ExpressUI.Core.
+- Added an explicit Dapper dependency to ExpressUI.Core because its repositories use Dapper directly.
+- Confirmed WARP_Prototype.Master.sln builds successfully after removing the ExpressUI.Core Factories dependency.
+- Smoke tested ExpressUI.Core successfully after dependency cleanup.
 
 ## What’s Next
-- Manually remove remaining dead NET48/NETFRAMEWORK conditional code from active projects.
-- Rebuild WARP_Prototype.Master.sln after cleanup.
-- Re-run end-to-end smoke validation after cleanup.
-- Prepare a management-facing summary of the reference implementation, current limitations, and required formal testing before production promotion.
+- Continue DI hardening by addressing ServiceBuilder usage in worker daemon projects and Workers.
+- Do not remove Factories from the active solution until all active ServiceBuilder usage has been eliminated.
 
 ## Active Decisions
 - Treat the active solution as a clean net10.0 reference implementation.
@@ -671,6 +673,9 @@ Setup / Planning
 - Production promotion remains blocked until SIT, regression, UAT, security, performance, and operational testing are completed.
 
 ## Notes
+- ExpressUI.Core no longer depends on Factories or ServiceBuilder.
+- Dapper is now an explicit ExpressUI.Core dependency rather than being pulled transitively through Factories.
+- Factories remains in the active solution because worker projects still depend on ServiceBuilder.
 - The active solution is now net10.0 only.
 - Remaining NET48/NETFRAMEWORK code is compatibility residue and should be removed conservatively.
 - Legacy project folders remain available outside the active solution for reference.
