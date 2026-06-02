@@ -453,15 +453,20 @@ Setup / Planning
 - Removed legacy ExpressUI, legacy WorkflowManager.API, legacy net48 worker hosts, StressTesting projects, and Test projects from the active solution.
 - Confirmed WARP_Prototype.Master.sln builds successfully after solution cleanup.
 - Kept SQL projects and shared library projects in the active solution.
+- Converted remaining active shared projects from net48;net10.0 multi-targeting to net10.0 only.
+- Confirmed WARP_Prototype.Master.sln builds successfully after removing net48 target framework support from active projects.
+- Completed end-to-end validation after target framework rationalisation with no issues.
 
 ## What’s Next
-- Commit the WARP_Prototype.Master.sln cleanup.
-- Review remaining shared projects that still target net48;net10.0.
-- Decide whether shared libraries should continue multi-targeting temporarily or move to net10.0 only.
-- Keep SQL projects in the solution unless they become a build/developer workflow issue.
-- Prepare a management-facing summary describing the functionally complete reference implementation and remaining testing requirements.
+- Manually remove remaining dead NET48/NETFRAMEWORK conditional code from active projects.
+- Rebuild WARP_Prototype.Master.sln after cleanup.
+- Re-run end-to-end smoke validation after cleanup.
+- Prepare a management-facing summary of the reference implementation, current limitations, and required formal testing before production promotion.
 
 ## Active Decisions
+- Treat the active solution as a clean net10.0 reference implementation.
+- Remove dead NET48/NETFRAMEWORK conditional code from active projects after successful net10.0-only build validation.
+- Keep removed legacy project folders on disk as historical reference only.
 - Treat the current ExpressUI.Core implementation as functionally complete for active workflows, but not production-ready.
 - Do not promote to production without full SIT, regression, UAT, security, performance, and operational testing.
 - Move next to solution rationalisation instead of migrating more dormant controllers.
@@ -554,6 +559,7 @@ Setup / Planning
 - Treat controller folder location as secondary to actual UI workflow ownership.
 
 ## Risks
+- Removing conditional framework code should be limited to dead NET48/NETFRAMEWORK branches only.
 - The team is currently stretched and SIT testing cannot be performed immediately.
 - The migration is not production-ready until full testing has been completed.
 - Removing projects too aggressively could lose legacy reference behaviour before SIT.
@@ -665,6 +671,9 @@ Setup / Planning
 - Production promotion remains blocked until SIT, regression, UAT, security, performance, and operational testing are completed.
 
 ## Notes
+- The active solution is now net10.0 only.
+- Remaining NET48/NETFRAMEWORK code is compatibility residue and should be removed conservatively.
+- Legacy project folders remain available outside the active solution for reference.
 - The current implementation should be used as a reference point to demonstrate feasibility and support management buy-in.
 - Solution cleanup should be performed conservatively by removing projects from the solution first, not deleting source folders.
 - Each cleanup batch should be followed by a clean full solution build and basic browser smoke test.
