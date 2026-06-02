@@ -474,11 +474,14 @@ Setup / Planning
 - Smoke tested HydraJobManagerDaemon successfully after DI change.
 
 ## What’s Next
-- Do not continue host-level DI hardening on untestable daemons unless a runtime test path becomes available.
-- Review remaining legacy App.config/Web.config files and generated Settings artifacts for removal from active net10.0 projects.
-- Defer worker-level ServiceBuilder removal until a dedicated worker refactor phase.
+- Inspect RatCatManagerDaemon and RatCatWorker wiring.
+- Move RatCatManagerDaemon host-level object composition to DI only.
+- Remove RatCatManagerDaemon direct dependency on Factories if the daemon host no longer references ServiceBuilder.
+- Keep Workers dependency on Factories because RatCatWorker and other worker internals still use ServiceBuilder.
 
 ## Active Decisions
+- Proceed with RatCatManagerDaemon host-level DI cleanup despite lack of runtime test path, because the daemon is legacy-unused and the goal is to remove direct host-level ServiceBuilder dependency for consistency.
+- RatCatManagerDaemon changes will be build-validated only unless a runtime smoke test path becomes available.
 - Treat the active solution as a clean net10.0 reference implementation.
 - Remove dead NET48/NETFRAMEWORK conditional code from active projects after successful net10.0-only build validation.
 - Keep removed legacy project folders on disk as historical reference only.
@@ -574,6 +577,9 @@ Setup / Planning
 - Treat controller folder location as secondary to actual UI workflow ownership.
 
 ## Risks
+- 🟠 RatCatManagerDaemon cannot currently be runtime smoke tested because it has not been used by this or any other application for a long time.
+- 🟢 Business impact of RatCatManagerDaemon host-level cleanup is considered low because the daemon is legacy-unused.
+- 🔴 RatCatWorker internals and worker-level ServiceBuilder usage must not be removed as part of the host-level cleanup.
 - Removing conditional framework code should be limited to dead NET48/NETFRAMEWORK branches only.
 - The team is currently stretched and SIT testing cannot be performed immediately.
 - The migration is not production-ready until full testing has been completed.
