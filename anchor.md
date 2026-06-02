@@ -467,11 +467,16 @@ Setup / Planning
 - Removed ExpressManagerDaemon direct dependency on Factories and ServiceBuilder at the daemon host level.
 - Confirmed WARP_Prototype.Master.sln builds successfully after ExpressManagerDaemon DI change.
 - Smoke tested ExpressManagerDaemon successfully after DI change.
+- Moved HydraJobManagerDaemon host-level object composition to DI.
+- Removed HydraJobManagerDaemon direct dependency on Factories and ServiceBuilder at the daemon host level.
+- Preserved HydraJobWorker construction with WarpUrl to maintain existing priority lookup behaviour.
+- Confirmed WARP_Prototype.Master.sln builds successfully after HydraJobManagerDaemon DI change.
+- Smoke tested HydraJobManagerDaemon successfully after DI change.
 
 ## What’s Next
-- Continue host-level DI hardening with HydraJobManagerDaemon because it can be runtime-tested.
-- Continue deferring RatCatManagerDaemon until a runtime test path is available.
-- Defer worker-level ServiceBuilder removal until host-level daemon changes are complete.
+- Do not continue host-level DI hardening on untestable daemons unless a runtime test path becomes available.
+- Review remaining legacy App.config/Web.config files and generated Settings artifacts for removal from active net10.0 projects.
+- Defer worker-level ServiceBuilder removal until a dedicated worker refactor phase.
 
 ## Active Decisions
 - Treat the active solution as a clean net10.0 reference implementation.
@@ -683,6 +688,11 @@ Setup / Planning
 - Production promotion remains blocked until SIT, regression, UAT, security, performance, and operational testing are completed.
 
 ## Notes
+- HydraJobManagerDaemon host-level DI change was runtime smoke tested successfully.
+- HydraJobWorker still contains worker-level ServiceBuilder usage for WorkflowManagerApiService, HydraJobDatabaseService, and DatabaseService.
+- Factories remains in the active solution because Workers still depends on ServiceBuilder.
+- RatCatManagerDaemon remains deferred because there is no available runtime test path.
+- FileCopierDaemon remains build-validated only.
 - ExpressManagerDaemon host-level DI change was runtime smoke tested successfully.
 - ExpressWorker and ExpressTaskRunner still contain worker-level ServiceBuilder usage and are deferred for later refactor.
 - Factories remains in the active solution because Workers still depends on ServiceBuilder.
