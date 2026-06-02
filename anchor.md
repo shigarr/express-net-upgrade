@@ -460,10 +460,14 @@ Setup / Planning
 - Added an explicit Dapper dependency to ExpressUI.Core because its repositories use Dapper directly.
 - Confirmed WARP_Prototype.Master.sln builds successfully after removing the ExpressUI.Core Factories dependency.
 - Smoke tested ExpressUI.Core successfully after dependency cleanup.
+- Moved FileCopierDaemon host-level object composition to DI.
+- Removed FileCopierDaemon direct dependency on Factories and ServiceBuilder at the daemon host level.
+- Confirmed WARP_Prototype.Master.sln builds successfully after FileCopierDaemon DI change.
 
 ## What’s Next
-- Continue DI hardening by addressing ServiceBuilder usage in worker daemon projects and Workers.
-- Do not remove Factories from the active solution until all active ServiceBuilder usage has been eliminated.
+- Continue DI hardening with ExpressManagerDaemon or HydraJobManagerDaemon because they can be runtime-tested.
+- Do not refactor RatCatManagerDaemon until a runtime test path is available.
+- Defer worker-level ServiceBuilder removal until host-level daemon changes are complete and testable.
 
 ## Active Decisions
 - Treat the active solution as a clean net10.0 reference implementation.
@@ -597,6 +601,8 @@ Setup / Planning
 - Redundant Host projects remain net48 until a cleanup/removal decision is made.
 - SrisWorkerDaemon is ignored because it is outside the solution, but should be revisited only if solution membership changes.
 - FileCopierDaemon runtime behaviour is unvalidated because there is no active application test path.
+- FileCopierDaemon DI change has not been runtime-tested.
+- Untestable daemon refactors should be avoided or clearly marked as build-only validation.
 - File copy permissions, paths, worker lifecycle, and API interaction may require validation if FileCopierDaemon becomes active again.
 - RatCatManagerDaemon runtime behaviour is unvalidated because there is no active application test path.
 - RatCat API interaction, permissions, worker lifecycle, and external dependencies may require validation if RatCatManagerDaemon becomes active again.
@@ -673,6 +679,9 @@ Setup / Planning
 - Production promotion remains blocked until SIT, regression, UAT, security, performance, and operational testing are completed.
 
 ## Notes
+- FileCopyWorker still contains worker-level ServiceBuilder usage and is deferred for a later refactor.
+- FileCopierDaemon was build-validated only; runtime execution could not be tested in the current environment.
+- ExpressManagerDaemon and HydraJobManagerDaemon are the only daemon runtime paths currently available for testing.
 - ExpressUI.Core no longer depends on Factories or ServiceBuilder.
 - Dapper is now an explicit ExpressUI.Core dependency rather than being pulled transitively through Factories.
 - Factories remains in the active solution because worker projects still depend on ServiceBuilder.
