@@ -449,13 +449,17 @@ Setup / Planning
 - Completed browser-tested functional migration for the active ExpressUI.Core workflows.
 - Confirmed Home, Import popup, Admin, Results, Results exports, and DLM Selections workflows are functionally working in ExpressUI.Core.
 - Established ExpressUI.Core as a management-facing reference implementation rather than a production-ready deployment candidate.
+- Removed obsolete legacy projects from WARP_Prototype.Master.sln without deleting project folders.
+- Removed legacy ExpressUI, legacy WorkflowManager.API, legacy net48 worker hosts, StressTesting projects, and Test projects from the active solution.
+- Confirmed WARP_Prototype.Master.sln builds successfully after solution cleanup.
+- Kept SQL projects and shared library projects in the active solution.
 
 ## What’s Next
-- Produce a solution inventory showing all projects, target frameworks, project references, and possible host/startup projects.
-- Identify projects still targeting net48, projects multi-targeting net48 and net10.0, and projects that should remain net10.0 only.
-- Identify legacy host projects and stale projects that should be removed from the active solution.
-- Remove agreed obsolete projects from the solution in small batches, rebuilding after each batch.
-- Defer physical deletion of project folders until after explicit review/sign-off.
+- Commit the WARP_Prototype.Master.sln cleanup.
+- Review remaining shared projects that still target net48;net10.0.
+- Decide whether shared libraries should continue multi-targeting temporarily or move to net10.0 only.
+- Keep SQL projects in the solution unless they become a build/developer workflow issue.
+- Prepare a management-facing summary describing the functionally complete reference implementation and remaining testing requirements.
 
 ## Active Decisions
 - Treat the current ExpressUI.Core implementation as functionally complete for active workflows, but not production-ready.
@@ -463,6 +467,10 @@ Setup / Planning
 - Move next to solution rationalisation instead of migrating more dormant controllers.
 - Remove obsolete projects from the solution first before considering physical deletion from the repository.
 - Keep legacy projects available as behavioural/reference material until formal sign-off.
+- Treat WARP_Prototype.Master.sln as the cleaned active reference solution.
+- Keep removed legacy projects on disk as reference material until formal sign-off.
+- Do not physically delete removed projects before SIT/regression/UAT planning.
+- Defer shared-library target framework rationalisation to a separate cleanup step.
 - Continue migrating DLM Selections by active browser-tested flow rather than porting all legacy Import folder controllers.
 - Use DI for workflow submission dependencies instead of ServiceBuilder in Core controllers.
 - Keep DLM page repositories narrow and workflow-specific.
@@ -652,11 +660,17 @@ Setup / Planning
 - Deferred DLM Submissions controllers may require additional repository/model ports and should not be migrated until the page can validate them.
 - Legacy AngularJS may still contain references to stale database file import or AccLoc import endpoints; these should be treated as UI cleanup if encountered.
 - Submit endpoints must continue to be tested only with safe/dev data because they create workflow jobs.
+- Shared libraries still multi-target net48 and net10.0, so the solution is not fully net10-only.
+- Legacy project folders remain on disk and could cause confusion if developers open old projects directly.
+- Production promotion remains blocked until SIT, regression, UAT, security, performance, and operational testing are completed.
 
 ## Notes
 - The current implementation should be used as a reference point to demonstrate feasibility and support management buy-in.
 - Solution cleanup should be performed conservatively by removing projects from the solution first, not deleting source folders.
 - Each cleanup batch should be followed by a clean full solution build and basic browser smoke test.
+- Solution cleanup was performed conservatively by removing projects from the solution only.
+- No legacy project folders were physically deleted.
+- The cleaned solution built successfully after removal of obsolete projects.
 - DLM Selections submission now uses DI-based workflow API integration with WorkerType.ExpressUI rather than ServiceBuilder usage in the controller.
 - LoadImportSelectionDataController uses a narrow DLM selections import repository to retrieve portfolios, treaty lists, treaty dependencies, and exposed DLM profiles.
 - SubmitDlmProfilesController preserves the legacy non-super-user validation preventing unauthorized DLM output profile/default selection changes.
