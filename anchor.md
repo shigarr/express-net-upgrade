@@ -475,10 +475,13 @@ Setup / Planning
 - Moved RatCatManagerDaemon host-level object composition from ServiceBuilder to Microsoft.Extensions.DependencyInjection.
 - Removed RatCatManagerDaemon direct project dependency on Factories after host-level ServiceBuilder usage was removed.
 - Build validated RatCatManagerDaemon host-level DI cleanup.
+- Scanned active solution for remaining ServiceBuilder usage after daemon DI changes.
+- Confirmed remaining active ServiceBuilder usage is concentrated in Workers and WorkflowManager.Domain, with FileCopierDaemon retaining only a likely stale Factories project reference.
 
 ## What’s Next
-- Continue avoiding worker-level ServiceBuilder removal unless a tested migration slice is defined.
-- Treat RatCatManagerDaemon as build-validated only unless a runtime validation path becomes available.
+- Remove stale Factories project reference from FileCopierDaemon if build confirms it is unused.
+- Refactor remaining Workers ServiceBuilder usage using small task/server-specific factories, preserving current behaviour.
+- Defer WorkflowManager.Domain ServiceBuilder cleanup to a separate controlled slice.
 
 ## Active Decisions
 - Proceed with RatCatManagerDaemon host-level DI cleanup despite lack of runtime test path, because the daemon is legacy-unused and the goal is to remove direct host-level ServiceBuilder dependency for consistency.
@@ -578,6 +581,9 @@ Setup / Planning
 - Treat controller folder location as secondary to actual UI workflow ownership.
 
 ## Risks
+- 🟠 Workers project still depends on legacy Factories.ServiceBuilder for dynamic task/server-specific service creation.
+- 🔴 RatCatManagerDaemon can be refactored but cannot be meaningfully smoke tested because the daemon has not been used by this or other applications for a long time.
+- 🟠 WorkflowManager.Domain has a separate ServiceBuilder and should be treated as a separate cleanup stream from Factories.ServiceBuilder.
 - 🟠 RatCatManagerDaemon runtime behaviour remains unverified because the daemon is legacy-unused and no smoke test path is currently available.
 - 🟠 RatCatManagerDaemon cannot currently be runtime smoke tested because it has not been used by this or any other application for a long time.
 - 🟢 Business impact of RatCatManagerDaemon host-level cleanup is considered low because the daemon is legacy-unused.
